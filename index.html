@@ -778,6 +778,17 @@ function go(id,btn){
   document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
   if(btn)btn.classList.add('active');
   window.scrollTo({top:0,behavior:'smooth'});
+  if(id==='encuesta'){
+    loadVotes();
+    if(localStorage.getItem('r3ddy_voted')){
+      voted=true;
+      setTimeout(()=>{
+        document.getElementById('pollOpts').classList.add('poll-revealed');
+        document.querySelectorAll('.poll-btn').forEach(b=>b.classList.add('voted'));
+        loadVotes();
+      },300);
+    }
+  }
 }
 
 // datos de juegos
@@ -944,21 +955,7 @@ async function vote(idx){
   }catch(e){document.getElementById('pollFoot').textContent='✅ ¡Gracias por votar!';}
 }
 
-const _go=go;
-function go(id,btn){
-  _go(id,btn);
-  if(id==='encuesta'){
-    loadVotes();
-    if(localStorage.getItem('r3ddy_voted')){
-      voted=true;
-      setTimeout(()=>{
-        document.getElementById('pollOpts').classList.add('poll-revealed');
-        document.querySelectorAll('.poll-btn').forEach(b=>b.classList.add('voted'));
-        loadVotes();
-      },300);
-    }
-  }
-}
+
 function tfaq(el){
   const item=el.parentElement;
   const isOpen=item.classList.contains('open');
