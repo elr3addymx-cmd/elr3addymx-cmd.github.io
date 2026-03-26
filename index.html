@@ -631,8 +631,43 @@ footer p{color:var(--gray);font-size:.83rem;margin-bottom:3px;}
           addBot('Excelente elección 🔥<br><br><strong>¿Prefieres la versión base o la versión personalizada?</strong><br><br>📦 <strong>Base</strong> — Personajes originales, entrega el mismo día<br>🎨 <strong>Personalizada</strong> — Con tu personaje, 1-3 días hábiles',400);
           setTimeout(function(){
             showOpts([
-              {label:'📦 Versión Base',action:function(){addUser('Versión Base');chatData.version='Base';clearOpts();stepFinal();}},
-              {label:'🎨 Versión Personalizada',action:function(){addUser('Versión Personalizada');chatData.version='Personalizada';clearOpts();stepFinal();}}
+              {label:'📦 Versión Base',action:function(){addUser('Versión Base');chatData.version='Base';clearOpts();stepPromo();}},
+              {label:'🎨 Versión Personalizada',action:function(){addUser('Versión Personalizada');chatData.version='Personalizada';clearOpts();stepPromo();}}
+            ]);
+          },800);
+        }
+
+        function stepPromo(){
+          addBot('¡Casi listo! 🎉<br><br><strong>¿Quieres aprovechar nuestra promoción?</strong><br><br>🎮 <strong>1 Juego</strong> — $20 USD<br>🔥 <strong>Promo 2 Juegos</strong> — $35 USD <span style="background:#ffd700;color:#000;padding:2px 8px;border-radius:4px;font-size:.8em;">¡Ahorras $5!</span>',400);
+          setTimeout(function(){
+            showOpts([
+              {label:'🎮 Solo 1 juego ($20 USD)',action:function(){addUser('1 Juego - $20 USD');chatData.promo='1 juego';clearOpts();stepFinal();}},
+              {label:'🔥 Promo 2 juegos ($35 USD)',action:function(){addUser('Promo 2 juegos - $35 USD');chatData.promo='Promo 2 juegos';clearOpts();stepGame2();}}
+            ]);
+          },800);
+        }
+
+        function stepGame2(){
+          var g1=chatData.game;
+          addBot('🔥 ¡Excelente! Elegiste la promo.<br><br><strong>¿Cuál sería tu segundo juego?</strong><br><br>(Recuerda que no puede ser el mismo que elegiste)',400);
+          setTimeout(function(){
+            var opts=[
+              {label:'🦑 Squid Stream',action:function(){addUser('Squid Stream');chatData.game2='Squid Stream';clearOpts();stepVersion2();}},
+              {label:'🧟 Zombie Slug',action:function(){addUser('Zombie Slug');chatData.game2='Zombie Slug';clearOpts();stepVersion2();}},
+              {label:'🌮 TacoManía',action:function(){addUser('TacoManía');chatData.game2='TacoManía';clearOpts();stepVersion2();}}
+            ];
+            // Remove the first game from options
+            opts=opts.filter(function(o){return o.label.indexOf(g1)<0;});
+            showOpts(opts);
+          },800);
+        }
+
+        function stepVersion2(){
+          addBot('¡Perfecto! 🎮<br><br><strong>¿La versión del segundo juego?</strong><br><br>📦 <strong>Base</strong> — Personajes originales, entrega el mismo día<br>🎨 <strong>Personalizada</strong> — Con tu personaje, 1-3 días hábiles',400);
+          setTimeout(function(){
+            showOpts([
+              {label:'📦 Versión Base',action:function(){addUser('Versión Base');chatData.version2='Base';clearOpts();stepFinal();}},
+              {label:'🎨 Versión Personalizada',action:function(){addUser('Versión Personalizada');chatData.version2='Personalizada';clearOpts();stepFinal();}}
             ]);
           },800);
         }
@@ -661,7 +696,9 @@ footer p{color:var(--gray);font-size:.83rem;margin-bottom:3px;}
           if(chatData.game==='Juego Nuevo'){
             msg='Hola, me interesa un *juego nuevo personalizado*.\n\nDispositivo: '+chatData.device+'\n\nQuedo en espera de que se pongan en contacto conmigo. ¡Gracias!';
           } else {
-            msg='Hola, me interesa adquirir lo siguiente:\n\n🎮 *Juego:* '+chatData.game+'\n📦 *Versión:* '+chatData.version+'\n💻 *Dispositivo:* '+chatData.device+'\n\nQuedo en espera de su respuesta. ¡Gracias!';
+            var game2Line = (chatData.promo==='Promo 2 juegos' && chatData.game2) ? '\n\n🎮 *Juego 2:* '+chatData.game2+'\n📦 *Versión 2:* '+(chatData.version2||'Base') : '';
+            var pedidoLine = chatData.promo==='Promo 2 juegos' ? '\n💰 *Pedido:* Promo 2 juegos — $35 USD' : '\n💰 *Pedido:* 1 juego — $20 USD';
+            msg='Hola, me interesa adquirir lo siguiente:\n\n🎮 *Juego 1:* '+chatData.game+'\n📦 *Versión 1:* '+chatData.version+game2Line+pedidoLine+'\n💻 *Dispositivo:* '+chatData.device+'\n\nQuedo en espera de su respuesta. ¡Gracias!';
           }
           var url='https://wa.me/524442057812?text='+encodeURIComponent(msg);
           if(isInAppBrowser()){
