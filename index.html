@@ -880,22 +880,85 @@ function openGame(key){
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
-// poll
-const votes=[14,9,6,8,0];let voted=false;
-function vote(idx){
-  if(voted)return;voted=true;votes[idx]+=1;
-  const total=votes.reduce((a,b)=>a+b,0);
-  document.getElementById('pollOpts').classList.add('poll-revealed');
-  votes.forEach((v,i)=>{
+const SHEET_URL='https://script.google.com/macros/s/AKfycbwbdYlh-jPAzpfZMkTsXxyC4E1K-bfHalIaQX2bRybFhj8LCdpsjbQjiEEsiY_gk9lPqQ/exec';
+const opciones=['Survivala','Zoo Interactivo','Show de Talentos','Roblox'];
+let voted=false;
+
+async function getUserIP(){
+  try{const r=await fetch('https://api.ipify.org?format=json');const d=await r.json();return d.ip;}
+  catch(e){return 'unknown-'+Math.random().toString(36).substr(2,9);}
+}
+
+async function loadVotes(){
+  try{
+    const r=await fetch(SHEET_URL);const d=await r.json();
+    if(d.status==='ok')updateUI(d.totals);
+  }catch(e){}
+}
+
+function updateUI(totals){
+  const vals=opciones.map(o=>totals[o]||0);
+  const total=vals.reduce((a,b)=>a+b,0);
+  if(total===0)return;
+  vals.forEach((v,i)=>{
     const pct=Math.round(v/total*100);
     document.getElementById('pf'+i).style.width=pct+'%';
     document.getElementById('pp'+i).textContent=pct+'%';
-    document.querySelectorAll('.poll-btn')[i].classList.add('voted');
   });
-  document.getElementById('pollFoot').textContent=`${total} streamers han votado — ¡Gracias!`;
+  document.getElementById('pollFoot').textContent=total+' streamers han votado';
+  if(voted){
+    document.getElementById('pollOpts').classList.add('poll-revealed');
+    document.querySelectorAll('.poll-btn').forEach(b=>b.classList.add('voted'));
+  }
 }
 
-// faq
+async function vote(idx){
+  if(voted)return;
+  if(localStorage.getItem('r3ddy_voted')){
+    document.getElementById('pollFoot').textContent='⚠️ Ya votaste anteriormente. ¡Gracias!';
+    return;
+  }
+  voted=true;
+  localStorage.setItem('r3ddy_voted',opciones[idx]);
+  document.querySelectorAll('.poll-btn')[idx].style.borderColor='var(--red2)';
+  document.getElementById('pollFoot').textContent='⏳ Enviando tu voto...';
+  try{
+    const ip=await getUserIP();
+    const resp=await fetch(SHEET_URL,{
+      method:'POST',
+      body:JSON.stringify({voto:opciones[idx],ip:ip}),
+      headers:{'Content-Type':'application/json'}
+    });
+    const data=await resp.json();
+    if(data.status==='duplicate'){
+      document.getElementById('pollFoot').textContent='⚠️ Ya se registró un voto desde tu conexión. ¡Gracias!';
+      voted=false;localStorage.removeItem('r3ddy_voted');return;
+    }
+    if(data.status==='ok'){
+      document.getElementById('pollOpts').classList.add('poll-revealed');
+      document.querySelectorAll('.poll-btn').forEach(b=>b.classList.add('voted'));
+      updateUI(data.totals);
+      const total=Object.values(data.totals).reduce((a,b)=>a+b,0);
+      document.getElementById('pollFoot').textContent=total+' streamers han votado — ¡Gracias!';
+    }
+  }catch(e){document.getElementById('pollFoot').textContent='✅ ¡Gracias por votar!';}
+}
+
+const _go=go;
+function go(id,btn){
+  _go(id,btn);
+  if(id==='encuesta'){
+    loadVotes();
+    if(localStorage.getItem('r3ddy_voted')){
+      voted=true;
+      setTimeout(()=>{
+        document.getElementById('pollOpts').classList.add('poll-revealed');
+        document.querySelectorAll('.poll-btn').forEach(b=>b.classList.add('voted'));
+        loadVotes();
+      },300);
+    }
+  }
+}
 function tfaq(el){
   const item=el.parentElement;
   const isOpen=item.classList.contains('open');
