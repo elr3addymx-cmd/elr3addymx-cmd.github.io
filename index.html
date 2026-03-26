@@ -157,7 +157,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:300;background:rgba(5,5,15,.97);
 .poll-btn:hover{border-color:var(--red);background:rgba(204,17,17,.07);}
 .poll-fill{position:absolute;top:0;left:0;height:100%;background:rgba(204,17,17,.11);border-radius:8px;transition:width .8s ease;pointer-events:none;}
 .poll-pct{margin-left:auto;font-size:.83rem;font-weight:900;color:var(--red2);opacity:0;transition:opacity .3s;}
-.poll-revealed .poll-pct{opacity:1;}
+.poll-revealed .poll-pct{opacity:1;}.poll-revealed #pc0,.poll-revealed #pc1,.poll-revealed #pc2,.poll-revealed #pc3{opacity:1;}
 .poll-footer{text-align:center;margin-top:16px;font-size:.8rem;color:var(--gray);}
 
 /* FAQ */
@@ -458,10 +458,10 @@ footer p{color:var(--gray);font-size:.83rem;margin-bottom:3px;}
       <div class="poll-wrap">
         <p class="poll-q">¿Cuál sería el próximo juego interactivo que más usarías en tu live?</p>
         <div class="poll-options" id="pollOpts">
-          <button class="poll-btn" onclick="vote(0)"><div class="poll-fill" id="pf0"></div><span>🏝️</span><span>Survivala — Competencia por equipos</span><span class="poll-pct" id="pp0"></span></button>
-          <button class="poll-btn" onclick="vote(1)"><div class="poll-fill" id="pf1"></div><span>🦁</span><span>Zoo Interactivo — Cuida animales con tu chat</span><span class="poll-pct" id="pp1"></span></button>
-          <button class="poll-btn" onclick="vote(2)"><div class="poll-fill" id="pf2"></div><span>🎭</span><span>Show de Talentos — Tu chat como jurado</span><span class="poll-pct" id="pp2"></span></button>
-          <button class="poll-btn" onclick="vote(3)"><div class="poll-fill" id="pf3"></div><span>🎮</span><span>Juego Interactivo de Roblox</span><span class="poll-pct" id="pp3"></span></button>
+          <button class="poll-btn" onclick="vote(0)"><div class="poll-fill" id="pf0"></div><span>🏝️</span><span>Survivala — Competencia por equipos</span><span class="poll-pct" id="pp0"></span><span id="pc0" style="font-size:.72rem;color:var(--gray);margin-left:4px;opacity:0;transition:opacity .3s;" class="poll-pct"></span></button>
+          <button class="poll-btn" onclick="vote(1)"><div class="poll-fill" id="pf1"></div><span>🦁</span><span>Zoo Interactivo — Cuida animales con tu chat</span><span class="poll-pct" id="pp1"></span><span id="pc1" style="font-size:.72rem;color:var(--gray);margin-left:4px;opacity:0;transition:opacity .3s;" class="poll-pct"></span></button>
+          <button class="poll-btn" onclick="vote(2)"><div class="poll-fill" id="pf2"></div><span>🎭</span><span>Show de Talentos — Tu chat como jurado</span><span class="poll-pct" id="pp2"></span><span id="pc2" style="font-size:.72rem;color:var(--gray);margin-left:4px;opacity:0;transition:opacity .3s;" class="poll-pct"></span></button>
+          <button class="poll-btn" onclick="vote(3)"><div class="poll-fill" id="pf3"></div><span>🎮</span><span>Juego Interactivo de Roblox</span><span class="poll-pct" id="pp3"></span><span id="pc3" style="font-size:.72rem;color:var(--gray);margin-left:4px;opacity:0;transition:opacity .3s;" class="poll-pct"></span></button>
           <button class="poll-btn" onclick="vote(4)"><div class="poll-fill" id="pf4"></div><span>👻</span><span>Juego de Terror — Tu chat activa los sustos</span><span class="poll-pct" id="pp4"></span></button>
         </div>
         <p class="poll-footer" id="pollFoot">Dale click a tu favorito 👆</p>
@@ -895,66 +895,92 @@ const SHEET_URL='https://script.google.com/macros/s/AKfycbwbdYlh-jPAzpfZMkTsXxyC
 const opciones=['Survivala','Zoo Interactivo','Show de Talentos','Roblox'];
 let voted=false;
 
-async function getUserIP(){
-  try{const r=await fetch('https://api.ipify.org?format=json');const d=await r.json();return d.ip;}
-  catch(e){return 'unknown-'+Math.random().toString(36).substr(2,9);}
+// Enviar voto usando imagen (evita CORS)
+function sendVoteNocors(voto, ip){
+  var url = SHEET_URL + '?voto=' + encodeURIComponent(voto) + '&ip=' + encodeURIComponent(ip) + '&t=' + Date.now();
+  var img = new Image();
+  img.src = url;
 }
 
+// Obtener IP
+async function getUserIP(){
+  try{
+    const r = await fetch('https://api.ipify.org?format=json');
+    const d = await r.json();
+    return d.ip;
+  } catch(e){ return 'anon-'+Math.random().toString(36).substr(2,9); }
+}
+
+// Cargar votos con fetch normal (GET no tiene problema de CORS en Apps Script)
 async function loadVotes(){
   try{
-    const r=await fetch(SHEET_URL);const d=await r.json();
-    if(d.status==='ok')updateUI(d.totals);
-  }catch(e){}
+    const r = await fetch(SHEET_URL + '?t=' + Date.now());
+    const d = await r.json();
+    if(d.status==='ok') updateUI(d.totals);
+  } catch(e){ console.log('no se cargaron votos'); }
 }
 
 function updateUI(totals){
-  const vals=opciones.map(o=>totals[o]||0);
-  const total=vals.reduce((a,b)=>a+b,0);
-  if(total===0)return;
-  vals.forEach((v,i)=>{
-    const pct=Math.round(v/total*100);
-    document.getElementById('pf'+i).style.width=pct+'%';
-    document.getElementById('pp'+i).textContent=pct+'%';
+  const vals = opciones.map(o => totals[o] || 0);
+  const total = vals.reduce((a,b) => a+b, 0);
+  if(total === 0) return;
+  
+  vals.forEach((v,i) => {
+    const pct = Math.round(v / total * 100);
+    const fill = document.getElementById('pf'+i);
+    const pctEl = document.getElementById('pp'+i);
+    const countEl = document.getElementById('pc'+i);
+    if(fill) fill.style.width = pct + '%';
+    if(pctEl) pctEl.textContent = pct + '%';
+    if(countEl) countEl.textContent = v + ' votos';
   });
-  document.getElementById('pollFoot').textContent=total+' streamers han votado';
+  
+  // Highlight winner
+  const maxVotes = Math.max(...vals);
+  vals.forEach((v,i) => {
+    const btn = document.querySelectorAll('.poll-btn')[i];
+    if(btn && v === maxVotes && maxVotes > 0){
+      btn.style.borderColor = '#ffd700';
+      btn.style.background = 'rgba(255,215,0,0.08)';
+    }
+  });
+  
+  document.getElementById('pollFoot').textContent = total + ' streamers han votado';
+  
   if(voted){
     document.getElementById('pollOpts').classList.add('poll-revealed');
-    document.querySelectorAll('.poll-btn').forEach(b=>b.classList.add('voted'));
+    document.querySelectorAll('.poll-btn').forEach(b => b.classList.add('voted'));
   }
 }
 
 async function vote(idx){
-  if(voted)return;
+  if(voted) return;
+  
+  // Check localStorage
   if(localStorage.getItem('r3ddy_voted')){
-    document.getElementById('pollFoot').textContent='⚠️ Ya votaste anteriormente. ¡Gracias!';
+    document.getElementById('pollFoot').textContent = '⚠️ Ya votaste antes. ¡Gracias por participar!';
+    voted = true;
+    loadVotes();
     return;
   }
-  voted=true;
-  localStorage.setItem('r3ddy_voted',opciones[idx]);
-  document.querySelectorAll('.poll-btn')[idx].style.borderColor='var(--red2)';
-  document.getElementById('pollFoot').textContent='⏳ Enviando tu voto...';
-  try{
-    const ip=await getUserIP();
-    const resp=await fetch(SHEET_URL,{
-      method:'POST',
-      body:JSON.stringify({voto:opciones[idx],ip:ip}),
-      headers:{'Content-Type':'application/json'}
-    });
-    const data=await resp.json();
-    if(data.status==='duplicate'){
-      document.getElementById('pollFoot').textContent='⚠️ Ya se registró un voto desde tu conexión. ¡Gracias!';
-      voted=false;localStorage.removeItem('r3ddy_voted');return;
-    }
-    if(data.status==='ok'){
-      document.getElementById('pollOpts').classList.add('poll-revealed');
-      document.querySelectorAll('.poll-btn').forEach(b=>b.classList.add('voted'));
-      updateUI(data.totals);
-      const total=Object.values(data.totals).reduce((a,b)=>a+b,0);
-      document.getElementById('pollFoot').textContent=total+' streamers han votado — ¡Gracias!';
-    }
-  }catch(e){document.getElementById('pollFoot').textContent='✅ ¡Gracias por votar!';}
+  
+  voted = true;
+  localStorage.setItem('r3ddy_voted', opciones[idx]);
+  document.getElementById('pollFoot').textContent = '⏳ Registrando tu voto...';
+  
+  // Get IP and send vote
+  const ip = await getUserIP();
+  sendVoteNocors(opciones[idx], ip);
+  
+  // Show results immediately (optimistic UI)
+  document.getElementById('pollOpts').classList.add('poll-revealed');
+  document.querySelectorAll('.poll-btn').forEach(b => b.classList.add('voted'));
+  document.getElementById('pollFoot').textContent = '✅ ¡Voto registrado! Gracias 🎮';
+  
+  // Load real results after 2 seconds
+  setTimeout(loadVotes, 2000);
+  setTimeout(loadVotes, 5000);
 }
-
 
 function tfaq(el){
   const item=el.parentElement;
