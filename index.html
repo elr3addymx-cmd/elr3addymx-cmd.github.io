@@ -3,1113 +3,154 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>El R3ddy Interactive Games</title>
-<link href="https://fonts.googleapis.com/css2?family=Bangers&family=Nunito:wght@400;600;700;900&display=swap" rel="stylesheet">
+<title>El R3ddy – Sitio en Mantenimiento</title>
+<link href="https://fonts.googleapis.com/css2?family=Bangers&family=Nunito:wght@400;700;900&display=swap" rel="stylesheet">
 <style>
-:root{--red:#CC1111;--red2:#ff2222;--blue:#1a6fc4;--blue2:#2196F3;--dark:#08080f;--card-bg:rgba(15,20,32,0.97);--white:#ffffff;--gray:#b0bec5;}
-*{margin:0;padding:0;box-sizing:border-box;}
-html{scroll-behavior:smooth;}
-body{font-family:'Nunito',sans-serif;background:var(--dark);color:var(--white);min-height:100vh;overflow-x:hidden;}
-.bg{position:fixed;inset:0;z-index:0;background:radial-gradient(ellipse at 15% 50%,rgba(204,17,17,0.07) 0%,transparent 55%),radial-gradient(ellipse at 85% 20%,rgba(26,111,196,0.07) 0%,transparent 55%),#08080f;}
-.particles{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden;}
-.p{position:absolute;border-radius:50%;opacity:0;animation:float linear infinite;}
-@keyframes float{0%{transform:translateY(100vh);opacity:0;}10%{opacity:.4;}90%{opacity:.2;}100%{transform:translateY(-10vh);opacity:0;}}
-@keyframes popIn{from{opacity:0;transform:scale(.75) translateY(-20px);}to{opacity:1;transform:scale(1) translateY(0);}}
-@keyframes fadeUp{from{opacity:0;transform:translateY(28px);}to{opacity:1;transform:translateY(0);}}
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    font-family:'Nunito',sans-serif;
+    background:#0a0e1f;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    min-height:100vh;
+    overflow:hidden;
+  }
 
-/* NAV */
-nav{position:fixed;top:0;left:0;right:0;z-index:300;background:rgba(5,5,15,.97);backdrop-filter:blur(18px);border-bottom:2px solid var(--red);display:flex;align-items:center;justify-content:space-between;height:68px;padding:0 28px;box-shadow:0 4px 30px rgba(204,17,17,.2);}
-.nav-logo img{height:52px;object-fit:contain;filter:drop-shadow(0 0 14px rgba(204,17,17,.4));}
-.nav-links{display:flex;gap:2px;align-items:center;}
-.nav-btn{padding:8px 13px;background:transparent;border:none;color:var(--gray);font-family:'Bangers',cursive;font-size:.95rem;letter-spacing:2px;cursor:pointer;border-radius:4px;transition:all .2s;position:relative;}
-.nav-btn::after{content:'';position:absolute;bottom:0;left:50%;right:50%;height:2px;background:var(--red);transition:all .2s;}
-.nav-btn:hover,.nav-btn.active{color:var(--white);}
-.nav-btn:hover::after,.nav-btn.active::after{left:6px;right:6px;}
-@media(max-width:700px){.nav-links{display:none!important;}nav{padding:0 16px;}#hmb{display:flex!important;}}
+  /* Fondo animado */
+  .bg{
+    position:fixed;inset:0;z-index:0;
+    background:
+      radial-gradient(ellipse at 20% 50%, rgba(26,111,196,0.12) 0%, transparent 55%),
+      radial-gradient(ellipse at 80% 20%, rgba(204,17,17,0.08) 0%, transparent 55%),
+      #0a0e1f;
+  }
+  .dots{
+    position:fixed;inset:0;z-index:0;
+    background-image:radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px);
+    background-size:32px 32px;
+  }
 
-/* PÁGINAS */
-.page{display:none;min-height:100vh;padding-top:68px;position:relative;z-index:1;}
-.page.active{display:block;}
-#page-home{display:none;flex-direction:column;align-items:center;padding-top:68px;}
-#page-home.active{display:flex;}
+  /* Contenedor principal */
+  .container{
+    position:relative;z-index:1;
+    width:100%;max-width:1000px;
+    padding:20px;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:28px;
+  }
 
-/* HOME */
-.hero{width:100%;min-height:calc(100vh - 68px);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:60px 20px 40px;}
-.hero-logo{width:min(400px,85vw);animation:popIn .7s cubic-bezier(.175,.885,.32,1.275) both;filter:drop-shadow(0 8px 40px rgba(204,17,17,.5));}
-.hero-sub{font-family:'Bangers',cursive;font-size:clamp(1rem,2.8vw,1.5rem);letter-spacing:6px;color:var(--blue2);margin-top:14px;text-transform:uppercase;animation:fadeUp .6s .3s ease both;}
-.hero-desc{max-width:560px;color:var(--gray);font-size:.98rem;line-height:1.75;margin-top:14px;animation:fadeUp .6s .35s ease both;}
-.hero-btns{display:flex;gap:14px;margin-top:36px;flex-wrap:wrap;justify-content:center;animation:fadeUp .6s .4s ease both;}
+  /* Imagen principal */
+  .main-img{
+    width:100%;
+    max-width:900px;
+    border-radius:20px;
+    box-shadow:
+      0 0 0 1px rgba(255,255,255,0.07),
+      0 24px 80px rgba(0,0,0,0.6),
+      0 0 60px rgba(26,111,196,0.2);
+    animation: fadeIn .8s ease both;
+  }
 
-/* PROMO BANNER */
-.promo-banner{background:linear-gradient(135deg,rgba(204,17,17,.15),rgba(26,111,196,.15));border:1px solid rgba(255,215,0,.3);border-radius:12px;padding:16px 24px;margin-top:32px;display:flex;align-items:center;gap:14px;flex-wrap:wrap;justify-content:center;animation:fadeUp .6s .5s ease both;text-align:center;max-width:680px;width:100%;}
-.promo-emoji{font-size:2rem;}
-.promo-text{font-family:'Bangers',cursive;font-size:1.2rem;letter-spacing:2px;color:#ffd700;}
-.promo-sub{font-size:.85rem;color:var(--gray);}
+  /* Botón WhatsApp */
+  .wa-btn{
+    display:inline-flex;
+    align-items:center;
+    gap:12px;
+    background:#25d366;
+    color:#fff;
+    font-family:'Bangers',cursive;
+    font-size:1.2rem;
+    letter-spacing:3px;
+    padding:16px 32px;
+    border-radius:50px;
+    text-decoration:none;
+    box-shadow:0 8px 32px rgba(37,211,102,0.45);
+    animation: fadeIn 1s .3s ease both, waPulse 2.5s 1.3s ease-in-out infinite;
+    transition:transform .2s, box-shadow .2s;
+  }
+  .wa-btn:hover{
+    background:#1ebe5d;
+    transform:translateY(-3px);
+    box-shadow:0 14px 40px rgba(37,211,102,0.6);
+  }
+  .wa-btn svg{width:28px;height:28px;flex-shrink:0;}
 
-/* BOTONES */
-.btn-red{padding:14px 34px;background:var(--red);color:var(--white);font-family:'Bangers',cursive;font-size:1.1rem;letter-spacing:3px;border:none;border-radius:8px;cursor:pointer;transition:all .2s;box-shadow:0 4px 20px rgba(204,17,17,.35);}
-.btn-red:hover{background:var(--red2);transform:translateY(-3px);}
-.btn-outline{padding:14px 34px;background:transparent;color:var(--white);font-family:'Bangers',cursive;font-size:1.1rem;letter-spacing:3px;border:2px solid rgba(255,255,255,.25);border-radius:8px;cursor:pointer;transition:all .2s;}
-.btn-outline:hover{border-color:var(--white);transform:translateY(-2px);}
-.btn-gold{padding:14px 34px;background:linear-gradient(135deg,#b8860b,#ffd700);color:#000;font-family:'Bangers',cursive;font-size:1.1rem;letter-spacing:3px;border:none;border-radius:8px;cursor:pointer;transition:all .2s;}
-.btn-gold:hover{transform:translateY(-3px);box-shadow:0 8px 30px rgba(255,215,0,.4);}
+  /* Botón flotante WhatsApp (móvil) */
+  .wa-float{
+    position:fixed;bottom:24px;right:24px;z-index:9999;
+    display:none;
+    align-items:center;
+    background:#25d366;color:#fff;
+    padding:14px;border-radius:50%;
+    box-shadow:0 6px 28px rgba(37,211,102,.55);
+    text-decoration:none;
+    animation:waPulse 2.5s ease-in-out infinite;
+    transition:transform .2s;
+  }
+  .wa-float:hover{transform:scale(1.1);}
+  .wa-float svg{width:30px;height:30px;}
 
-/* SECCIONES */
-.section{padding:80px 20px;}
-.section-header{text-align:center;margin-bottom:48px;}
-.section-tag{display:inline-block;font-size:.65rem;letter-spacing:4px;color:var(--red2);border:1px solid rgba(204,17,17,.3);padding:4px 14px;border-radius:999px;margin-bottom:12px;text-transform:uppercase;}
-.section-title{font-family:'Bangers',cursive;font-size:clamp(1.8rem,4.5vw,2.8rem);letter-spacing:3px;}
-.container{max-width:1100px;margin:0 auto;}
+  @keyframes fadeIn{
+    from{opacity:0;transform:translateY(20px);}
+    to{opacity:1;transform:translateY(0);}
+  }
+  @keyframes waPulse{
+    0%,100%{box-shadow:0 6px 28px rgba(37,211,102,.45);}
+    50%{box-shadow:0 6px 38px rgba(37,211,102,.75),0 0 0 10px rgba(37,211,102,.1);}
+  }
 
-/* GAMES GRID */
-.games-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:24px;}
-
-/* GAME CARD */
-.game-card{background:var(--card-bg);border:1px solid rgba(255,255,255,.07);border-radius:14px;overflow:hidden;transition:transform .25s,box-shadow .25s;position:relative;cursor:pointer;}
-.game-card:hover{transform:translateY(-7px);box-shadow:0 18px 55px rgba(0,0,0,.5),0 0 0 1px rgba(204,17,17,.2);}
-.game-badge{position:absolute;top:14px;right:14px;z-index:2;background:var(--red);color:var(--white);font-family:'Bangers',cursive;font-size:.68rem;letter-spacing:1px;padding:4px 12px;border-radius:999px;text-transform:uppercase;}
-.game-badge.hot{background:#ff6600;}.game-badge.new{background:#00aa44;}
-
-/* GAME THUMB CON LOGO */
-.game-thumb{height:200px;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;}
-.game-thumb img{width:100%;height:100%;object-fit:contain;padding:16px;position:relative;z-index:1;}
-.game-thumb::after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,transparent 55%,rgba(8,8,15,.85));z-index:2;}
-
-.game-body{padding:22px;}
-.game-title{font-family:'Bangers',cursive;font-size:1.35rem;letter-spacing:1.5px;margin-bottom:8px;}
-.game-desc{font-size:.87rem;color:var(--gray);line-height:1.55;margin-bottom:16px;}
-.game-tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:18px;}
-.tag{font-size:.67rem;padding:3px 10px;border-radius:999px;border:1px solid rgba(33,150,243,.3);color:var(--blue2);letter-spacing:1px;text-transform:uppercase;}
-.pricing-row{display:flex;gap:10px;flex-wrap:wrap;}
-.price-box{flex:1;min-width:115px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:13px;text-align:center;transition:all .2s;cursor:pointer;}
-.price-box:hover{background:rgba(255,255,255,.09);}
-.price-box.featured{background:rgba(204,17,17,.1);border-color:rgba(204,17,17,.35);}
-.price-box.featured:hover{background:rgba(204,17,17,.18);}
-.price-type{font-size:.62rem;letter-spacing:2px;color:var(--gray);text-transform:uppercase;margin-bottom:4px;}
-.price-amount{font-family:'Bangers',cursive;font-size:1.45rem;}
-.price-box.featured .price-amount{color:var(--red2);}
-.price-small{font-size:.68rem;color:var(--gray);}
-.price-cta{display:block;margin-top:7px;font-size:.68rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;}
-.price-box:not(.featured) .price-cta{color:var(--blue2);}
-.price-box.featured .price-cta{color:var(--red2);}
-.view-more-btn{width:100%;margin-top:12px;padding:9px;background:rgba(255,255,255,.04);border:1px dashed rgba(255,255,255,.14);border-radius:8px;color:var(--gray);font-family:'Bangers',cursive;font-size:.88rem;letter-spacing:2px;cursor:pointer;transition:all .2s;}
-.view-more-btn:hover{background:rgba(255,255,255,.1);color:var(--white);border-color:rgba(255,255,255,.3);}
-
-/* PROMO CARD */
-.promo-card{background:linear-gradient(135deg,rgba(204,17,17,.1),rgba(255,215,0,.05));border:1px solid rgba(255,215,0,.2);border-radius:14px;padding:28px;text-align:center;margin-top:28px;}
-.promo-card h3{font-family:'Bangers',cursive;font-size:1.7rem;letter-spacing:2px;color:#ffd700;margin-bottom:8px;}
-.promo-card p{color:var(--gray);font-size:.9rem;margin-bottom:18px;}
-.promo-games{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-bottom:18px;}
-.promo-game-tag{padding:5px 16px;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.12);border-radius:999px;font-size:.83rem;font-weight:700;}
-.promo-price{font-family:'Bangers',cursive;font-size:2.4rem;color:#ffd700;letter-spacing:2px;}
-.promo-orig{font-size:.85rem;color:var(--gray);text-decoration:line-through;margin-left:8px;}
-
-/* PASOS */
-.steps{display:grid;grid-template-columns:repeat(auto-fill,minmax(215px,1fr));gap:18px;}
-.step{background:var(--card-bg);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:26px 20px;text-align:center;position:relative;transition:transform .2s;}
-.step:hover{transform:translateY(-4px);}
-.step-num{font-family:'Bangers',cursive;font-size:3rem;color:rgba(204,17,17,.1);position:absolute;top:8px;left:12px;line-height:1;}
-.step-icon{font-size:2.2rem;margin-bottom:12px;}
-.step-title{font-family:'Bangers',cursive;font-size:.95rem;letter-spacing:1.5px;margin-bottom:7px;}
-.step-desc{font-size:.85rem;color:var(--gray);line-height:1.5;}
-
-/* BONUS */
-.bonus-box{background:linear-gradient(135deg,rgba(26,111,196,.1),rgba(33,150,243,.05));border:1px solid rgba(33,150,243,.22);border-radius:14px;padding:26px 30px;margin-top:26px;}
-.bonus-box h4{font-family:'Bangers',cursive;font-size:1.15rem;letter-spacing:2px;color:var(--blue2);margin-bottom:16px;display:flex;align-items:center;gap:8px;}
-.bonus-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px;}
-.bonus-item{display:flex;align-items:flex-start;gap:10px;font-size:.87rem;color:var(--gray);line-height:1.5;}
-.bonus-item span:first-child{font-size:1.2rem;flex-shrink:0;margin-top:1px;}
-
-/* NOTICIAS */
-.news-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:20px;}
-.news-card{background:var(--card-bg);border:1px solid rgba(255,255,255,.07);border-radius:12px;overflow:hidden;transition:transform .2s;}
-.news-card:hover{transform:translateY(-4px);}
-.ns{height:4px;}
-.ns-r{background:linear-gradient(90deg,var(--red),var(--red2));}
-.ns-b{background:linear-gradient(90deg,var(--blue),var(--blue2));}
-.ns-g{background:linear-gradient(90deg,#2e7d32,#43a047);}
-.ns-o{background:linear-gradient(90deg,#f57f17,#ffca28);}
-.ns-p{background:linear-gradient(90deg,#6a1b9a,#ab47bc);}
-.nb{padding:20px;}
-.nc{font-size:.64rem;letter-spacing:3px;font-weight:700;text-transform:uppercase;margin-bottom:10px;display:flex;align-items:center;gap:6px;}
-.cr{color:var(--red2);}.cb{color:var(--blue2);}.cg{color:#66bb6a;}.co{color:#ffca28;}.cp{color:#ab47bc;}
-.ntitle{font-family:'Bangers',cursive;font-size:1.15rem;letter-spacing:1px;margin-bottom:10px;line-height:1.2;}
-.ntext{font-size:.86rem;color:var(--gray);line-height:1.6;margin-bottom:12px;}
-.ndate{font-size:.7rem;color:rgba(176,190,197,.4);}
-
-/* UPCOMING */
-.upcoming-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:18px;margin-top:40px;}
-.uc{background:var(--card-bg);border:1px solid rgba(255,255,255,.07);border-radius:12px;padding:26px 18px;text-align:center;position:relative;overflow:hidden;}
-.uc::before{content:'';position:absolute;top:0;left:0;right:0;height:3px;background:linear-gradient(90deg,var(--red),var(--blue));}
-.ue{font-size:3rem;margin-bottom:12px;display:block;}
-.ut{font-family:'Bangers',cursive;font-size:1.05rem;margin-bottom:7px;}
-.ud{font-size:.85rem;color:var(--gray);line-height:1.5;margin-bottom:13px;}
-.sb{display:inline-block;font-size:.66rem;padding:4px 12px;border-radius:999px;font-family:'Bangers',cursive;letter-spacing:1.5px;text-transform:uppercase;}
-.s-dev{background:rgba(255,165,0,.15);color:#ffaa00;border:1px solid rgba(255,165,0,.3);}
-.s-soon{background:rgba(33,150,243,.12);color:var(--blue2);border:1px solid rgba(33,150,243,.3);}
-.s-vote{background:rgba(150,100,255,.12);color:#bb88ff;border:1px solid rgba(150,100,255,.3);}
-
-/* ENCUESTA */
-.poll-wrap{max-width:620px;margin:0 auto;background:var(--card-bg);border:1px solid rgba(255,255,255,.07);border-radius:14px;padding:34px;}
-.poll-q{font-family:'Bangers',cursive;font-size:clamp(1.1rem,3vw,1.4rem);letter-spacing:1px;margin-bottom:22px;line-height:1.3;}
-.poll-options{display:flex;flex-direction:column;gap:11px;}
-.poll-btn{padding:13px 16px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.1);border-radius:8px;color:var(--white);font-family:'Nunito',sans-serif;font-size:.93rem;font-weight:700;cursor:pointer;text-align:left;transition:all .2s;position:relative;overflow:hidden;display:flex;align-items:center;gap:11px;}
-.poll-btn:hover{border-color:var(--red);background:rgba(204,17,17,.07);}
-.poll-fill{position:absolute;top:0;left:0;height:100%;background:rgba(204,17,17,.11);border-radius:8px;transition:width .8s ease;pointer-events:none;}
-.poll-pct{margin-left:auto;font-size:.83rem;font-weight:900;color:var(--red2);opacity:0;transition:opacity .3s;}
-.poll-revealed .poll-pct{opacity:1;}.poll-revealed #pc0,.poll-revealed #pc1,.poll-revealed #pc2,.poll-revealed #pc3{opacity:1;}
-.poll-footer{text-align:center;margin-top:16px;font-size:.8rem;color:var(--gray);}
-
-/* FAQ */
-.faq-list{max-width:780px;margin:0 auto;display:flex;flex-direction:column;gap:10px;}
-.faq-item{background:var(--card-bg);border:1px solid rgba(255,255,255,.07);border-radius:10px;overflow:hidden;}
-.faq-q{padding:17px 20px;font-family:'Bangers',cursive;font-size:1rem;letter-spacing:1px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:12px;transition:background .2s;}
-.faq-q:hover{background:rgba(255,255,255,.03);}
-.faq-icon{font-size:1.1rem;color:var(--red2);transition:transform .3s;flex-shrink:0;}
-.faq-item.open .faq-icon{transform:rotate(45deg);}
-.faq-a{max-height:0;overflow:hidden;transition:max-height .35s ease;padding:0 20px;}
-.faq-item.open .faq-a{max-height:500px;}
-.faq-a-inner{padding-bottom:17px;font-size:.88rem;color:var(--gray);line-height:1.65;}
-
-/* COMPRAR */
-.buy-wrap{display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:start;}
-@media(max-width:720px){.buy-wrap{grid-template-columns:1fr;}}
-.buy-info h3{font-family:'Bangers',cursive;font-size:clamp(1.4rem,3.5vw,2rem);letter-spacing:2px;margin-bottom:12px;line-height:1.2;}
-.buy-info h3 span{color:var(--red2);}
-.buy-info p{color:var(--gray);font-size:.92rem;line-height:1.6;margin-bottom:18px;}
-.feature-list{list-style:none;display:flex;flex-direction:column;gap:9px;}
-.feature-list li{display:flex;align-items:center;gap:9px;font-size:.9rem;}
-.feature-list li::before{content:'✓';color:var(--blue2);font-weight:900;}
-.buy-actions{display:flex;flex-direction:column;gap:13px;}
-.buy-btn{display:flex;align-items:center;gap:14px;padding:17px 20px;border-radius:10px;text-decoration:none;border:1px solid;transition:all .2s;cursor:pointer;}
-.buy-btn.pp{background:rgba(0,112,186,.1);border-color:#009cde;color:#009cde;}
-.buy-btn.pp:hover{background:rgba(0,156,222,.18);}
-.buy-btn.bk{background:rgba(37,211,102,.08);border-color:#25d366;color:#25d366;}
-.buy-btn.bk:hover{background:rgba(37,211,102,.18);}
-.buy-btn.tt{background:rgba(33,150,243,.08);border-color:var(--blue2);color:var(--blue2);}
-.buy-btn.tt:hover{background:rgba(33,150,243,.18);}
-.buy-btn-icon{font-size:1.8rem;}
-.buy-btn-text strong{display:block;font-family:'Bangers',cursive;font-size:.88rem;letter-spacing:1.5px;margin-bottom:1px;}
-.buy-btn-text span{font-size:.76rem;opacity:.7;}
-.payment-info{background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:15px;text-align:center;}
-.payment-info p{font-size:.75rem;color:var(--gray);margin-bottom:4px;letter-spacing:1px;text-transform:uppercase;}
-.payment-info strong{font-family:'Bangers',cursive;font-size:.95rem;letter-spacing:1px;}
-
-/* DETALLE DE JUEGO */
-#page-game{display:none;min-height:100vh;padding-top:68px;position:relative;z-index:1;}
-#page-game.active{display:block;}
-.game-detail{max-width:900px;margin:0 auto;padding:50px 20px 80px;}
-.gd-back{display:inline-flex;align-items:center;gap:8px;padding:8px 18px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:8px;cursor:pointer;font-size:.85rem;color:var(--gray);transition:all .2s;margin-bottom:32px;font-family:'Nunito',sans-serif;font-weight:700;}
-.gd-back:hover{background:rgba(255,255,255,.1);color:var(--white);}
-.gd-header{display:flex;align-items:flex-start;gap:24px;flex-wrap:wrap;margin-bottom:32px;}
-.gd-logo-wrap{width:130px;height:130px;flex-shrink:0;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08);border-radius:16px;display:flex;align-items:center;justify-content:center;overflow:hidden;padding:12px;}
-.gd-logo-wrap img{width:100%;height:100%;object-fit:contain;}
-.gd-info{flex:1;}
-.gd-title{font-family:'Bangers',cursive;font-size:clamp(2rem,5vw,3rem);letter-spacing:2px;line-height:1;}
-.gd-tagline{color:var(--blue2);font-size:1rem;margin-top:8px;font-weight:700;}
-.gd-tags-row{display:flex;gap:7px;flex-wrap:wrap;margin-top:12px;}
-.gd-video{width:100%;background:rgba(15,20,32,.95);border:1px solid rgba(255,255,255,.08);border-radius:14px;overflow:hidden;margin-bottom:30px;aspect-ratio:16/9;display:flex;align-items:center;justify-content:center;position:relative;}
-.gd-video iframe{width:100%;height:100%;position:absolute;inset:0;border:none;}
-.gd-video-inner{text-align:center;padding:20px;}
-.gd-video-icon{font-size:3.5rem;margin-bottom:12px;opacity:.6;}
-.gd-video-text{color:var(--gray);font-size:.88rem;}
-.gd-video-text strong{display:block;font-family:'Bangers',cursive;font-size:1.2rem;letter-spacing:2px;color:var(--white);margin-bottom:6px;}
-.gd-desc{font-size:.93rem;color:var(--gray);line-height:1.75;margin-bottom:26px;}
-.gd-desc p{margin-bottom:12px;}
-.gd-features{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:13px;margin-bottom:30px;}
-.gd-feat{background:var(--card-bg);border:1px solid rgba(255,255,255,.07);border-radius:10px;padding:15px;display:flex;align-items:flex-start;gap:10px;}
-.gd-feat-icon{font-size:1.3rem;flex-shrink:0;}
-.gd-feat-text{font-size:.84rem;color:var(--gray);line-height:1.4;}
-.gd-feat-text strong{display:block;color:var(--white);margin-bottom:2px;font-size:.88rem;}
-.gd-pricing{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:28px;}
-.gd-price-box{flex:1;min-width:190px;background:var(--card-bg);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:22px;text-align:center;}
-.gd-price-box.featured{border-color:rgba(204,17,17,.4);background:rgba(204,17,17,.07);}
-.gd-price-type{font-size:.68rem;letter-spacing:3px;text-transform:uppercase;color:var(--gray);margin-bottom:8px;}
-.gd-price-amount{font-family:'Bangers',cursive;font-size:2.3rem;color:var(--white);}
-.gd-price-box.featured .gd-price-amount{color:var(--red2);}
-.gd-price-note{font-size:.77rem;color:var(--gray);margin-top:4px;}
-.gd-price-btn{display:block;width:100%;margin-top:14px;padding:11px;border:none;border-radius:8px;cursor:pointer;font-family:'Bangers',cursive;font-size:.95rem;letter-spacing:2px;transition:all .2s;}
-.gd-price-box:not(.featured) .gd-price-btn{background:rgba(33,150,243,.15);color:var(--blue2);}
-.gd-price-box:not(.featured) .gd-price-btn:hover{background:rgba(33,150,243,.3);}
-.gd-price-box.featured .gd-price-btn{background:var(--red);color:var(--white);}
-.gd-price-box.featured .gd-price-btn:hover{background:var(--red2);}
-.gd-delivery{background:rgba(33,150,243,.06);border:1px solid rgba(33,150,243,.18);border-radius:10px;padding:16px 20px;font-size:.87rem;color:var(--gray);line-height:1.65;}
-.gd-delivery strong{color:var(--blue2);}
-
-
-/* CARRUSEL NOTICIAS HOME */
-.news-carousel-wrap{width:100%;max-width:1100px;margin:0 auto;padding:0 20px;animation:fadeUp .6s .55s ease both;}
-.news-carousel-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px;}
-.news-carousel-title{font-family:'Bangers',cursive;font-size:clamp(1.4rem,3vw,2rem);letter-spacing:3px;}
-.news-carousel-link{font-size:.85rem;color:var(--blue2);cursor:pointer;text-decoration:underline;background:none;border:none;font-family:'Nunito',sans-serif;}
-.news-carousel-link:hover{color:var(--white);}
-.carousel-track-outer{overflow:hidden;border-radius:14px;position:relative;}
-.carousel-track{display:flex;gap:0;transition:transform .5s cubic-bezier(.4,0,.2,1);will-change:transform;}
-.carousel-slide{min-width:100%;position:relative;cursor:pointer;border-radius:14px;overflow:hidden;}
-.carousel-slide img{width:100%;height:340px;object-fit:cover;display:block;border-radius:14px;}
-@media(max-width:600px){.carousel-slide img{height:200px;}}
-.carousel-overlay{position:absolute;bottom:0;left:0;right:0;padding:20px 24px;background:linear-gradient(to top,rgba(5,5,15,.95) 0%,transparent 100%);}
-.carousel-badge{display:inline-block;font-size:.6rem;letter-spacing:3px;text-transform:uppercase;background:rgba(171,71,188,.3);border:1px solid rgba(171,71,188,.5);color:#ce93d8;padding:3px 12px;border-radius:999px;margin-bottom:8px;}
-.carousel-slide-title{font-family:'Bangers',cursive;font-size:clamp(1rem,2.5vw,1.5rem);letter-spacing:2px;color:var(--white);margin-bottom:4px;}
-.carousel-slide-sub{font-size:.82rem;color:var(--gray);}
-.carousel-dots{display:flex;gap:8px;justify-content:center;margin-top:14px;}
-.carousel-dot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.25);cursor:pointer;transition:all .3s;border:none;}
-.carousel-dot.active{background:var(--red2);transform:scale(1.3);}
-.carousel-arrows{display:flex;gap:8px;}
-.carousel-arrow{width:34px;height:34px;border-radius:50%;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.05);color:var(--white);font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;}
-.carousel-arrow:hover{background:var(--red);border-color:var(--red);}
-
-/* FOOTER */
-footer{background:rgba(3,3,8,.98);border-top:1px solid rgba(204,17,17,.18);padding:40px 20px 24px;text-align:center;position:relative;z-index:1;}
-
-/* BOTÓN FLOTANTE WHATSAPP */
-.wa-float{position:fixed;bottom:24px;right:24px;z-index:9999;display:flex;align-items:center;gap:10px;background:#25d366;color:#fff;font-family:'Bangers',cursive;font-size:1rem;letter-spacing:2px;padding:13px 20px 13px 16px;border-radius:50px;box-shadow:0 6px 28px rgba(37,211,102,.45);text-decoration:none;transition:all .25s;animation:waPulse 2.5s ease-in-out infinite;}
-.wa-float:hover{background:#1ebe5d;transform:translateY(-3px);box-shadow:0 10px 36px rgba(37,211,102,.6);}
-.wa-float svg{width:26px;height:26px;flex-shrink:0;}
-@keyframes waPulse{0%,100%{box-shadow:0 6px 28px rgba(37,211,102,.45);}50%{box-shadow:0 6px 38px rgba(37,211,102,.75),0 0 0 8px rgba(37,211,102,.12);}}
-.footer-logo{font-family:'Bangers',cursive;font-size:1.2rem;letter-spacing:3px;margin-bottom:5px;}
-.footer-logo span{color:var(--red2);}
-footer p{color:var(--gray);font-size:.83rem;margin-bottom:3px;}
-.footer-line{width:38px;height:2px;background:linear-gradient(90deg,var(--red),var(--blue));margin:16px auto 13px;border-radius:2px;}
+  /* Responsive */
+  @media(max-width:600px){
+    .wa-btn{ display:none; }
+    .wa-float{ display:flex; }
+  }
 </style>
 </head>
 <body>
+
 <div class="bg"></div>
-<div class="particles" id="ptcl"></div>
+<div class="dots"></div>
 
-<!-- NAV -->
-<nav>
-  <div class="nav-logo"><img src="logo.png" alt="El R3ddy Interactive Games"></div>
-  <div class="nav-links">
-    <button class="nav-btn active" onclick="go('home',this)">Inicio</button>
-    <button class="nav-btn" onclick="go('juegos',this)">Juegos</button>
-    <button class="nav-btn" onclick="go('noticias',this)">Noticias</button>
-    <button class="nav-btn" onclick="go('faq',this)">FAQ</button>
-    <button class="nav-btn" onclick="go('comprar',this)" style="color:var(--red2)">Comprar</button>
-  </div>
-  <button id="hmb" onclick="var m=document.getElementById('mobmenu');m.style.display=m.style.display==='flex'?'none':'flex'" style="display:none;flex-direction:column;gap:5px;cursor:pointer;background:none;border:none;padding:8px;">
-    <span style="display:block;width:26px;height:3px;background:#fff;border-radius:2px"></span>
-    <span style="display:block;width:26px;height:3px;background:#fff;border-radius:2px"></span>
-    <span style="display:block;width:26px;height:3px;background:#fff;border-radius:2px"></span>
-  </button>
-</nav>
-<div id="mobmenu" style="display:none;position:fixed;top:68px;left:0;right:0;z-index:299;background:rgba(5,5,15,.98);border-bottom:2px solid #CC1111;flex-direction:column;">
-  <button onclick="go('home',null);document.getElementById('mobmenu').style.display='none'" style="padding:16px 24px;background:none;border:none;border-bottom:1px solid rgba(255,255,255,.07);color:#b0bec5;font-family:'Bangers',cursive;font-size:1.1rem;letter-spacing:2px;text-align:left;cursor:pointer">Inicio</button>
-  <button onclick="go('juegos',null);document.getElementById('mobmenu').style.display='none'" style="padding:16px 24px;background:none;border:none;border-bottom:1px solid rgba(255,255,255,.07);color:#b0bec5;font-family:'Bangers',cursive;font-size:1.1rem;letter-spacing:2px;text-align:left;cursor:pointer">Juegos</button>
-  <button onclick="go('noticias',null);document.getElementById('mobmenu').style.display='none'" style="padding:16px 24px;background:none;border:none;border-bottom:1px solid rgba(255,255,255,.07);color:#b0bec5;font-family:'Bangers',cursive;font-size:1.1rem;letter-spacing:2px;text-align:left;cursor:pointer">Noticias</button>
-  <button onclick="go('faq',null);document.getElementById('mobmenu').style.display='none'" style="padding:16px 24px;background:none;border:none;border-bottom:1px solid rgba(255,255,255,.07);color:#b0bec5;font-family:'Bangers',cursive;font-size:1.1rem;letter-spacing:2px;text-align:left;cursor:pointer">FAQ</button>
-  <button onclick="go('comprar',null);document.getElementById('mobmenu').style.display='none'" style="padding:16px 24px;background:none;border:none;color:#ff2222;font-family:'Bangers',cursive;font-size:1.1rem;letter-spacing:2px;text-align:left;cursor:pointer">Comprar</button>
-</div>
+<div class="container">
 
-<!-- ══ HOME ══ -->
-<div id="page-home" class="page active">
-  <!-- CARRUSEL NOTICIAS -->
-  <div class="news-carousel-wrap" style="padding-top:20px;">
-    <div class="news-carousel-header">
-      <div>
-        <div class="section-tag" style="margin-bottom:6px;">Lo Último</div>
-        <span class="news-carousel-title">NOTICIAS</span>
-      </div>
-      <div style="display:flex;align-items:center;gap:14px;">
-        <div class="carousel-arrows">
-          <button class="carousel-arrow" onclick="carouselPrev()">&#8249;</button>
-          <button class="carousel-arrow" onclick="carouselNext()">&#8250;</button>
-        </div>
-        <button class="news-carousel-link" onclick="go('noticias',null)">Ver todas →</button>
-      </div>
-    </div>
-    <div class="carousel-track-outer">
-      <div class="carousel-track" id="carouselTrack">
-        <div class="carousel-slide" onclick="openGame('survivor')">
-          <img src="slide1.png" alt="Survivor Rumble" style="object-fit:cover;background:linear-gradient(135deg,#0a0f1a,#1a0505);">
-          <div class="carousel-overlay">
-            <div class="carousel-badge">🔥 ¡Ya Disponible!</div>
-            <div class="carousel-slide-title">Survivor Rumble — ¡Ya disponible!</div>
-            <div class="carousel-slide-sub">El reality show interactivo más épico del catálogo. ¡Cómpralo hoy! →</div>
-          </div>
-        </div>
-        <div class="carousel-slide" onclick="openGame('survivor')">
-          <img src="slide2.png" alt="¿Qué equipo ganará?" style="object-fit:cover;background:linear-gradient(135deg,#0d0020,#200000);">
-          <div class="carousel-overlay">
-            <div class="carousel-badge" style="background:rgba(204,17,17,.4);border-color:rgba(204,17,17,.6);color:#fff;">🔴🔵 Equipos</div>
-            <div class="carousel-slide-title">¿Qué equipo ganará? R3D o BLU3</div>
-            <div class="carousel-slide-sub">Dos equipos, una sola victoria. Tu chat elige al campeón →</div>
-          </div>
-        </div>
-        <div class="carousel-slide" onclick="go('comprar',null)">
-          <img src="slide3.png" alt="3 competencias" style="object-fit:cover;background:linear-gradient(135deg,#0a1500,#150a00);">
-          <div class="carousel-overlay">
-            <div class="carousel-badge" style="background:rgba(255,165,0,.3);border-color:rgba(255,165,0,.5);color:#ffaa00;">🏆 Formato</div>
-            <div class="carousel-slide-title">3 Competencias · 2 Eliminaciones · 1 Equipo Ganador 🔥🎮</div>
-            <div class="carousel-slide-sub">El show más completo para tu TikTok Live →</div>
-          </div>
-        </div>
-        <div class="carousel-slide" onclick="go('comprar',null)">
-          <img src="slide4.png" alt="Desarrollamos tu videojuego" style="object-fit:cover;background:linear-gradient(135deg,#08080f,#0a0a1a);">
-          <div class="carousel-overlay">
-            <div class="carousel-badge" style="background:rgba(33,150,243,.3);border-color:rgba(33,150,243,.5);color:#90caf9;">💡 Desarrollo a la Medida</div>
-            <div class="carousel-slide-title">DESARROLLAMOS TU VIDEOJUEGO O TU APLICACIÓN INTERACTIVA PARA TIKTOK. ¡CONTÁCTANOS! 🎮🔥</div>
-            <div class="carousel-slide-sub">Cuéntanos tu idea — la hacemos realidad →</div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <div class="carousel-dots" id="carouselDots">
-      <button class="carousel-dot active" onclick="carouselGo(0)"></button>
-      <button class="carousel-dot" onclick="carouselGo(1)"></button>
-      <button class="carousel-dot" onclick="carouselGo(2)"></button>
-      <button class="carousel-dot" onclick="carouselGo(3)"></button>
-    </div>
-  </div>
+  <!-- Imagen de comunicado offline -->
+  <img
+    class="main-img"
+    src="comunicado.png"
+    alt="El R3ddy – Sitio en mantenimiento"
+  >
 
-  <div class="hero">
-    <img src="logo.png" alt="El R3ddy Interactive Games" class="hero-logo">
-    <p class="hero-sub">Juegos Interactivos para Streamers</p>
-    <p class="hero-desc">Haz que tu comunidad sea parte del juego. Tus espectadores participan en tiempo real — comentarios, likes y regalos controlan todo.</p>
-    <div class="hero-btns">
-      <button class="btn-red" onclick="go('juegos',null)">VER JUEGOS</button>
-      <button class="btn-outline" onclick="go('comprar',null)">COMPRAR AHORA</button>
-    </div>
-    <div class="promo-banner">
-      <span class="promo-emoji">🔥</span>
-      <div>
-        <div class="promo-text">PROMO — 2 JUEGOS POR $35 USD</div>
-        <div class="promo-sub">Elige cualquier 2 versiones base · Oferta por tiempo limitado</div>
-      </div>
-      <button class="btn-gold" onclick="go('comprar',null)">¡QUIERO LA PROMO!</button>
-    </div>
-  </div>
+  <!-- Botón WhatsApp (desktop) -->
+  <a
+    class="wa-btn"
+    href="https://wa.me/524442057812?text=Hola%2C%20me%20interesa%20saber%20m%C3%A1s%20sobre%20los%20juegos%20interactivos%20de%20El%20R3ddy%20Interactive%20Games%20%F0%9F%8E%AE"
+    target="_blank"
+    rel="noopener"
+  >
+    <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+      <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+    </svg>
+    CONTÁCTANOS POR WHATSAPP
+  </a>
 
 </div>
 
-<!-- ══ JUEGOS ══ -->
-<div id="page-juegos" class="page">
-  <div class="section">
-    <div class="container">
-      <div class="section-header">
-        <div class="section-tag">Catálogo</div>
-        <h2 class="section-title">Nuestros Juegos</h2>
-      </div>
-      <div class="games-grid">
-
-        <!-- Survivor Rumble -->
-        <div class="game-card" onclick="openGame('survivor')">
-          <span class="game-badge new">🏝️ NUEVO</span>
-          <div class="game-thumb" style="background:linear-gradient(135deg,#0a0f1a,#1a0a0a);">
-            <img src="Survivor_Rumble.png" alt="Survivor Rumble">
-          </div>
-          <div class="game-body">
-            <h3 class="game-title">Survivor Rumble</h3>
-            <p class="game-desc">Reality show interactivo. Equipo Rojo vs Equipo Azul. 5 minijuegos, eliminaciones en vivo y un solo campeón. Tu chat decide todo.</p>
-            <div class="game-tags"><span class="tag">Equipos</span><span class="tag">Supervivencia</span><span class="tag">Multijuego</span></div>
-            <div class="pricing-row">
-              <div class="price-box" onclick="event.stopPropagation();go('comprar',null)"><p class="price-type">Base</p><p class="price-amount">$20</p><p class="price-small">USD</p><span class="price-cta">Comprar →</span></div>
-              <div class="price-box featured" onclick="event.stopPropagation();go('comprar',null)"><p class="price-type">Personalizado</p><p class="price-amount">$40</p><p class="price-small">USD</p><span class="price-cta">Comprar →</span></div>
-            </div>
-            <button class="view-more-btn">📖 VER DETALLES COMPLETOS + VIDEO</button>
-          </div>
-        </div>
-
-        <!-- Squid Stream -->
-        <div class="game-card" onclick="openGame('squid')">
-          <span class="game-badge hot">🔥 Más Vendido</span>
-          <div class="game-thumb" style="background:linear-gradient(135deg,#0d0d1a,#1a0505);">
-            <img src="game_squid.png" alt="Squid Stream">
-          </div>
-          <div class="game-body">
-            <h3 class="game-title">Squid Stream</h3>
-            <p class="game-desc">El juego del calamar en tu live. Tus espectadores compiten en desafíos épicos. El chat decide quién sobrevive.</p>
-            <div class="game-tags"><span class="tag">Competencia</span><span class="tag">Multijugador</span><span class="tag">Supervivencia</span></div>
-            <div class="pricing-row">
-              <div class="price-box" onclick="event.stopPropagation();go('comprar',null)"><p class="price-type">Base</p><p class="price-amount">$20</p><p class="price-small">USD</p><span class="price-cta">Comprar →</span></div>
-              <div class="price-box featured" onclick="event.stopPropagation();go('comprar',null)"><p class="price-type">Personalizado</p><p class="price-amount">$40</p><p class="price-small">USD</p><span class="price-cta">Comprar →</span></div>
-            </div>
-            <button class="view-more-btn">📖 VER DETALLES COMPLETOS + VIDEO</button>
-          </div>
-        </div>
-
-        <!-- Zombie Slug -->
-        <div class="game-card" onclick="openGame('zombie')">
-          <span class="game-badge">⚡ Popular</span>
-          <div class="game-thumb" style="background:linear-gradient(135deg,#0a1a0a,#1a1500);">
-            <img src="game_zombie.png" alt="Zombie Slug">
-          </div>
-          <div class="game-body">
-            <h3 class="game-title">Zombie Slug</h3>
-            <p class="game-desc">Defiende tu base de oleadas de zombies. Los regalos de tus viewers invocan armas y poderes especiales. Bosses épicos.</p>
-            <div class="game-tags"><span class="tag">Acción</span><span class="tag">Oleadas</span><span class="tag">Boss Fights</span></div>
-            <div class="pricing-row">
-              <div class="price-box" onclick="event.stopPropagation();go('comprar',null)"><p class="price-type">Base</p><p class="price-amount">$20</p><p class="price-small">USD</p><span class="price-cta">Comprar →</span></div>
-              <div class="price-box featured" onclick="event.stopPropagation();go('comprar',null)"><p class="price-type">Personalizado</p><p class="price-amount">$40</p><p class="price-small">USD</p><span class="price-cta">Comprar →</span></div>
-            </div>
-            <button class="view-more-btn">📖 VER DETALLES COMPLETOS + VIDEO</button>
-          </div>
-        </div>
-
-        <!-- TacoManía -->
-        <div class="game-card" onclick="openGame('taco')">
-          <span class="game-badge new">🌮 Clásico</span>
-          <div class="game-thumb" style="background:linear-gradient(135deg,#1a0e00,#2a1200);">
-            <img src="game_taco.png" alt="TacoManía">
-          </div>
-          <div class="game-body">
-            <h3 class="game-title">TacoManía</h3>
-            <p class="game-desc">Juego rítmico de cocina. Los comentarios y gifts de tus viewers alimentan el poder de tu personaje para combos épicos.</p>
-            <div class="game-tags"><span class="tag">Ritmo</span><span class="tag">Cocina</span><span class="tag">Interactivo</span></div>
-            <div class="pricing-row">
-              <div class="price-box" onclick="event.stopPropagation();go('comprar',null)"><p class="price-type">Base</p><p class="price-amount">$20</p><p class="price-small">USD</p><span class="price-cta">Comprar →</span></div>
-              <div class="price-box featured" onclick="event.stopPropagation();go('comprar',null)"><p class="price-type">Personalizado</p><p class="price-amount">$40</p><p class="price-small">USD</p><span class="price-cta">Comprar →</span></div>
-            </div>
-            <button class="view-more-btn">📖 VER DETALLES COMPLETOS + VIDEO</button>
-          </div>
-        </div>
-
-      </div>
-
-      <!-- PROMO -->
-      <div class="promo-card">
-        <h3>🔥 PROMO — 2 JUEGOS POR $35 USD</h3>
-        <p>Ahorra $5 USD — elige cualquier 2 versiones base de nuestro catálogo</p>
-        <div class="promo-games">
-          <span class="promo-game-tag">🦑 Squid Stream</span>
-          <span class="promo-game-tag">🧟 Zombie Slug</span>
-          <span class="promo-game-tag">🌮 TacoManía</span>
-          <span class="promo-game-tag">🏝️ Survivor Rumble</span>
-        </div>
-        <div><span class="promo-price">$35 USD</span><span class="promo-orig">$40 USD</span></div>
-        <br>
-        <button class="btn-gold" onclick="go('comprar',null)">OBTENER PROMO</button>
-      </div>
-
-      <!-- CÓMO FUNCIONA -->
-      <div class="section-header" style="margin-top:80px;">
-        <div class="section-tag">El proceso</div>
-        <h2 class="section-title">¿Cómo Funciona?</h2>
-      </div>
-      <div class="steps">
-        <div class="step"><div class="step-num">01</div><div class="step-icon">🛒</div><h3 class="step-title">Elige tu Juego</h3><p class="step-desc">Selecciona el juego que más le guste a tu comunidad, base o personalizado con tu imagen.</p></div>
-        <div class="step"><div class="step-num">02</div><div class="step-icon">💳</div><h3 class="step-title">Paga Directo</h3><p class="step-desc">PayPal o transferencia bancaria directa. Sin comisiones raras ni intermediarios.</p></div>
-        <div class="step"><div class="step-num">03</div><div class="step-icon">📦</div><h3 class="step-title">Recibe tu Juego</h3><p class="step-desc">Instalador profesional para Windows con tu licencia única vinculada a tu PC.</p></div>
-        <div class="step"><div class="step-num">04</div><div class="step-icon">🚀</div><h3 class="step-title">¡A Streamear!</h3><p class="step-desc">Conecta tu cuenta y listo. Tu chat controla el juego en tiempo real desde el primer segundo.</p></div>
-      </div>
-
-      <!-- BONUS -->
-      <div class="bonus-box">
-        <h4>🎁 INCLUIDO EN CADA COMPRA</h4>
-        <div class="bonus-list">
-          <div class="bonus-item"><span>🎬</span><span><strong>Video Tutorial de Instalación</strong><br>Guía paso a paso en video para que todo funcione desde el primer intento.</span></div>
-          <div class="bonus-item"><span>📱</span><span><strong>App de Soporte Stream to Earn</strong><br>App con todos los códigos y configuraciones para tu juego.</span></div>
-          <div class="bonus-item"><span>🤝</span><span><strong>Seguimiento de Instalación</strong><br>El R3ddy te da seguimiento personal para que todo quede perfecto.</span></div>
-          <div class="bonus-item"><span>🔑</span><span><strong>Licencia de Por Vida</strong><br>Pagas una vez, es tuyo para siempre. Sin suscripciones.</span></div>
-        </div>
-      </div>
-
-    </div>
-  </div>
-</div>
-
-<!-- ══ DETALLE DE JUEGO ══ -->
-<div id="page-game" class="page">
-  <div class="game-detail">
-    <button class="gd-back" onclick="go('juegos',null)">← Volver a Juegos</button>
-    <div id="gd-content"></div>
-  </div>
-</div>
-
-<!-- ══ NOTICIAS ══ -->
-<div id="page-noticias" class="page">
-  <div class="section">
-    <div class="container">
-      <div class="section-header">
-        <div class="section-tag">Últimas novedades</div>
-        <h2 class="section-title">Noticias y Actualizaciones</h2>
-      </div>
-      <div class="news-grid">
-
-        <div class="news-card"><div class="ns ns-r"></div><div class="nb"><div class="nc cr">🏝️ Lanzamiento</div><h3 class="ntitle">Survivor Rumble — ¡Ya disponible!</h3><p class="ntext">El juego interactivo donde el equipo R3D y el equipo BLU3 se enfrentan en una competencia para demostrar quién es el mejor. ¡Ya está disponible! 🔥🎮</p><p class="ndate">📅 Abril 2025</p></div></div>
-
-        <div class="news-card"><div class="ns ns-r"></div><div class="nb"><div class="nc cr">🎮 Nuevo Juego</div><h3 class="ntitle">Supervivencia — Competencia por Equipos en Desarrollo</h3><p class="ntext">Equipo Azul vs Equipo Rojo. 5 desafíos, un solo ganador. El próximo gran evento de streaming interactivo ya está en camino.</p><p class="ndate">📅 Marzo 2025</p></div></div>
-
-        <div class="news-card"><div class="ns ns-o"></div><div class="nb"><div class="nc co">🏆 Hito</div><h3 class="ntitle">Primeras ventas completadas — ¡Gracias comunidad!</h3><p class="ntext">El catálogo de El R3ddy Interactive Games ya está en manos de streamers reales. El mercado habló y los juegos están volando.</p><p class="ndate">📅 Marzo 2025</p></div></div>
-
-        <div class="news-card"><div class="ns ns-b"></div><div class="nb"><div class="nc cb">⚡ Actualización</div><h3 class="ntitle">Zombie Slug — Sistema de licencias mejorado</h3><p class="ntext">Activación por hardware e instalador NSIS profesional. Tu compra está 100% protegida y segura.</p><p class="ndate">📅 Febrero 2025</p></div></div>
-
-        <div class="news-card"><div class="ns ns-g"></div><div class="nb"><div class="nc cg">🌮 TacoManía</div><h3 class="ntitle">TacoManía — Optimización de video y rendimiento</h3><p class="ntext">Videos re-encodificados a menor bitrate. Resultado: 75–91% menos peso sin perder calidad visual. Adiós al lag en stream.</p><p class="ndate">📅 Enero 2025</p></div></div>
-
-        <div class="news-card"><div class="ns ns-p"></div><div class="nb"><div class="nc cp">🎮 Próximamente</div><h3 class="ntitle">¡Juegos Interactivos de Roblox en Desarrollo!</h3><p class="ntext">Estamos trabajando en juegos interactivos para streamers de Roblox. ¡Pronto habrá grandes sorpresas para la comunidad de Roblox!</p><p class="ndate">📅 2025 — Muy pronto</p></div></div>
-
-      </div>
-
-      <div class="section-header" style="margin-top:70px;">
-        <div class="section-tag">Roadmap</div>
-        <h2 class="section-title">Próximos Juegos</h2>
-      </div>
-      <div class="upcoming-grid">
-        <div class="uc"><span class="ue">🏝️</span><h3 class="ut">Survivor Rumble</h3><p class="ud">Reality show interactivo. Equipo Azul vs Equipo Rojo. 5 minijuegos. El chat elige al ganador.</p><span class="sb" style="background:rgba(0,170,68,.15);color:#00cc55;border:1px solid rgba(0,170,68,.4);">✅ Disponible</span></div>
-        <div class="uc"><span class="ue">🦁</span><h3 class="ut">Zoo Interactivo</h3><p class="ud">Construye y administra un zoológico con tu comunidad. Gifts = animales raros y mejoras especiales.</p><span class="sb s-soon">Próximamente</span></div>
-        <div class="uc"><span class="ue">🎮</span><h3 class="ut">Roblox Games</h3><p class="ud">Juegos interactivos diseñados para streamers de Roblox. ¡Nueva audiencia, nueva oportunidad!</p><span class="sb s-soon">En Proceso</span></div>
-        <div class="uc"><span class="ue">🎲</span><h3 class="ut">???</h3><p class="ud">Proyecto secreto en proceso. ¡Síguenos en TikTok para ser el primero en enterarte!</p><span class="sb s-vote">En Desarrollo</span></div>
-      </div>
-
-    </div>
-  </div>
-</div>
-
-<!-- ══ FAQ ══ -->
-<div id="page-faq" class="page">
-  <div class="section">
-    <div class="container">
-      <div class="section-header">
-        <div class="section-tag">Preguntas Frecuentes</div>
-        <h2 class="section-title">Resolvemos Tus Dudas</h2>
-      </div>
-      <div class="faq-list">
-
-        <div class="faq-item">
-          <div class="faq-q" onclick="tfaq(this)">¿En qué plataformas funcionan los juegos?<span class="faq-icon">+</span></div>
-          <div class="faq-a"><div class="faq-a-inner">Los juegos funcionan en Windows (7/10/11). Incluyen instalador tipo .exe — doble clic, siguiente, siguiente, listo. No necesitas conocimientos técnicos.</div></div>
-        </div>
-
-        <div class="faq-item">
-          <div class="faq-q" onclick="tfaq(this)">¿En cuánto tiempo recibo mi juego?<span class="faq-icon">+</span></div>
-          <div class="faq-a"><div class="faq-a-inner"><strong>Versión base:</strong> mismo día o al día siguiente de confirmar el pago.<br><br><strong>Versión personalizada (tu personaje):</strong> 1 a 3 días hábiles.<br><br><strong>Juego personalizado desde tu idea:</strong> base de <strong>7 días hábiles</strong>, podría extenderse dependiendo de la complejidad de tu concepto. Te avisamos en todo momento del avance.</div></div>
-        </div>
-
-        <div class="faq-item">
-          <div class="faq-q" onclick="tfaq(this)">¿Qué diferencia hay entre versión base y personalizada?<span class="faq-icon">+</span></div>
-          <div class="faq-a"><div class="faq-a-inner">La <strong>versión base</strong> incluye el juego con los personajes originales. La <strong>versión personalizada</strong> reemplaza el personaje principal con TU imagen — tu avatar de TikTok, tu logo o tu OC. Es tu marca dentro del juego.</div></div>
-        </div>
-
-        <div class="faq-item">
-          <div class="faq-q" onclick="tfaq(this)">¿Qué es Stream to Earn y lo necesito?<span class="faq-icon">+</span></div>
-          <div class="faq-a"><div class="faq-a-inner">Nuestros juegos usan <strong>Stream to Earn</strong> para detectar las donaciones, regalos, comentarios y likes de tu live y traducirlos en acciones dentro del juego.<br><br>Dependiendo del juego que compres, puede funcionar con la <strong>versión gratuita</strong> de Stream to Earn o requerir la <strong>versión de paga</strong>. Te informamos exactamente qué versión necesitas al momento de tu compra.</div></div>
-        </div>
-
-        <div class="faq-item">
-          <div class="faq-q" onclick="tfaq(this)">¿La licencia es de por vida?<span class="faq-icon">+</span></div>
-          <div class="faq-a"><div class="faq-a-inner">Sí. La licencia es vitalicia y está vinculada a tu hardware. Sin mensualidades ni suscripciones. Pagas una vez y el juego es tuyo para siempre.</div></div>
-        </div>
-
-        <div class="faq-item">
-          <div class="faq-q" onclick="tfaq(this)">¿Puedo instalar en más de una PC?<span class="faq-icon">+</span></div>
-          <div class="faq-a"><div class="faq-a-inner">La licencia estándar cubre 1 computadora. Si cambias de equipo o necesitas una segunda instalación, contáctanos y lo resolvemos sin problema.</div></div>
-        </div>
-
-        <div class="faq-item">
-          <div class="faq-q" onclick="tfaq(this)">¿Qué soporte incluye mi compra?<span class="faq-icon">+</span></div>
-          <div class="faq-a"><div class="faq-a-inner">Cada compra incluye: <strong>🎬 Video tutorial de instalación</strong>, <strong>📱 App de soporte Stream to Earn</strong> con todos los códigos y configuraciones de tu juego, y <strong>🤝 Seguimiento personal</strong> de El R3ddy para asegurarse de que todo funcione perfecto.</div></div>
-        </div>
-
-        <div class="faq-item">
-          <div class="faq-q" onclick="tfaq(this)">¿Cómo pago?<span class="faq-icon">+</span></div>
-          <div class="faq-a"><div class="faq-a-inner">Aceptamos <strong>PayPal</strong> (recomendado para compradores internacionales) y <strong>transferencia bancaria directa</strong>. Escríbenos por TikTok DM y te enviamos los datos de pago al momento.</div></div>
-        </div>
-
-        <div class="faq-item">
-          <div class="faq-q" onclick="tfaq(this)">¿Los juegos funcionan con cualquier cantidad de viewers?<span class="faq-icon">+</span></div>
-          <div class="faq-a"><div class="faq-a-inner">Sí. Los juegos están optimizados para manejar streams de cualquier tamaño, desde comunidades pequeñas hasta miles de espectadores simultáneos.</div></div>
-        </div>
-
-        <div class="faq-item">
-          <div class="faq-q" onclick="tfaq(this)">¿Puedo pedir un juego completamente personalizado con mi idea?<span class="faq-icon">+</span></div>
-          <div class="faq-a"><div class="faq-a-inner">¡Claro! Además de personalizar el personaje, podemos construir juegos desde cero basados en tu concepto y mecánicas. El desarrollo base es de 7 días hábiles y puede extenderse según la complejidad. ¡Contáctanos y platicamos!</div></div>
-        </div>
-
-      </div>
-    </div>
-  </div>
-</div>
-
-<!-- ══ COMPRAR ══ -->
-<div id="page-comprar" class="page">
-  <div class="section">
-    <div class="container">
-      <div class="section-header">
-        <div class="section-tag">Adquiere tu juego</div>
-        <h2 class="section-title">¿Listo para Comprar?</h2>
-      </div>
-
-      <!-- CHAT WIDGET -->
-      <div id="chatbox" style="max-width:540px;margin:0 auto 48px;background:rgba(15,20,32,0.97);border:1px solid rgba(204,17,17,.3);border-radius:16px;overflow:hidden;box-shadow:0 8px 40px rgba(0,0,0,.5);">
-        <div style="background:linear-gradient(135deg,rgba(204,17,17,.2),rgba(26,111,196,.2));padding:16px 20px;display:flex;align-items:center;gap:12px;border-bottom:1px solid rgba(255,255,255,.07);">
-          <div style="width:38px;height:38px;background:var(--red);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.2rem;">🎮</div>
-          <div>
-            <div style="font-family:'Bangers',cursive;letter-spacing:2px;font-size:1rem;">El R3ddy Interactive Games</div>
-            <div style="font-size:.72rem;color:#4caf50;">● En línea — te respondemos rápido</div>
-          </div>
-        </div>
-        <div id="chat-messages" style="padding:20px;display:flex;flex-direction:column;gap:12px;min-height:200px;"></div>
-        <div id="chat-options" style="padding:0 20px 20px;display:flex;flex-direction:column;gap:8px;"></div>
-      </div>
-
-      <style>
-        .chat-bubble{padding:12px 16px;border-radius:12px;font-size:.9rem;line-height:1.5;max-width:85%;animation:fadeUp .3s ease both;}
-        .chat-bot{background:rgba(255,255,255,.07);border-radius:12px 12px 12px 0;align-self:flex-start;}
-        .chat-user{background:rgba(204,17,17,.2);border:1px solid rgba(204,17,17,.3);border-radius:12px 12px 0 12px;align-self:flex-end;text-align:right;}
-        .chat-opt{padding:11px 18px;background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.12);border-radius:8px;color:var(--white);font-size:.88rem;font-weight:700;cursor:pointer;text-align:left;transition:all .2s;}
-        .chat-opt:hover{background:rgba(204,17,17,.12);border-color:var(--red);}
-      </style>
-
-      <script>
-        var chatData={device:null,game:null,version:null};
-        var chatMsgs=document.getElementById('chat-messages');
-        var chatOpts=document.getElementById('chat-options');
-
-        function addBot(msg,delay){
-          delay=delay||0;
-          setTimeout(function(){
-            var b=document.createElement('div');
-            b.className='chat-bubble chat-bot';
-            b.innerHTML=msg;
-            chatMsgs.appendChild(b);
-            chatMsgs.scrollTop=chatMsgs.scrollHeight;
-          },delay);
-        }
-
-        function addUser(msg){
-          var b=document.createElement('div');
-          b.className='chat-bubble chat-user';
-          b.textContent=msg;
-          chatMsgs.appendChild(b);
-          chatMsgs.scrollTop=chatMsgs.scrollHeight;
-        }
-
-        function clearOpts(){chatOpts.innerHTML='';}
-
-        function showOpts(opts){
-          clearOpts();
-          opts.forEach(function(o){
-            var btn=document.createElement('button');
-            btn.className='chat-opt';
-            btn.textContent=o.label;
-            btn.onclick=function(){o.action();};
-            chatOpts.appendChild(btn);
-          });
-        }
-
-        function step1(){
-          addBot('👋 ¡Hola! Gracias por tu interés en nuestros juegos interactivos.<br>Para ayudarte mejor, necesito hacerte unas preguntas rápidas.<br><br><strong>¿Cuentas con computadora o celular?</strong>');
-          showOpts([
-            {label:'💻 Computadora',action:function(){addUser('Computadora');chatData.device='PC';clearOpts();step2();}},
-            {label:'📱 Celular',action:function(){addUser('Celular');chatData.device='Móvil';clearOpts();stepMobile();}}
-          ]);
-        }
-
-        function stepMobile(){
-          addBot('📱 Gracias por tu respuesta.<br><br>Lamentablemente, nuestros juegos <strong>no cuentan con soporte para dispositivos móviles</strong>, ya que utilizan aplicaciones externas como <strong>Stream to Earn</strong> para su funcionamiento, las cuales requieren una computadora.<br><br>Si en algún momento cuentas con una PC, con mucho gusto te atendemos. ¡Hasta pronto! 🎮',200);
-          clearOpts();
-        }
-
-        function step2(){
-          addBot('¡Perfecto! 💻<br><br><strong>¿Qué juego te interesa?</strong>',400);
-          setTimeout(function(){
-            showOpts([
-              {label:'🦑 Squid Stream',action:function(){addUser('Squid Stream');chatData.game='Squid Stream';clearOpts();step3();}},
-              {label:'🧟 Zombie Slug',action:function(){addUser('Zombie Slug');chatData.game='Zombie Slug';clearOpts();step3();}},
-              {label:'🌮 TacoManía',action:function(){addUser('TacoManía');chatData.game='TacoManía';clearOpts();step3();}},
-              {label:'🏝️ Survivor Rumble',action:function(){addUser('Survivor Rumble');chatData.game='Survivor Rumble';clearOpts();step3();}},
-              {label:'✨ Juego Nuevo (personalizado)',action:function(){addUser('Juego Nuevo');chatData.game='Juego Nuevo';clearOpts();stepNuevo();}}
-            ]);
-          },800);
-        }
-
-        function step3(){
-          addBot('Excelente elección 🔥<br><br><strong>¿Prefieres la versión base o la versión personalizada?</strong><br><br>📦 <strong>Base</strong> — Personajes originales, entrega el mismo día<br>🎨 <strong>Personalizada</strong> — Con tu personaje, 1-3 días hábiles',400);
-          setTimeout(function(){
-            showOpts([
-              {label:'📦 Versión Base',action:function(){addUser('Versión Base');chatData.version='Base';clearOpts();stepPromo();}},
-              {label:'🎨 Versión Personalizada',action:function(){addUser('Versión Personalizada');chatData.version='Personalizada';clearOpts();stepPromo();}}
-            ]);
-          },800);
-        }
-
-        function stepPromo(){
-          addBot('¡Casi listo! 🎉<br><br><strong>¿Quieres aprovechar nuestra promoción?</strong><br><br>🎮 <strong>1 Juego</strong> — $20 USD<br>🔥 <strong>Promo 2 Juegos</strong> — $35 USD <span style="background:#ffd700;color:#000;padding:2px 8px;border-radius:4px;font-size:.8em;">¡Ahorras $5!</span>',400);
-          setTimeout(function(){
-            showOpts([
-              {label:'🎮 Solo 1 juego ($20 USD)',action:function(){addUser('1 Juego - $20 USD');chatData.promo='1 juego';clearOpts();stepFinal();}},
-              {label:'🔥 Promo 2 juegos ($35 USD)',action:function(){addUser('Promo 2 juegos - $35 USD');chatData.promo='Promo 2 juegos';clearOpts();stepGame2();}}
-            ]);
-          },800);
-        }
-
-        function stepGame2(){
-          var g1=chatData.game;
-          addBot('🔥 ¡Excelente! Elegiste la promo.<br><br><strong>¿Cuál sería tu segundo juego?</strong><br><br>(Recuerda que no puede ser el mismo que elegiste)',400);
-          setTimeout(function(){
-            var opts=[
-              {label:'🦑 Squid Stream',action:function(){addUser('Squid Stream');chatData.game2='Squid Stream';clearOpts();stepVersion2();}},
-              {label:'🧟 Zombie Slug',action:function(){addUser('Zombie Slug');chatData.game2='Zombie Slug';clearOpts();stepVersion2();}},
-              {label:'🌮 TacoManía',action:function(){addUser('TacoManía');chatData.game2='TacoManía';clearOpts();stepVersion2();}},
-              {label:'🏝️ Survivor Rumble',action:function(){addUser('Survivor Rumble');chatData.game2='Survivor Rumble';clearOpts();stepVersion2();}}
-            ];
-            // Remove the first game from options
-            opts=opts.filter(function(o){return o.label.indexOf(g1)<0;});
-            showOpts(opts);
-          },800);
-        }
-
-        function stepVersion2(){
-          addBot('¡Perfecto! 🎮<br><br><strong>¿La versión del segundo juego?</strong><br><br>📦 <strong>Base</strong> — Personajes originales, entrega el mismo día<br>🎨 <strong>Personalizada</strong> — Con tu personaje, 1-3 días hábiles',400);
-          setTimeout(function(){
-            showOpts([
-              {label:'📦 Versión Base',action:function(){addUser('Versión Base');chatData.version2='Base';clearOpts();stepFinal();}},
-              {label:'🎨 Versión Personalizada',action:function(){addUser('Versión Personalizada');chatData.version2='Personalizada';clearOpts();stepFinal();}}
-            ]);
-          },800);
-        }
-
-        function stepNuevo(){
-          addBot('¡Genial, un juego nuevo! 🚀<br><br>En un momento uno de nuestros asesores se pondrá en contacto contigo para terminar de generar tu pedido a la medida.<br><br>⏰ <strong>Horarios de servicio:</strong> Lunes a sábado de 12:00 PM a 10:00 PM<br><br>Presiona el botón para enviarnos tu solicitud por WhatsApp 👇',400);
-          setTimeout(function(){
-            chatData.version='Juego Nuevo';
-            showOpts([{label:'📲 Enviar solicitud por WhatsApp',action:function(){sendWhatsApp();}}]);
-          },800);
-        }
-
-        function stepFinal(){
-          addBot('¡Perfecto, ya tenemos todo! 🎉<br><br>Presiona el botón para enviarnos tu pedido por WhatsApp y cerramos todo en minutos 👇',400);
-          setTimeout(function(){
-            showOpts([{label:'📲 Enviar pedido por WhatsApp',action:function(){sendWhatsApp();}}]);
-          },800);
-        }
-
-        function isInAppBrowser(){
-          var ua=navigator.userAgent||'';
-          return /FBAN|FBAV|Instagram|BytedanceWebview|musical_ly|TikTok/i.test(ua);
-        }
-        function sendWhatsApp(){
-          var msg='';
-          if(chatData.game==='Juego Nuevo'){
-            msg='Hola, me interesa un *juego nuevo personalizado*.\n\nDispositivo: '+chatData.device+'\n\nQuedo en espera de que se pongan en contacto conmigo. ¡Gracias!';
-          } else {
-            var game2Line = (chatData.promo==='Promo 2 juegos' && chatData.game2) ? '\n\n🎮 *Juego 2:* '+chatData.game2+'\n📦 *Versión 2:* '+(chatData.version2||'Base') : '';
-            var pedidoLine = chatData.promo==='Promo 2 juegos' ? '\n💰 *Pedido:* Promo 2 juegos — $35 USD' : '\n💰 *Pedido:* 1 juego — $20 USD';
-            msg='Hola, me interesa adquirir lo siguiente:\n\n🎮 *Juego 1:* '+chatData.game+'\n📦 *Versión 1:* '+chatData.version+game2Line+pedidoLine+'\n💻 *Dispositivo:* '+chatData.device+'\n\nQuedo en espera de su respuesta. ¡Gracias!';
-          }
-          var url='https://wa.me/524442057812?text='+encodeURIComponent(msg);
-          if(isInAppBrowser()){
-            clearOpts();
-            var aviso=document.createElement('div');
-            aviso.style.cssText='background:rgba(255,215,0,.08);border:1px solid rgba(255,215,0,.3);border-radius:12px;padding:18px;text-align:center;margin-top:8px;';
-            aviso.innerHTML='<div style="font-size:1.4rem;margin-bottom:8px;">⚠️</div>'
-              +'<p style="font-family:Bangers,cursive;font-size:1rem;letter-spacing:1px;color:#ffd700;margin-bottom:8px;">ABRE EN TU NAVEGADOR</p>'
-              +'<p style="font-size:.83rem;color:#b0bec5;margin-bottom:14px;">TikTok bloquea WhatsApp. Copia este link y ábrelo en Safari o Chrome:</p>'
-              +'<div id="urlbox" style="background:rgba(0,0,0,.3);border-radius:8px;padding:10px;font-size:.78rem;color:#fff;word-break:break-all;margin-bottom:14px;">'+url+'</div>'
-              +'<button id="copybtn" onclick="this.textContent=\'✅ Copiado\';navigator.clipboard?navigator.clipboard.writeText(document.getElementById(\'urlbox\').textContent):prompt(\'Copia este link:\',document.getElementById(\'urlbox\').textContent)" style="padding:10px 20px;background:#CC1111;border:none;border-radius:8px;color:#fff;font-family:Bangers,cursive;font-size:.95rem;letter-spacing:2px;cursor:pointer;">COPIAR LINK</button>';
-            document.getElementById('chat-options').appendChild(aviso);
-          } else {
-            window.open(url,'_blank');
-          }
-        }
-
-        // Iniciar chat cuando la página cargue
-        setTimeout(function(){step1();},600);
-      </script>
-      <div style="max-width:540px;margin:0 auto;">
-        <div style="background:rgba(255,255,255,.03);border:1px solid rgba(255,255,255,.08);border-radius:12px;padding:18px 20px;margin-bottom:16px;">
-          <p style="font-size:.7rem;letter-spacing:2px;text-transform:uppercase;color:var(--gray);margin-bottom:12px;">💳 Métodos de pago aceptados</p>
-          <div style="display:flex;flex-direction:column;gap:10px;">
-            <div style="display:flex;align-items:center;gap:10px;">
-              <span>🇲🇽</span>
-              <div><strong style="display:block;font-size:.88rem;">México</strong><span style="color:var(--gray);font-size:.8rem;">Transferencia bancaria / SPEI · Sin comisiones</span></div>
-            </div>
-            <div style="display:flex;align-items:center;gap:10px;">
-              <span>🌎</span>
-              <div><strong style="display:block;font-size:.88rem;">Internacional</strong><span style="color:var(--gray);font-size:.8rem;">PayPal · Seguro para cualquier país</span></div>
-            </div>
-          </div>
-        </div>
-
-          <a href="https://www.tiktok.com/@el_r3ddy" class="buy-btn tt" target="_blank" style="display:flex;align-items:center;gap:14px;padding:17px 20px;border-radius:10px;text-decoration:none;margin-bottom:10px;">
-            <span style="font-size:1.8rem;">🎵</span>
-            <div><strong style="display:block;font-family:'Bangers',cursive;font-size:.88rem;letter-spacing:1.5px;">Síguenos en TikTok</strong><span style="font-size:.76rem;opacity:.7;">@el_r3ddy · Demos y novedades</span></div>
-          </a>
-          <a href="https://www.youtube.com/@el_r3ddy" class="buy-btn" style="display:flex;align-items:center;gap:14px;padding:17px 20px;border-radius:10px;text-decoration:none;background:rgba(255,0,0,0.07);border:1px solid #ff4444;color:#ff4444;" target="_blank">
-            <span style="font-size:1.8rem;">▶️</span>
-            <div><strong style="display:block;font-family:'Bangers',cursive;font-size:.88rem;letter-spacing:1.5px;">Mira cómo hago los juegos</strong><span style="font-size:.76rem;opacity:.7;">Canal de YouTube — El R3ddy</span></div>
-          </a>
-        </div>
-      </div>
-    </div>
-  </div>
-  </div>
-</div>
-
-<!-- BOTÓN FLOTANTE WHATSAPP -->
-<a class="wa-float" href="https://wa.me/524442057812?text=Hola%2C%20me%20interesa%20saber%20m%C3%A1s%20sobre%20los%20juegos%20interactivos%20de%20El%20R3ddy%20Interactive%20Games%20%F0%9F%8E%AE" target="_blank" rel="noopener">
+<!-- Botón flotante WhatsApp (móvil) -->
+<a
+  class="wa-float"
+  href="https://wa.me/524442057812?text=Hola%2C%20me%20interesa%20saber%20m%C3%A1s%20sobre%20los%20juegos%20interactivos%20de%20El%20R3ddy%20Interactive%20Games%20%F0%9F%8E%AE"
+  target="_blank"
+  rel="noopener"
+  aria-label="Contactar por WhatsApp"
+>
   <svg viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
     <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
   </svg>
-  CONTÁCTANOS
 </a>
 
-<!-- FOOTER -->
-<footer>
-  <div class="footer-logo">EL R<span>3</span>DDY INTERACTIVE GAMES</div>
-  <p>Juegos interactivos para streamers · Hecho en México 🇲🇽</p>
-  <div class="footer-line"></div>
-  <p style="font-size:.7rem;opacity:.3;">© 2025 El R3ddy Interactive Games · Todos los derechos reservados</p>
-</footer>
-
-<script>
-
-// CARRUSEL
-var _carIdx=0,_carTotal=4,_carTimer=null;
-function carouselGo(i){
-  _carIdx=i;
-  document.getElementById('carouselTrack').style.transform='translateX(-'+(_carIdx*100)+'%)';
-  document.querySelectorAll('.carousel-dot').forEach(function(d,j){d.classList.toggle('active',j===_carIdx);});
-  clearInterval(_carTimer);_carTimer=setInterval(carouselNext,4000);
-}
-function carouselNext(){carouselGo((_carIdx+1)%_carTotal);}
-function carouselPrev(){carouselGo((_carIdx-1+_carTotal)%_carTotal);}
-(function(){_carTimer=setInterval(carouselNext,4000);})();
-
-// particles
-(function(){
-  const c=document.getElementById('ptcl');
-  for(let i=0;i<22;i++){
-    const p=document.createElement('div');p.className='p';
-    const sz=1+Math.random()*2;
-    p.style.cssText=`width:${sz}px;height:${sz}px;background:${Math.random()>.5?'#cc1111':'#2196f3'};left:${Math.random()*100}%;animation-duration:${10+Math.random()*15}s;animation-delay:${Math.random()*10}s;`;
-    c.appendChild(p);
-  }
-})();
-
-// nav
-function go(id,btn){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.getElementById('page-'+id).classList.add('active');
-  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
-  if(btn)btn.classList.add('active');
-  window.scrollTo({top:0,behavior:'smooth'});
-  if(id==='encuesta'){
-    loadVotes();
-    if(localStorage.getItem('r3ddy_voted')){
-      voted=true;
-      setTimeout(()=>{
-        document.getElementById('pollOpts').classList.add('poll-revealed');
-        document.querySelectorAll('.poll-btn').forEach(b=>b.classList.add('voted'));
-        loadVotes();
-      },300);
-    }
-  }
-}
-
-// datos de juegos
-const games={
-  squid:{
-    logo:'game_squid.png',
-    title:'Squid Stream',
-    tagline:'El juego de supervivencia definitivo para tu live',
-    tags:['Competencia','Multijugador','Supervivencia','Stream to Earn'],
-    desc:`Squid Stream trae la intensidad de la competencia de supervivencia directamente a tu live. Tus viewers se convierten en concursantes, compitiendo en una serie de desafíos — todo controlado por comentarios, gifts y likes en tiempo real.\n\nComo anfitrión, tú controlas el ritmo. Los viewers escriben comandos para participar y sus gifts pueden salvar aliados o eliminar enemigos. Cada stream se convierte en un evento único e impredecible que mantiene a tu audiencia pegada a la pantalla.\n\nEs el juego más vendido de El R3ddy por algo — genera picos masivos de engagement, incentiva los gifts y hace que cada viewer sienta que es parte del show.`,
-    features:[
-      {icon:'🎮',title:'Control de Viewers en Tiempo Real',desc:'Comentarios, gifts y likes afectan directamente el resultado del juego'},
-      {icon:'👥',title:'Múltiples Jugadores',desc:'Docenas de viewers pueden competir simultáneamente'},
-      {icon:'🏆',title:'Rondas de Eliminación',desc:'Rondas progresivas mantienen la tensión hasta el ganador final'},
-      {icon:'🎁',title:'Integración de Gifts',desc:'Los gifts desbloquean poderes especiales o sabotean a otros jugadores'},
-      {icon:'🎛️',title:'Controles del Anfitrión',desc:'Tú controlas el ritmo, inicias/terminas rondas y anuncias ganadores'},
-      {icon:'📺',title:'Compatible con Stream to Earn',desc:'Funciona con la versión gratuita o de paga según tu configuración'},
-    ],
-    videoId:'',
-    base:20,custom:40,
-  },
-  zombie:{
-    logo:'game_zombie.png',
-    title:'Zombie Slug',
-    tagline:'Defiende tu base — tu chat es tu ejército',
-    tags:['Acción','Oleadas','Boss Fights','Defensa'],
-    desc:`Zombie Slug es un juego de defensa de base donde tu comunidad de streaming es el combustible de la batalla. Oleadas de zombies atacan tu base y las interacciones de tus viewers son lo único que te separa de la destrucción total.\n\nLos comentarios de los viewers invocan diferentes armas. Los gifts pueden llamar ataques aéreos, curar a tu personaje o mejorar defensas. Conforme avanzan las oleadas, aparecen bosses épicos con patrones de ataque únicos y mecánicas especiales.\n\nCon un sistema completo de armas y economía, escalado de dificultad y patrones de boss reactivos a la música, Zombie Slug es una experiencia completa que hace que los viewers vuelvan stream tras stream.`,
-    features:[
-      {icon:'🌊',title:'Sistema de Oleadas Infinitas',desc:'Escalado de dificultad logarítmico que mantiene el reto fresco en cada stream'},
-      {icon:'💀',title:'Boss Fights Épicos',desc:'Bosses únicos con mecánicas especiales — ZombieBoss, BossMech, Celestial y más'},
-      {icon:'🎁',title:'Armas por Gifts',desc:'Los gifts de viewers invocan armas y poderes especiales en tiempo real'},
-      {icon:'🎵',title:'Bosses Reactivos a la Música',desc:'Los patrones de ataque de los bosses sincronizan con la música'},
-      {icon:'💰',title:'Sistema de Economía',desc:'Economía in-game que balancea mejoras y mantiene el juego estratégico'},
-      {icon:'📺',title:'Compatible con Stream to Earn',desc:'Funciona con la versión gratuita o de paga según tu configuración'},
-    ],
-    videoId:'',
-    base:20,custom:40,
-  },
-  survivor:{
-    logo:'Survivor_Rumble.png',
-    title:'Survivor Rumble',
-    tagline:'Reality show interactivo — Equipo Rojo vs Equipo Azul',
-    tags:['Equipos','Supervivencia','Multijuego','Stream to Earn'],
-    desc:`Survivor Rumble convierte tu live en un reality show de competencia épico. Dos equipos — Rojo y Azul — se enfrentan en una serie de minijuegos interactivos donde el chat, los likes y los gifts determinan quién sobrevive y quién es eliminado.\n\nCada partida es un evento completo: los viewers se unen a sus equipos, participan en rondas de trivia, carreras, defensa de torres y más. Las eliminaciones las decide el propio chat mediante votos en tiempo real. Solo un equipo se corona campeón.\n\nCon 5 minijuegos distintos, un sistema de eliminación por votación y mecánicas de donación integradas, Survivor Rumble es la experiencia de streaming más completa e inmersiva del catálogo de El R3ddy.`,
-    features:[
-      {icon:'🏝️',title:'Reality Show Completo',desc:'Flujo de juego con lobby, minijuegos, eliminaciones y gran final'},
-      {icon:'🔴🔵',title:'Equipo Rojo vs Equipo Azul',desc:'Viewers se dividen en equipos y compiten por la victoria colectiva'},
-      {icon:'🎮',title:'5 Minijuegos Distintos',desc:'Carrera, trivia, tower defense y más — cada stream es diferente'},
-      {icon:'🗳️',title:'Eliminaciones por Votación',desc:'El chat vota quién se va — la comunidad tiene el poder'},
-      {icon:'🎁',title:'Integración Stream to Earn',desc:'Likes y gifts cargan habilidades, invocan unidades y cambian el rumbo'},
-      {icon:'🎛️',title:'Panel de Operador',desc:'Control total del anfitrión para manejar cada fase del show'},
-    ],
-    videoId:'',
-    base:20,custom:40,
-  },
-  taco:{
-    logo:'game_taco.png',
-    title:'TacoManía',
-    tagline:'Cocina al ritmo — tu chat potencia la cocina',
-    tags:['Ritmo','Cocina','Interactivo','Casual'],
-    desc:`TacoManía es un juego rítmico de cocina con "Red", el chef taquero definitivo. La actividad de tus viewers potencia directamente a tu personaje — los comentarios llenan el medidor de ritmo, los likes aumentan los combos y los gifts desbloquean habilidades especiales de cocina.\n\nEl juego incluye un sistema de barra de poder único, sistema de vidas (Modo Vidas) y un menú de pausa con controles de volumen. Eventos especiales como "sumar_vida" pueden ser activados por donaciones de viewers, manteniendo a la comunidad comprometida.\n\nPerfecto como juego de calentamiento antes de tu evento principal, o como opción de streaming tranquila para noches casuales. TacoManía es el clásico original de El R3ddy.`,
-    features:[
-      {icon:'🎵',title:'Mecánicas de Ritmo',desc:'Sigue el beat y mantén el combo de cocina activo'},
-      {icon:'❤️',title:'Sistema de Vidas (Modo Vidas)',desc:'Los viewers pueden salvarte donando para restaurar tus vidas'},
-      {icon:'⚡',title:'Barra de Poder',desc:'La actividad del chat llena tu barra de poder para movimientos especiales'},
-      {icon:'🎁',title:'Eventos de Gifts',desc:'Los gifts especiales de viewers activan eventos únicos de gameplay'},
-      {icon:'🎛️',title:'Controles de Stream',desc:'Menú de pausa, controles de volumen y manejo de eventos integrados'},
-      {icon:'📺',title:'Compatible con Stream to Earn',desc:'Funciona con la versión gratuita o de paga según tu configuración'},
-    ],
-    videoId:'',
-    base:20,custom:40,
-  }
-};
-
-function openGame(key){
-  const g=games[key];
-  const videoHTML=g.videoId
-    ?`<iframe src="https://www.youtube.com/embed/${g.videoId}" allowfullscreen></iframe>`
-    :`<div class="gd-video-inner"><div class="gd-video-icon">🎬</div><div class="gd-video-text"><strong>VIDEO DE GAMEPLAY PRÓXIMAMENTE</strong>Síguenos en TikTok para los últimos demos y previews</div></div>`;
-  const featsHTML=g.features.map(f=>`<div class="gd-feat"><div class="gd-feat-icon">${f.icon}</div><div class="gd-feat-text"><strong>${f.title}</strong>${f.desc}</div></div>`).join('');
-  const descHTML=g.desc.split('\n\n').map(p=>`<p>${p}</p>`).join('');
-  const tagsHTML=g.tags.map(t=>`<span class="tag">${t}</span>`).join('');
-
-  document.getElementById('gd-content').innerHTML=`
-    <div class="gd-header">
-      <div class="gd-logo-wrap"><img src="${g.logo}" alt="${g.title}"></div>
-      <div class="gd-info">
-        <h1 class="gd-title">${g.title}</h1>
-        <p class="gd-tagline">${g.tagline}</p>
-        <div class="gd-tags-row">${tagsHTML}</div>
-      </div>
-    </div>
-    <div class="gd-video">${videoHTML}</div>
-    <div class="gd-desc">${descHTML}</div>
-    <div class="gd-features">${featsHTML}</div>
-    <div class="gd-pricing">
-      <div class="gd-price-box">
-        <p class="gd-price-type">Versión Base</p>
-        <p class="gd-price-amount">$${g.base} USD</p>
-        <p class="gd-price-note">Personajes originales · Entrega el mismo día</p>
-        <button class="gd-price-btn" onclick="go('comprar',null)">COMPRAR VERSIÓN BASE</button>
-      </div>
-      <div class="gd-price-box featured">
-        <p class="gd-price-type">Versión Personalizada</p>
-        <p class="gd-price-amount">$${g.custom} USD</p>
-        <p class="gd-price-note">Tu personaje · 1–3 días hábiles</p>
-        <button class="gd-price-btn" onclick="go('comprar',null)">COMPRAR VERSIÓN PERSONALIZADA</button>
-      </div>
-    </div>
-    <div class="gd-delivery">
-      <strong>🎁 Incluido en tu compra:</strong> Video tutorial de instalación · App de soporte Stream to Earn con todos los códigos · Seguimiento personal de instalación por El R3ddy.
-    </div>`;
-
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.getElementById('page-game').classList.add('active');
-  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-
-const SHEET_URL='https://script.google.com/macros/s/AKfycbxM-DRkdC3sMyYoLb1jnn2JfOV36Tfx4McZx71oAQlCEKLW6MeBnrq0q9TnS0Z2RFUBdg/exec';
-const opciones=['Supervivencia','Zoo Interactivo','Roblox','Juego de Terror'];
-let voted=false;
-
-// JSONP - funciona sin CORS desde cualquier URL
-function jsonp(url, callback){
-  const cbName = 'cb_'+Date.now();
-  window[cbName] = function(data){
-    delete window[cbName];
-    document.head.removeChild(script);
-    callback(data);
-  };
-  const script = document.createElement('script');
-  script.src = url + '&callback=' + cbName;
-  script.onerror = function(){
-    delete window[cbName];
-    document.head.removeChild(script);
-    callback(null);
-  };
-  document.head.appendChild(script);
-}
-
-async function getUserIP(){
-  try{
-    const r = await fetch('https://api.ipify.org?format=json');
-    const d = await r.json();
-    return d.ip;
-  }catch(e){ return 'anon-'+Date.now(); }
-}
-
-function updateUI(totals, showRevealed){
-  const vals = opciones.map(o => totals[o]||0);
-  const total = vals.reduce((a,b)=>a+b,0);
-  if(total===0) return;
-  const maxV = Math.max(...vals);
-  vals.forEach((v,i)=>{
-    const pct = Math.round(v/total*100);
-    const fill = document.getElementById('pf'+i);
-    const pctEl = document.getElementById('pp'+i);
-    const btn = document.querySelectorAll('.poll-btn')[i];
-    if(fill) fill.style.width = pct+'%';
-    if(pctEl) pctEl.textContent = pct+'% ('+v+' votos)';
-    if(btn && v===maxV && maxV>0) btn.style.borderColor='#ffd700';
-  });
-  if(showRevealed){
-    document.getElementById('pollOpts').classList.add('poll-revealed');
-    document.querySelectorAll('.poll-btn').forEach(b=>b.classList.add('voted'));
-  }
-  document.getElementById('pollFoot').textContent = total+' streamers han votado 🎮';
-}
-
-function loadVotes(){
-  jsonp(SHEET_URL+'?action=get', function(data){
-    if(data && data.status==='ok') updateUI(data.totals, voted);
-  });
-}
-
-async function vote(idx){
-  if(voted) return;
-  if(localStorage.getItem('r3ddy_voted')){
-    voted=true;
-    document.getElementById('pollFoot').textContent='⚠️ Ya votaste antes. ¡Gracias!';
-    loadVotes();
-    document.getElementById('pollOpts').classList.add('poll-revealed');
-    document.querySelectorAll('.poll-btn').forEach(b=>b.classList.add('voted'));
-    return;
-  }
-  voted=true;
-  localStorage.setItem('r3ddy_voted', opciones[idx]);
-  document.getElementById('pollFoot').textContent='⏳ Registrando tu voto...';
-
-  const ip = await getUserIP();
-  const url = SHEET_URL+'?action=vote&voto='+encodeURIComponent(opciones[idx])+'&ip='+encodeURIComponent(ip);
-  
-  jsonp(url, function(data){
-    document.getElementById('pollOpts').classList.add('poll-revealed');
-    document.querySelectorAll('.poll-btn').forEach(b=>b.classList.add('voted'));
-    if(data && data.status==='ok'){
-      updateUI(data.totals, true);
-      const total = Object.values(data.totals).reduce((a,b)=>a+b,0);
-      document.getElementById('pollFoot').textContent = total+' streamers han votado — ¡Gracias! 🎮';
-    } else if(data && data.status==='duplicate'){
-      document.getElementById('pollFoot').textContent='⚠️ Ya se registró un voto desde tu red.';
-    } else {
-      document.getElementById('pollFoot').textContent='✅ ¡Voto registrado! Gracias 🎮';
-      setTimeout(loadVotes, 2000);
-    }
-  });
-}
-
-function tfaq(el){
-  const item=el.parentElement;
-  const isOpen=item.classList.contains('open');
-  document.querySelectorAll('.faq-item').forEach(i=>i.classList.remove('open'));
-  if(!isOpen)item.classList.add('open');
-}
-</script>
 </body>
 </html>
