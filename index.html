@@ -2868,7 +2868,9 @@ function abrirJuego(id){
   // Video
   const videoWrap = document.getElementById('jmVideoWrap');
   if(g.video){
-    videoWrap.innerHTML = `<iframe src="${g.video}" allowfullscreen></iframe>`;
+    // Autoplay al abrir, controles mínimos, sin sugerencias al final
+    const src = g.video + '?autoplay=1&rel=0&modestbranding=1&showinfo=0&iv_load_policy=3&controls=1&color=white';
+    videoWrap.innerHTML = `<iframe src="${src}" allowfullscreen allow="autoplay;encrypted-media"></iframe>`;
   } else {
     videoWrap.innerHTML = `<div class="jm-video-ph"><span class="jm-video-ph-icon">▶️</span><span class="jm-video-ph-text">juego-${id}-trailer.mp4 · 1280×720px</span></div>`;
   }
@@ -2995,16 +2997,15 @@ document.getElementById('carousel').addEventListener('touchend',e=>{
 
 initCarousel();
 
-// ── Hero BG — videos rotativos ────────────────────────────────
+// ── Hero BG — iframes de YouTube rotativos ───────────────────
 (function(){
-  const videos = [
-    'assets/video/trailer-survival.mp4',
-    'assets/video/trailer-tacomania.mp4',
-    'assets/video/trailer-zurvivalrun.mp4',
-    'assets/video/trailer-spinbattle.mp4',
+  const IDS = [
+    'jnz798shiak', // Survival Rumble
+    'EUelobEaaAY', // TacoManía
+    '2ajalPlWDG8', // Zurvival Run
+    'TnvzxMlSn-s', // SpinBattle
   ];
 
-  // Mezclar aleatoriamente
   function shuffle(arr) {
     for(let i = arr.length - 1; i > 0; i--){
       const j = Math.floor(Math.random() * (i + 1));
@@ -3013,35 +3014,31 @@ initCarousel();
     return arr;
   }
 
-  const lista = shuffle([...videos]);
+  const lista = shuffle([...IDS]);
   let idx = 0;
-  const vid = document.getElementById('heroBgVideo');
+  const bg  = document.getElementById('heroBgVideo');
   const ph  = document.getElementById('heroBgPh');
-  if (!vid) return;
+  if (!bg) return;
+
+  // Reemplazar video por iframe
+  bg.style.display = 'none';
+  const iframeWrap = document.createElement('div');
+  iframeWrap.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;overflow:hidden;pointer-events:none;';
+  bg.parentNode.insertBefore(iframeWrap, bg);
 
   function cargarSiguiente() {
-    vid.style.opacity = '0';
-    vid.src = lista[idx % lista.length];
+    const id = lista[idx % lista.length];
     idx++;
-    vid.load();
-    vid.play().then(() => {
-      if(ph) ph.style.display = 'none';
-      vid.style.opacity = '0.55';
-    }).catch(() => {
-      if(ph) ph.style.display = 'flex';
-    });
+    // autoplay=1, mute=1, controls=0, modestbranding=1, loop=1, playlist=ID para loop
+    iframeWrap.innerHTML = `<iframe
+      src="https://www.youtube.com/embed/${id}?autoplay=1&mute=1&controls=0&modestbranding=1&showinfo=0&rel=0&loop=1&playlist=${id}&iv_load_policy=3&disablekb=1"
+      style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) scale(1.15);width:100%;height:100%;border:none;opacity:.55;"
+      allow="autoplay;encrypted-media" allowfullscreen>
+    </iframe>`;
+    if(ph) ph.style.display = 'none';
+    // Cambiar al siguiente video cada 3 minutos
+    setTimeout(cargarSiguiente, 180000);
   }
-
-  vid.addEventListener('ended', () => {
-    cargarSiguiente();
-  });
-
-  vid.addEventListener('error', () => {
-    // Si el video no existe, pasar al siguiente
-    idx++;
-    if(idx < lista.length) cargarSiguiente();
-    else if(ph) ph.style.display = 'flex';
-  });
 
   cargarSiguiente();
 })();
