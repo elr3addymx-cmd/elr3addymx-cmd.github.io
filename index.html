@@ -1,0 +1,3040 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>El R3DDY Interactive Games — Juegos Interactivos para Streamers</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bangers&family=Nunito:wght@300;400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+
+/* ═══════════════════════════════════════════
+   VARIABLES
+═══════════════════════════════════════════ */
+:root{
+  --rojo:       #C41230;
+  --rojo2:      #E8182E;
+  --rojo-glow:  rgba(196,18,48,.35);
+  --azul:       #2D6CB0;
+  --azul2:      #4A8FD4;
+  --dorado:     #FFD700;
+  --fondo:      #0D0F1A;
+  --fondo2:     #151929;
+  --fondo3:     #1C2038;
+  --card:       rgba(21,25,41,.97);
+  --borde:      rgba(255,255,255,.07);
+  --borde-rojo: rgba(196,18,48,.28);
+  --borde-azul: rgba(45,108,176,.28);
+  --blanco:     #F0F2F8;
+  --gris:       #8B95A8;
+  --gris2:      #5A6475;
+  --nav-h:      68px;
+  --font-d:     'Bangers',cursive;
+  --font-b:     'Nunito',sans-serif;
+  --t:          .26s cubic-bezier(.4,0,.2,1);
+  --r:          12px;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{
+  font-family:var(--font-b);
+  background:var(--fondo);
+  color:var(--blanco);
+  overflow-x:hidden;
+  line-height:1.65;
+}
+a{text-decoration:none;color:inherit}
+img{max-width:100%;display:block}
+ul{list-style:none}
+button{font-family:var(--font-b);cursor:pointer;border:none;background:none}
+
+
+
+/* ── Barra de progreso de desarrollo ── */
+.dev-progress-wrap{margin-bottom:10px}
+.dev-progress-label{display:flex;justify-content:space-between;font-size:.68rem;color:var(--gris);margin-bottom:4px}
+.dev-progress-label span:last-child{color:var(--azul2);font-weight:600}
+.dev-progress-bar{width:100%;height:5px;background:rgba(255,255,255,.08);border-radius:10px;overflow:hidden}
+.dev-progress-fill{height:100%;border-radius:10px;background:linear-gradient(90deg,var(--azul),var(--azul2));transition:width .6s ease}
+
+/* ── Status badges en cards de juegos ── */
+.juego-status{
+  font-size:.75rem;font-weight:700;padding:6px 12px;border-radius:8px;
+  margin-bottom:10px;line-height:1.5;
+}
+.status-done{background:rgba(0,180,80,.1);color:#00cc55;border:1px solid rgba(0,180,80,.2)}
+.status-update{background:rgba(255,165,0,.08);color:#ffaa00;border:1px solid rgba(255,165,0,.2)}
+.status-soon{background:rgba(100,100,255,.08);color:#88aaff;border:1px solid rgba(100,100,255,.2)}
+.juego-update-list{margin-top:4px;padding-left:16px;list-style:disc}
+.juego-update-list li{font-size:.72rem;margin-bottom:2px}
+
+/* ═══════════════════════════════════════════
+   PLACEHOLDERS
+═══════════════════════════════════════════ */
+[data-ph]{
+  position:relative;overflow:hidden;
+  background:rgba(255,255,255,.03);
+  display:flex;align-items:center;justify-content:center;
+}
+[data-ph] img{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:cover;
+  z-index:2;
+}
+/* Placeholder visible solo cuando NO hay imagen cargada */
+[data-ph] img ~ .ph{ display:none }
+[data-ph]:not(:has(img[src])) .ph,
+[data-ph] img[src=""] ~ .ph{ display:flex }
+.ph{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  gap:7px;padding:14px;text-align:center;pointer-events:none;
+  z-index:1;
+}
+.ph-icon{font-size:22px;opacity:.35}
+.ph-name{
+  font-family:'Courier New',monospace;font-size:10px;font-weight:700;
+  color:var(--blanco);background:rgba(0,0,0,.6);
+  border:1px solid rgba(255,255,255,.12);
+  padding:3px 10px;border-radius:4px;word-break:break-all;
+}
+.ph-size{
+  font-size:9px;font-weight:800;color:#fff;
+  background:var(--rojo);padding:2px 9px;
+  border-radius:6px;letter-spacing:.04em;text-transform:uppercase;
+}
+/* Cuando imagen carga exitosamente — ocultar ph via JS class */
+[data-ph].img-loaded .ph{ display:none!important }
+
+/* ═══════════════════════════════════════════
+   ANIMACIONES DE SCROLL
+═══════════════════════════════════════════ */
+.reveal{
+  opacity:0;transform:translateY(36px);
+  transition:opacity .7s cubic-bezier(.4,0,.2,1),transform .7s cubic-bezier(.4,0,.2,1);
+}
+.reveal.from-left{transform:translateX(-40px)}
+.reveal.from-right{transform:translateX(40px)}
+.reveal.scale-in{transform:scale(.93) translateY(20px)}
+.reveal.visible{opacity:1;transform:none}
+.reveal.d1{transition-delay:.08s}
+.reveal.d2{transition-delay:.16s}
+.reveal.d3{transition-delay:.24s}
+.reveal.d4{transition-delay:.32s}
+.reveal.d5{transition-delay:.40s}
+
+/* ═══════════════════════════════════════════
+   NAV HORIZONTAL
+═══════════════════════════════════════════ */
+.nav{
+  position:fixed;top:0;left:0;right:0;
+  height:var(--nav-h);z-index:300;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 40px;
+  background:rgba(10,12,22,0);
+  border-bottom:1px solid transparent;
+  transition:background .4s ease,border-color .4s ease,box-shadow .4s ease;
+}
+.nav.scrolled{
+  background:rgba(10,12,22,.97);
+  border-bottom-color:var(--borde-rojo);
+  box-shadow:0 4px 32px rgba(0,0,0,.4);
+  backdrop-filter:blur(16px);
+}
+.nav-logo{
+  display:flex;align-items:center;gap:12px;
+  cursor:pointer;flex-shrink:0;
+}
+.nav-brand{font-family:var(--font-d);font-size:1.1rem;letter-spacing:2px;color:var(--blanco);white-space:nowrap}
+.nav-brand span{color:var(--rojo2)}
+.nav-links{display:flex;align-items:center;gap:2px;flex-shrink:1;overflow:hidden}
+.nav-link{
+  display:flex;align-items:center;
+  padding:8px 10px;
+  font-size:.72rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--gris);border-radius:8px;transition:all var(--t);position:relative;
+  white-space:nowrap;
+}
+.nav-links{display:flex;align-items:center;gap:4px}
+.nav-link{
+  display:flex;align-items:center;gap:7px;
+  padding:8px 14px;
+  font-size:.78rem;font-weight:700;letter-spacing:.08em;text-transform:uppercase;
+  color:var(--gris);border-radius:8px;transition:all var(--t);position:relative;
+}
+.nav-link::after{
+  content:'';position:absolute;bottom:-1px;left:10px;right:10px;height:2px;
+  background:var(--rojo);transform:scaleX(0);transition:transform var(--t);border-radius:2px;
+}
+.nav-link:hover,.nav-link.active{color:var(--blanco)}
+.nav-link:hover::after,.nav-link.active::after{transform:scaleX(1)}
+.nav-wa{
+  display:flex;align-items:center;gap:8px;
+  padding:10px 22px;
+  background:rgba(37,211,102,.12);color:#25D366;
+  font-family:var(--font-d);font-size:.9rem;letter-spacing:3px;
+  border-radius:9px;border:1.5px solid rgba(37,211,102,.3);
+  transition:all var(--t);flex-shrink:0;text-decoration:none;
+}
+.nav-wa:hover{
+  background:rgba(37,211,102,.22);
+  border-color:rgba(37,211,102,.6);
+  transform:translateY(-2px);
+  box-shadow:0 6px 24px rgba(37,211,102,.2);
+}
+.nav-cta{
+  display:flex;align-items:center;gap:8px;
+  padding:10px 22px;
+  background:var(--rojo);color:#fff;
+  font-family:var(--font-d);font-size:.9rem;letter-spacing:3px;
+  border-radius:9px;box-shadow:0 4px 20px var(--rojo-glow);
+  transition:all var(--t);flex-shrink:0;
+}
+.nav-cta:hover{background:var(--rojo2);transform:translateY(-2px);box-shadow:0 6px 28px rgba(196,18,48,.5)}
+.hamburger{
+  display:none;flex-direction:column;align-items:center;justify-content:center;
+  gap:5px;width:40px;height:40px;
+  background:rgba(255,255,255,.06);border:1px solid var(--borde);border-radius:8px;
+  cursor:pointer;transition:all var(--t);
+}
+.hamburger:hover{background:rgba(196,18,48,.12);border-color:var(--borde-rojo)}
+.hamburger span{display:block;width:18px;height:2px;background:var(--blanco);border-radius:2px;transition:all var(--t)}
+.hamburger.open span:nth-child(1){transform:rotate(45deg) translate(5px,5px)}
+.hamburger.open span:nth-child(2){opacity:0;transform:scaleX(0)}
+.hamburger.open span:nth-child(3){transform:rotate(-45deg) translate(5px,-5px)}
+.mobile-menu{
+  display:none;
+  position:fixed;top:var(--nav-h);left:0;right:0;bottom:0;
+  background:rgba(10,12,22,.98);z-index:299;
+  flex-direction:column;padding:24px 24px 40px;gap:4px;
+  overflow-y:auto;
+  transform:translateX(-100%);
+  transition:transform .3s cubic-bezier(.4,0,.2,1);
+  backdrop-filter:blur(16px);
+}
+.mobile-menu.open{transform:translateX(0)}
+.mobile-nav-link{
+  display:flex;align-items:center;gap:12px;padding:14px 16px;
+  font-size:.95rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;
+  color:var(--gris);border-radius:10px;border:1px solid transparent;transition:all var(--t);
+}
+.mobile-nav-link:hover{background:rgba(196,18,48,.1);border-color:var(--borde-rojo);color:var(--blanco)}
+.mobile-nav-icon{width:36px;height:36px;border-radius:8px;overflow:hidden;flex-shrink:0}
+.mobile-nav-icon img{object-fit:contain;width:100%;height:100%}
+.mobile-wa{
+  margin-top:8px;padding:16px;
+  background:rgba(37,211,102,.1);color:#25D366;
+  font-family:var(--font-d);font-size:1.1rem;letter-spacing:3px;
+  border-radius:10px;text-align:center;
+  border:1.5px solid rgba(37,211,102,.3);
+  transition:all var(--t);text-decoration:none;display:block;
+}
+.mobile-wa:hover{background:rgba(37,211,102,.2)}
+  margin-top:16px;padding:16px;background:var(--rojo);color:#fff;
+  font-family:var(--font-d);font-size:1.1rem;letter-spacing:3px;
+  border-radius:10px;text-align:center;box-shadow:0 4px 20px var(--rojo-glow);transition:all var(--t);
+}
+.mobile-cta:hover{background:var(--rojo2)}
+
+/* ═══════════════════════════════════════════
+   HERO
+═══════════════════════════════════════════ */
+.hero{
+  position:relative;width:100%;min-height:100vh;
+  display:flex;align-items:center;overflow:hidden;padding-top:var(--nav-h);
+}
+.hero-bg{position:absolute;inset:0;width:100%;height:100%}
+.hero-bg video{
+  position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  min-width:100%;min-height:100%;object-fit:cover;opacity:.4;
+}
+.hero-bg-ph{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;
+  background:linear-gradient(135deg,#0D0F1A 0%,#12152A 40%,#1A1E35 100%);
+}
+.hero-bg-ph-icon{font-size:52px;opacity:.15}
+.hero-bg-ph-label{
+  font-family:'Courier New',monospace;font-size:11px;color:rgba(255,255,255,.25);
+  background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.08);padding:4px 16px;border-radius:4px;
+}
+.hero-bg-ph-size{font-size:10px;font-weight:800;color:#fff;background:var(--rojo);padding:3px 12px;border-radius:6px}
+.hero-grid{
+  position:absolute;inset:0;
+  background-image:linear-gradient(rgba(45,108,176,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(45,108,176,.04) 1px,transparent 1px);
+  background-size:60px 60px;pointer-events:none;z-index:1;
+}
+.hero-overlay{
+  position:absolute;inset:0;z-index:2;pointer-events:none;
+  background:
+    linear-gradient(to top,rgba(13,15,26,.98) 0%,rgba(13,15,26,.7) 20%,rgba(13,15,26,.2) 45%,transparent 70%),
+    linear-gradient(to right,rgba(13,15,26,.8) 0%,rgba(13,15,26,.3) 45%,transparent 75%),
+    radial-gradient(ellipse at 80% 20%,rgba(196,18,48,.06) 0%,transparent 60%);
+}
+.hero-particles{position:absolute;inset:0;z-index:2;pointer-events:none;overflow:hidden}
+.hp{position:absolute;border-radius:50%;opacity:0;animation:hpFloat linear infinite}
+@keyframes hpFloat{
+  0%{transform:translateY(100vh);opacity:0}8%{opacity:.55}90%{opacity:.12}100%{transform:translateY(-8vh);opacity:0}
+}
+.hero-inner{
+  position:relative;z-index:3;width:100%;max-width:1200px;margin:0 auto;
+  padding:60px 56px;display:grid;grid-template-columns:1fr 1fr;gap:48px;align-items:center;
+}
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:.68rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--rojo2);background:rgba(196,18,48,.08);border:1px solid var(--borde-rojo);
+  padding:5px 14px;border-radius:999px;margin-bottom:22px;
+  animation:fadeUp .8s .1s ease both;
+}
+.eyebrow-dot{width:6px;height:6px;border-radius:50%;background:var(--rojo2);animation:blink 1.6s ease-in-out infinite}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.3}}
+.hero-title{
+  font-family:var(--font-d);font-size:clamp(3.2rem,6.5vw,5.8rem);
+  letter-spacing:4px;line-height:.92;margin-bottom:12px;
+  animation:fadeUp .8s .15s ease both;
+}
+.hero-title .red{color:var(--rojo2)}
+.hero-title .blue{color:var(--azul2)}
+.hero-powered{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:.72rem;font-weight:700;letter-spacing:.12em;color:var(--azul2);
+  text-transform:uppercase;margin-bottom:24px;animation:fadeUp .8s .2s ease both;
+}
+.hero-powered::before{content:'';display:block;width:24px;height:1px;background:var(--azul2)}
+.hero-desc{
+  font-size:.97rem;color:var(--gris);line-height:1.8;max-width:460px;
+  margin-bottom:36px;animation:fadeUp .8s .25s ease both;
+}
+.hero-desc strong{color:var(--blanco);font-weight:800}
+.hero-btns{display:flex;gap:12px;flex-wrap:wrap;animation:fadeUp .8s .3s ease both}
+.btn-primary{
+  padding:14px 34px;background:var(--rojo);color:#fff;
+  font-family:var(--font-d);font-size:1rem;letter-spacing:3px;
+  border-radius:10px;border:none;cursor:pointer;
+  box-shadow:0 4px 22px var(--rojo-glow);transition:all .2s;
+}
+.btn-primary:hover{background:var(--rojo2);transform:translateY(-3px);box-shadow:0 8px 30px rgba(196,18,48,.5)}
+.btn-ghost{
+  padding:14px 34px;background:rgba(255,255,255,.05);color:var(--blanco);
+  font-family:var(--font-d);font-size:1rem;letter-spacing:3px;
+  border-radius:10px;border:1.5px solid rgba(255,255,255,.18);
+  cursor:pointer;backdrop-filter:blur(8px);transition:all .2s;
+}
+.btn-ghost:hover{background:rgba(255,255,255,.1);border-color:rgba(255,255,255,.4);transform:translateY(-2px)}
+.hero-stats{display:flex;gap:28px;margin-top:40px;animation:fadeUp .8s .35s ease both}
+.hero-stat{border-left:2px solid var(--borde-rojo);padding-left:16px}
+.hero-stat-num{font-family:var(--font-d);font-size:2rem;letter-spacing:2px;color:var(--rojo2);line-height:1}
+.hero-stat-label{font-size:.65rem;font-weight:700;color:var(--gris);letter-spacing:.1em;text-transform:uppercase;margin-top:3px}
+.hero-right{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:32px;animation:fadeUp .8s .2s ease both}
+.hero-logo-wrap{width:min(550px,100%);aspect-ratio:1;border-radius:20px;position:relative;overflow:hidden;background:transparent}
+.hero-logo-inner{width:100%;height:100%;border-radius:20px;overflow:hidden;background:transparent}
+.hero-socials{display:flex;gap:12px;align-items:center}
+.hero-social-btn{
+  display:flex;align-items:center;gap:8px;padding:10px 18px;
+  background:rgba(255,255,255,.05);border:1px solid var(--borde);border-radius:10px;
+  font-size:.75rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--gris);
+  transition:all var(--t);
+}
+.hero-social-btn:hover{background:rgba(196,18,48,.1);border-color:var(--borde-rojo);color:var(--blanco);transform:translateY(-2px)}
+.hero-social-btn svg{width:16px;height:16px;fill:currentColor;flex-shrink:0}
+.hero-bar{
+  position:absolute;bottom:0;left:0;right:0;z-index:4;
+  display:flex;align-items:stretch;
+  background:rgba(10,12,22,.9);border-top:1px solid var(--borde-rojo);backdrop-filter:blur(12px);
+}
+.hero-bar-item{
+  flex:1;display:flex;align-items:center;justify-content:center;gap:10px;padding:14px 20px;
+  font-size:.7rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--gris);
+  border:none;background:none;cursor:pointer;border-right:1px solid var(--borde);transition:all var(--t);
+}
+.hero-bar-item:last-child{border-right:none}
+.hero-bar-item:hover{background:rgba(196,18,48,.08);color:var(--blanco)}
+.hero-bar-icon{width:28px;height:28px;border-radius:6px;overflow:hidden;flex-shrink:0}
+.hero-bar-icon img{object-fit:contain;width:100%;height:100%}
+.hero-line{
+  position:absolute;bottom:52px;left:0;right:0;height:1px;z-index:3;
+  background:linear-gradient(90deg,transparent 0%,var(--rojo) 30%,var(--azul) 70%,transparent 100%);
+  animation:lineAnim 3s ease-in-out infinite alternate;pointer-events:none;
+}
+@keyframes lineAnim{0%{opacity:.3;transform:scaleX(.7)}100%{opacity:.8;transform:scaleX(1)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(28px)}to{opacity:1;transform:translateY(0)}}
+.scroll-indicator{
+  position:absolute;bottom:72px;left:56px;z-index:4;
+  display:flex;flex-direction:column;align-items:center;gap:6px;
+  animation:fadeUp .8s .6s ease both;
+}
+.scroll-mouse{width:22px;height:34px;border:2px solid rgba(255,255,255,.25);border-radius:11px;display:flex;align-items:flex-start;justify-content:center;padding-top:5px}
+.scroll-wheel{width:3px;height:6px;background:var(--rojo2);border-radius:2px;animation:scrollWheel 1.6s ease-in-out infinite}
+@keyframes scrollWheel{0%{transform:translateY(0);opacity:1}100%{transform:translateY(10px);opacity:0}}
+.scroll-label{font-size:.6rem;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.25)}
+
+/* ═══════════════════════════════════════════
+   SECCIÓN NOTICIAS
+═══════════════════════════════════════════ */
+.noticias-section{
+  padding:50px 0 40px;background:var(--fondo);
+  position:relative;overflow:hidden;
+}
+.noticias-section::before{
+  content:'';position:absolute;top:-120px;left:50%;transform:translateX(-50%);
+  width:700px;height:700px;border-radius:50%;
+  background:radial-gradient(circle,rgba(196,18,48,.04) 0%,transparent 70%);pointer-events:none;
+}
+.sec-header{text-align:center;padding:0 24px;margin-bottom:28px}
+.sec-tag{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:.65rem;font-weight:800;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--rojo2);background:rgba(196,18,48,.08);border:1px solid var(--borde-rojo);
+  padding:5px 16px;border-radius:999px;margin-bottom:12px;
+}
+.sec-tag-dot{width:5px;height:5px;border-radius:50%;background:var(--rojo2);animation:blink 1.6s ease-in-out infinite}
+.sec-title{font-family:var(--font-d);font-size:clamp(2rem,4.5vw,3rem);letter-spacing:3px;line-height:1;margin-bottom:8px}
+.sec-title span{color:var(--rojo2)}
+.sec-sub{font-size:.88rem;color:var(--gris);max-width:480px;margin:0 auto;line-height:1.7}
+.carousel-wrap{position:relative;max-width:100%;margin:0 auto;padding:0}
+.carousel{
+  position:relative;overflow:hidden;
+  background:var(--fondo2);
+  border-top:1px solid var(--borde);
+  border-bottom:1px solid var(--borde);
+  box-shadow:0 24px 80px rgba(0,0,0,.5);
+  aspect-ratio:16/5;
+}
+.carousel-track{display:flex;height:100%;transition:transform .6s cubic-bezier(.4,0,.2,1)}
+.carousel-slide{min-width:100%;height:100%;position:relative;flex-shrink:0}
+.carousel-slide img{width:100%;height:100%;object-fit:cover;display:block}
+.slide-ph{
+  width:100%;height:100%;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:12px;
+  background:linear-gradient(135deg,var(--fondo2) 0%,var(--fondo3) 100%);
+}
+.slide-ph-icon{font-size:40px;opacity:.2}
+.slide-ph-name{
+  font-family:'Courier New',monospace;font-size:11px;color:rgba(255,255,255,.3);
+  background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.08);padding:4px 16px;border-radius:4px;
+}
+.slide-ph-size{font-size:10px;font-weight:800;color:#fff;background:var(--rojo);padding:3px 12px;border-radius:6px}
+.carousel-slide::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(to bottom,transparent 40%,rgba(13,15,26,.6) 100%);pointer-events:none;
+}
+.carousel-btn{
+  position:absolute;top:50%;transform:translateY(-50%);z-index:10;
+  width:48px;height:48px;background:rgba(13,15,26,.8);border:1px solid var(--borde-rojo);
+  border-radius:50%;display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:all var(--t);backdrop-filter:blur(8px);color:var(--blanco);
+}
+.carousel-btn:hover{background:var(--rojo);border-color:var(--rojo);transform:translateY(-50%) scale(1.1);box-shadow:0 4px 20px var(--rojo-glow)}
+.carousel-btn svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2.5;stroke-linecap:round;stroke-linejoin:round}
+.carousel-btn.prev{left:16px}
+.carousel-btn.next{right:16px}
+.carousel-dots{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:22px}
+.cdot{width:8px;height:8px;border-radius:50%;background:rgba(255,255,255,.15);border:none;cursor:pointer;padding:0;transition:all var(--t)}
+.cdot.active{width:24px;border-radius:4px;background:var(--rojo);box-shadow:0 0 10px var(--rojo-glow)}
+.cdot:hover:not(.active){background:rgba(255,255,255,.35)}
+.carousel-counter{
+  position:absolute;top:16px;right:16px;z-index:10;
+  font-family:var(--font-d);font-size:.85rem;letter-spacing:2px;color:rgba(255,255,255,.7);
+  background:rgba(13,15,26,.7);border:1px solid var(--borde);padding:4px 12px;border-radius:8px;backdrop-filter:blur(8px);
+}
+.carousel-counter span{color:var(--rojo2)}
+.carousel-progress{position:absolute;bottom:0;left:0;right:0;height:3px;background:rgba(255,255,255,.08);z-index:10}
+.carousel-progress-bar{height:100%;background:linear-gradient(90deg,var(--rojo),var(--azul));width:0%;border-radius:0 2px 2px 0}
+.carousel-loading{
+  position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:14px;background:var(--fondo2);z-index:20;transition:opacity .4s ease;
+}
+.carousel-loading.hidden{opacity:0;pointer-events:none}
+.loading-spinner{width:36px;height:36px;border:3px solid rgba(255,255,255,.08);border-top-color:var(--rojo);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.loading-text{font-size:.75rem;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gris)}
+
+/* ═══════════════════════════════════════════
+   SECCIÓN NOSOTROS
+═══════════════════════════════════════════ */
+.nosotros-section{
+  padding:0;
+  background:var(--fondo2);
+  position:relative;overflow:hidden;
+}
+.nos-bg-deco{
+  position:absolute;inset:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse at 100% 50%, rgba(196,18,48,.04) 0%, transparent 55%),
+    radial-gradient(ellipse at 0% 50%, rgba(45,108,176,.04) 0%, transparent 55%);
+}
+.nos-wrapper{
+  display:grid;
+  grid-template-columns:500px 1fr;
+  min-height:700px;
+  position:relative;z-index:1;
+}
+.nos-img-lateral{
+  position:sticky;top:0;
+  height:100%;min-height:700px;
+  overflow:hidden;
+  background:var(--fondo2);
+  display:flex;align-items:flex-end;justify-content:center;
+}
+.nos-img-lateral img{
+  width:100%;
+  height:auto;
+  object-fit:contain;
+}
+.nos-container{padding:60px 48px 60px 40px;max-width:100%}
+.nos-right{display:flex;flex-direction:column;gap:0}
+  font-family:var(--font-d);font-size:1rem;
+  letter-spacing:2px;color:var(--azul2);
+}
+.nos-engine-sub{font-size:.75rem;color:var(--gris);margin-top:2px}
+
+/* Texto derecha */
+.nos-right{display:flex;flex-direction:column;gap:0}
+.nos-text{
+  font-size:.95rem;color:var(--gris);
+  line-height:1.85;margin-bottom:18px;
+  text-align:justify;
+  text-justify:inter-word;
+}
+.nos-text strong{color:var(--blanco);font-weight:800}
+.nos-text .red{color:var(--rojo2)}
+.nos-text .blue{color:var(--azul2)}
+.nos-italic{
+  font-style:italic;
+  color:rgba(240,242,248,.6);
+  border-left:3px solid var(--rojo);
+  padding-left:18px;
+  margin-top:4px;
+}
+
+/* Dedicatoria */
+.nos-dedicatoria{
+  margin-top:24px;
+  background:linear-gradient(135deg,rgba(196,18,48,.08),rgba(45,108,176,.06));
+  border:1px solid var(--borde-rojo);
+  border-radius:14px;
+  padding:22px 26px;
+}
+.nos-dedicatoria p{
+  font-size:.9rem;color:var(--gris);
+  line-height:1.7;font-style:italic;
+  margin-bottom:10px;
+}
+.nos-firma{
+  font-family:var(--font-d);
+  font-size:1.1rem;letter-spacing:2px;
+  color:var(--blanco);
+}
+
+/* Stats */
+.nos-stats{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:16px;
+  border-top:1px solid var(--borde);
+  padding-top:40px;
+}
+.nos-stat{
+  text-align:center;padding:24px 16px;
+  background:var(--card);
+  border:1px solid var(--borde);
+  border-radius:14px;
+  transition:all var(--t);
+}
+.nos-stat:hover{
+  border-color:var(--borde-rojo);
+  transform:translateY(-4px);
+  box-shadow:0 12px 40px rgba(0,0,0,.3);
+}
+.nos-stat-num{
+  font-family:var(--font-d);
+  font-size:2.2rem;letter-spacing:2px;
+  color:var(--rojo2);line-height:1;
+  margin-bottom:8px;
+}
+.nos-stat-label{
+  font-size:.7rem;font-weight:700;
+  color:var(--gris);letter-spacing:.08em;
+  text-transform:uppercase;line-height:1.4;
+}
+
+/* Responsive nosotros */
+@media(max-width:1100px){.nos-wrapper{grid-template-columns:320px 1fr}}
+@media(max-width:900px){
+  .nos-wrapper{grid-template-columns:1fr}
+  .nos-img-lateral{display:none}
+  .nos-container{padding:60px 24px}
+  .nos-stats{grid-template-columns:repeat(2,1fr)}
+}
+@media(max-width:480px){
+  .nos-stats{grid-template-columns:repeat(2,1fr);gap:12px}
+}
+
+/* ═══════════════════════════════════════════
+   MODAL CONTACTO
+═══════════════════════════════════════════ */
+.modal-overlay{
+  position:fixed;inset:0;z-index:500;
+  background:rgba(0,0,0,.75);
+  backdrop-filter:blur(8px);
+  display:flex;align-items:center;justify-content:center;
+  padding:20px;
+  opacity:0;pointer-events:none;
+  transition:opacity .3s ease;
+}
+.modal-overlay.active{opacity:1;pointer-events:all}
+
+.modal-box{
+  background:var(--fondo2);
+  border:1px solid var(--borde-rojo);
+  border-radius:20px;
+  max-width:780px;width:100%;
+  display:grid;grid-template-columns:1fr 1.6fr;
+  overflow:hidden;
+  position:relative;
+  box-shadow:0 32px 80px rgba(0,0,0,.6);
+  transform:scale(.92) translateY(20px);
+  transition:transform .3s cubic-bezier(.4,0,.2,1);
+}
+.modal-overlay.active .modal-box{transform:scale(1) translateY(0)}
+
+.modal-close{
+  position:absolute;top:14px;right:14px;
+  width:32px;height:32px;border-radius:8px;
+  background:rgba(255,255,255,.08);border:1px solid var(--borde);
+  color:var(--gris);font-size:.9rem;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:all var(--t);z-index:10;
+}
+.modal-close:hover{background:rgba(196,18,48,.2);border-color:var(--borde-rojo);color:var(--blanco)}
+
+/* Izquierda — imagen */
+.modal-left{
+  background:linear-gradient(135deg,var(--fondo3),var(--fondo2));
+  display:flex;align-items:flex-end;justify-content:center;
+  overflow:hidden;min-height:420px;
+  border-right:1px solid var(--borde);
+}
+.modal-char{width:100%;height:100%;min-height:420px}
+.modal-char img{width:100%;height:100%;object-fit:contain;object-position:bottom}
+
+/* Derecha — info */
+.modal-right{
+  padding:36px 32px;
+  display:flex;flex-direction:column;gap:18px;
+  overflow-y:auto;
+}
+
+.modal-tag{
+  display:inline-flex;align-items:center;gap:7px;
+  font-size:.65rem;font-weight:800;letter-spacing:.15em;text-transform:uppercase;
+  color:#25D366;background:rgba(37,211,102,.08);
+  border:1px solid rgba(37,211,102,.25);
+  padding:4px 12px;border-radius:999px;width:fit-content;
+}
+
+.modal-title{
+  font-family:var(--font-d);
+  font-size:clamp(1.4rem,3vw,2rem);
+  letter-spacing:2px;line-height:1.1;
+}
+.modal-title span{color:var(--rojo2)}
+
+.modal-horario{
+  display:flex;gap:14px;align-items:flex-start;
+  background:rgba(255,255,255,.04);
+  border:1px solid var(--borde);
+  border-radius:12px;padding:16px;
+}
+.modal-horario-icon{font-size:1.5rem;flex-shrink:0}
+.modal-horario-title{font-size:.75rem;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--blanco);margin-bottom:4px}
+.modal-horario-info{font-size:.9rem;font-weight:700;color:var(--dorado);margin-bottom:3px}
+.modal-horario-sub{font-size:.75rem;color:var(--gris)}
+
+.modal-aviso{
+  display:flex;gap:14px;align-items:flex-start;
+  background:rgba(255,193,7,.05);
+  border:1px solid rgba(255,193,7,.2);
+  border-radius:12px;padding:16px;
+}
+.modal-aviso-icon{font-size:1.3rem;flex-shrink:0;margin-top:2px}
+.modal-aviso-title{font-size:.75rem;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--dorado);margin-bottom:6px}
+.modal-aviso-text{font-size:.8rem;color:var(--gris);line-height:1.6;margin-bottom:8px}
+.modal-numero{
+  font-family:var(--font-d);font-size:1.1rem;letter-spacing:3px;
+  color:var(--blanco);background:rgba(255,255,255,.06);
+  border:1px solid var(--borde);border-radius:8px;
+  padding:6px 14px;display:inline-block;cursor:pointer;
+  transition:all var(--t);
+}
+.modal-numero:hover{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.25)}
+
+.modal-wa-btn{
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  padding:14px 24px;
+  background:#25D366;color:#fff;
+  font-family:var(--font-d);font-size:1rem;letter-spacing:3px;
+  border-radius:10px;text-decoration:none;
+  box-shadow:0 4px 20px rgba(37,211,102,.3);
+  transition:all var(--t);
+}
+.modal-wa-btn:hover{background:#1da851;transform:translateY(-2px);box-shadow:0 8px 28px rgba(37,211,102,.4)}
+
+.modal-footer-note{font-size:.72rem;color:var(--gris2);text-align:center}
+
+/* Responsive modal */
+@media(max-width:640px){
+  .modal-box{grid-template-columns:1fr}
+  .modal-left{display:none}
+  .modal-right{padding:28px 20px}
+}
+
+/* ═══════════════════════════════════════════
+   SECCIÓN R3DDY ENGINE
+═══════════════════════════════════════════ */
+.engine-section{
+  position:relative;
+  width:100%;min-height:100vh;
+  display:flex;align-items:center;
+  overflow:hidden;padding:100px 0 80px;
+}
+
+/* Fondo full width */
+.engine-bg{
+  position:absolute;inset:0;
+  width:100%;height:100%;
+}
+.engine-bg img{
+  position:absolute;inset:0;
+  width:100%;height:100%;
+  object-fit:cover;opacity:.4;
+  z-index:1;
+}
+.engine-bg-ph{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:12px;
+  background:linear-gradient(135deg,#0D0F1A 0%,#111428 50%,#0D1525 100%);
+  z-index:0;
+}
+.engine-bg-ph-icon{font-size:52px;opacity:.12}
+.engine-bg-ph-label{
+  font-family:'Courier New',monospace;font-size:11px;
+  color:rgba(255,255,255,.25);background:rgba(0,0,0,.35);
+  border:1px solid rgba(255,255,255,.08);padding:4px 16px;border-radius:4px;
+}
+.engine-bg-ph-size{
+  font-size:10px;font-weight:800;color:#fff;
+  background:var(--azul);padding:3px 12px;border-radius:6px;
+}
+
+/* Overlay igual al hero pero azulado */
+.engine-overlay{
+  position:absolute;inset:0;z-index:1;pointer-events:none;
+  background:
+    linear-gradient(to top,    rgba(13,15,26,.98) 0%, rgba(13,15,26,.6) 20%, rgba(13,15,26,.15) 50%, transparent 75%),
+    linear-gradient(to bottom, rgba(13,15,26,.8)  0%, transparent 40%),
+    radial-gradient(ellipse at 50% 50%, rgba(45,108,176,.08) 0%, transparent 65%);
+}
+
+/* Contenido alineado a la derecha */
+.engine-container{
+  position:relative;z-index:2;
+  width:100%;max-width:1200px;
+  margin:0 auto;padding:0 40px;
+}
+.engine-inner{
+  display:flex;
+  justify-content:flex-end;
+}
+.engine-content{
+  width:55%;
+}
+
+/* Grid 2 columnas para features */
+.engine-features-grid{
+  display:grid;
+  grid-template-columns:repeat(2,1fr);
+  gap:12px;
+  margin-bottom:28px;
+}
+.engine-feat{
+  display:flex;align-items:flex-start;gap:14px;
+  padding:18px 20px;
+  background:rgba(13,15,26,.75);
+  border:1px solid var(--borde);
+  border-radius:12px;
+  backdrop-filter:blur(12px);
+  transition:all var(--t);
+}
+.engine-feat:hover{
+  border-color:var(--borde-azul);
+  transform:translateY(-3px);
+  box-shadow:0 8px 30px rgba(0,0,0,.3);
+  background:rgba(21,25,41,.85);
+}
+.engine-feat-icon{
+  font-size:1.5rem;flex-shrink:0;
+  width:42px;height:42px;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(45,108,176,.12);
+  border:1px solid var(--borde-azul);
+  border-radius:10px;
+}
+.engine-feat-title{font-weight:800;font-size:.88rem;color:var(--blanco);margin-bottom:4px}
+.engine-feat-desc{font-size:.8rem;color:var(--gris);line-height:1.6}
+
+/* Stats */
+.engine-stats{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:16px;
+  border-top:1px solid rgba(255,255,255,.08);
+  padding-top:36px;
+}
+.engine-stat{
+  text-align:center;padding:22px 16px;
+  background:rgba(13,15,26,.75);
+  border:1px solid var(--borde);
+  border-radius:14px;
+  backdrop-filter:blur(12px);
+  transition:all var(--t);
+}
+.engine-stat:hover{
+  border-color:var(--borde-azul);
+  transform:translateY(-4px);
+  box-shadow:0 12px 40px rgba(0,0,0,.3);
+}
+.engine-stat-num{
+  font-family:var(--font-d);
+  font-size:2.2rem;letter-spacing:2px;
+  color:var(--azul2);line-height:1;margin-bottom:8px;
+}
+.engine-stat-label{
+  font-size:.7rem;font-weight:700;
+  color:var(--gris);letter-spacing:.08em;
+  text-transform:uppercase;line-height:1.4;
+}
+
+/* Responsive engine */
+@media(max-width:900px){
+  .engine-inner{justify-content:center}
+  .engine-content{width:100%}
+  .engine-features-grid{grid-template-columns:1fr}
+  .engine-stats{grid-template-columns:repeat(2,1fr)}
+  .engine-container{padding:0 24px}
+  .engine-section{padding:80px 0 60px}
+}
+@media(max-width:480px){
+  .engine-section{padding:60px 0}
+  .engine-stats{grid-template-columns:repeat(2,1fr);gap:12px}
+  .engine-feat{padding:14px}
+}
+
+/* ═══════════════════════════════════════════
+   SERVICIOS
+═══════════════════════════════════════════ */
+.servicios-section{
+  padding:90px 0 80px;
+  background:var(--fondo);
+  position:relative;overflow:hidden;
+}
+.servicios-container{max-width:1300px;margin:0 auto;padding:0 40px}
+
+.servicios-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:22px;
+  margin-bottom:32px;
+}
+
+.servicio-card{
+  background:var(--card);
+  border:1px solid var(--borde);
+  border-radius:16px;overflow:hidden;
+  display:flex;flex-direction:column;
+  transition:all var(--t);
+}
+.servicio-card:hover{
+  border-color:var(--borde-rojo);
+  transform:translateY(-6px);
+  box-shadow:0 20px 50px rgba(0,0,0,.4);
+}
+
+.servicio-icon-wrap{
+  aspect-ratio:1;
+  display:flex;justify-content:center;align-items:center;
+  background:var(--fondo);
+  border-bottom:1px solid var(--borde);
+  overflow:hidden;
+  padding:0;
+}
+.servicio-icon-img{
+  width:100%;height:100%;border-radius:0;overflow:hidden;
+  background:var(--fondo);border:none;
+}
+.servicio-icon-img img{width:100%;height:100%;object-fit:cover;padding:0}
+
+.servicio-body{padding:22px;display:flex;flex-direction:column;gap:12px;flex:1}
+
+.servicio-title{
+  font-family:var(--font-d);font-size:1.1rem;letter-spacing:1.5px;color:var(--blanco);
+}
+.servicio-desc{font-size:.83rem;color:var(--gris);line-height:1.7;flex:1}
+
+.servicio-info{
+  display:grid;grid-template-columns:1fr 1fr;gap:8px;
+}
+.servicio-info-item{
+  background:rgba(255,255,255,.03);
+  border:1px solid var(--borde);border-radius:8px;padding:10px 12px;
+}
+.servicio-info-label{
+  display:block;font-size:.6rem;font-weight:800;letter-spacing:.1em;
+  color:var(--gris);text-transform:uppercase;margin-bottom:3px;
+}
+.servicio-info-val{
+  font-family:var(--font-d);font-size:1rem;letter-spacing:1px;color:var(--rojo2);
+}
+
+.servicio-nota{
+  font-size:.75rem;color:var(--gris2);line-height:1.5;
+  background:rgba(255,255,255,.02);
+  border:1px solid var(--borde);border-radius:8px;padding:8px 12px;
+}
+
+.servicio-btn{
+  display:flex;align-items:center;justify-content:center;gap:8px;
+  padding:12px;
+  background:#25D366;color:#fff;
+  font-family:var(--font-d);font-size:.88rem;letter-spacing:2px;
+  border:none;border-radius:10px;cursor:pointer;
+  box-shadow:0 4px 16px rgba(37,211,102,.25);
+  transition:all var(--t);margin-top:auto;
+}
+.servicio-btn:hover{background:#1da851;transform:translateY(-2px);box-shadow:0 6px 22px rgba(37,211,102,.35)}
+
+.servicios-nota{
+  display:flex;align-items:flex-start;gap:14px;
+  background:rgba(45,108,176,.06);
+  border:1px solid var(--borde-azul);
+  border-radius:12px;padding:18px 22px;
+}
+.servicios-nota span{font-size:1.4rem;flex-shrink:0}
+.servicios-nota p{font-size:.85rem;color:var(--gris);line-height:1.6}
+.servicios-nota strong{color:var(--blanco)}
+
+/* Responsive servicios */
+@media(max-width:900px){
+  .servicios-grid{grid-template-columns:1fr;max-width:480px;margin:0 auto 32px}
+  .servicios-container{padding:0 24px}
+}
+@media(max-width:480px){
+  .servicios-section{padding:60px 0}
+  .servicio-info{grid-template-columns:1fr}
+}
+
+/* ═══════════════════════════════════════════
+   FAQ
+═══════════════════════════════════════════ */
+.faq-section{
+  padding:0;
+  background:var(--fondo2);
+  position:relative;overflow:hidden;
+}
+
+/* Layout lateral */
+.faq-wrapper{
+  display:grid;
+  grid-template-columns:480px 1fr;
+  min-height:700px;
+}
+
+/* Imagen lateral */
+.faq-img-lateral{
+  position:sticky;top:0;
+  height:100%;min-height:700px;
+  overflow:hidden;
+  background:var(--fondo2);
+}
+.faq-img-lateral img{
+  width:100%;height:100%;
+  object-fit:cover;object-position:top center;
+}
+
+/* Contenido */
+.faq-container{
+  max-width:100%;padding:80px 48px;
+}
+
+.faq-grid{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:14px;
+}
+.faq-col{display:flex;flex-direction:column;gap:10px}
+
+.faq-item{
+  background:var(--card);
+  border:1px solid var(--borde);
+  border-radius:12px;overflow:hidden;
+  transition:border-color var(--t);
+}
+.faq-item.open{border-color:var(--borde-rojo)}
+
+.faq-q{
+  width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:16px 20px;background:none;border:none;cursor:pointer;
+  font-size:.88rem;font-weight:700;color:var(--blanco);
+  text-align:left;line-height:1.4;transition:background var(--t);
+}
+.faq-q:hover{background:rgba(255,255,255,.04)}
+.faq-item.open .faq-q{background:rgba(196,18,48,.06);color:var(--rojo2)}
+
+.faq-arrow{
+  font-size:.7rem;flex-shrink:0;color:var(--gris);
+  transition:transform .3s ease;
+}
+.faq-item.open .faq-arrow{transform:rotate(180deg);color:var(--rojo2)}
+
+.faq-a{
+  max-height:0;overflow:hidden;
+  padding:0 20px;
+  font-size:.84rem;color:var(--gris);line-height:1.7;
+  transition:max-height .35s ease,padding .35s ease;
+}
+.faq-item.open .faq-a{max-height:300px;padding:0 20px 16px}
+.faq-a strong{color:var(--blanco)}
+
+/* Responsive FAQ */
+@media(max-width:1100px){
+  .faq-wrapper{grid-template-columns:280px 1fr}
+}
+@media(max-width:900px){
+  .faq-wrapper{grid-template-columns:1fr}
+  .faq-img-lateral{display:none}
+  .faq-grid{grid-template-columns:1fr}
+  .faq-container{padding:60px 24px}
+}
+@media(max-width:480px){
+  .faq-q{font-size:.82rem;padding:14px 16px}
+}
+═══════════════════════════════════════════ */
+.juegos-section{
+  padding:90px 0 80px;
+  background:var(--fondo2);
+  position:relative;overflow:hidden;
+}
+.juegos-container{max-width:1400px;margin:0 auto;padding:0 40px}
+
+.juegos-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(300px,1fr));
+  gap:22px;
+  margin-bottom:40px;
+}
+
+/* Card */
+.juego-card{
+  background:var(--card);
+  border:1px solid var(--borde);
+  border-radius:16px;overflow:hidden;
+  transition:transform .25s,box-shadow .25s,border-color .25s;
+}
+.juego-card:hover{
+  transform:translateY(-6px);
+  box-shadow:0 20px 50px rgba(0,0,0,.5);
+  border-color:var(--borde-rojo);
+}
+.juego-soon{opacity:.7}
+.juego-soon:hover{border-color:var(--borde);opacity:.85}
+
+/* Thumbnail */
+.juego-thumb{
+  height:200px;position:relative;overflow:hidden;
+  background:var(--fondo3);
+}
+.juego-thumb img{width:100%;height:100%;object-fit:cover;transition:transform .4s ease}
+.juego-card:hover .juego-thumb img{transform:scale(1.05)}
+.juego-thumb::after{
+  content:'';position:absolute;inset:0;
+  background:linear-gradient(to bottom,transparent 50%,rgba(13,15,26,.8));
+  pointer-events:none;
+}
+
+/* Próximamente thumb */
+.juego-thumb-soon{
+  display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(135deg,var(--fondo3),var(--fondo2));
+  border-bottom:1px solid var(--borde);
+}
+.soon-content{
+  display:flex;flex-direction:column;align-items:center;gap:8px;text-align:center;padding:20px;
+}
+.soon-icon{font-size:2.5rem;opacity:.5}
+.soon-label{
+  font-size:.6rem;font-weight:800;letter-spacing:.18em;
+  color:var(--dorado);text-transform:uppercase;
+  background:rgba(255,215,0,.1);border:1px solid rgba(255,215,0,.2);
+  padding:3px 10px;border-radius:999px;
+}
+.soon-title{font-family:var(--font-d);font-size:.9rem;letter-spacing:1px;color:var(--gris)}
+
+/* Badge */
+.juego-badge{
+  position:absolute;top:12px;right:12px;z-index:2;
+  font-size:.62rem;font-weight:800;letter-spacing:.06em;
+  padding:4px 10px;border-radius:999px;text-transform:uppercase;
+}
+.juego-badge.hot{background:var(--rojo);color:#fff}
+.juego-badge.new{background:#00aa44;color:#fff}
+
+/* Body */
+.juego-body{padding:20px}
+.juego-title{
+  font-family:var(--font-d);font-size:1.1rem;letter-spacing:1.5px;
+  margin-bottom:8px;color:var(--blanco);
+}
+.juego-desc{font-size:.82rem;color:var(--gris);line-height:1.6;margin-bottom:12px}
+.juego-tags{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:16px}
+.jtag{
+  font-size:.62rem;padding:3px 10px;border-radius:999px;
+  border:1px solid var(--borde-azul);color:var(--azul2);
+  letter-spacing:.06em;text-transform:uppercase;
+}
+
+/* Precio y botón */
+.juego-price-row{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.juego-price{
+  font-family:var(--font-d);font-size:1.4rem;letter-spacing:1px;color:var(--blanco);
+}
+.juego-price span{font-size:.75rem;color:var(--gris);letter-spacing:.08em}
+.soon-price{font-size:1rem;color:var(--gris);letter-spacing:2px}
+.juego-btn{
+  padding:9px 20px;
+  background:var(--rojo);color:#fff;
+  font-family:var(--font-d);font-size:.82rem;letter-spacing:2px;
+  border:none;border-radius:8px;cursor:pointer;
+  transition:all var(--t);white-space:nowrap;
+}
+.juego-btn:hover{background:var(--rojo2);transform:translateY(-2px);box-shadow:0 4px 16px var(--rojo-glow)}
+
+/* Promo pack */
+.juegos-promo{
+  background:linear-gradient(135deg,rgba(196,18,48,.1),rgba(255,215,0,.05));
+  border:1px solid rgba(255,215,0,.2);
+  border-radius:16px;padding:28px 32px;
+  display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;
+}
+.juegos-promo-tag{
+  font-size:.65rem;font-weight:800;letter-spacing:.15em;
+  color:var(--dorado);margin-bottom:8px;
+}
+.juegos-promo-title{
+  font-family:var(--font-d);font-size:1.8rem;letter-spacing:2px;color:var(--dorado);margin-bottom:4px;
+}
+.juegos-promo-sub{font-size:.85rem;color:var(--gris)}
+.juegos-promo-price{
+  font-family:var(--font-d);font-size:2.8rem;letter-spacing:2px;color:var(--dorado);
+  white-space:nowrap;
+}
+.juegos-promo-price span{font-size:1rem;color:var(--gris)}
+.juegos-promo-right{display:flex;flex-direction:column;align-items:center;gap:12px}
+
+/* Responsive juegos */
+@media(max-width:900px){
+  .juegos-container{padding:0 20px}
+  .juegos-grid{grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:16px}
+}
+@media(max-width:480px){
+  .juegos-section{padding:60px 0}
+  .juegos-grid{grid-template-columns:1fr}
+  .juegos-promo{flex-direction:column;text-align:center}
+  .juegos-promo-right{width:100%}
+  .juego-btn{width:100%;text-align:center}
+}
+═══════════════════════════════════════════ */
+.next-section{
+  padding:100px 40px;border-top:1px solid var(--borde);text-align:center;
+}
+.next-label{font-family:var(--font-d);font-size:1.1rem;letter-spacing:4px;color:rgba(255,255,255,.1)}
+
+/* ═══════════════════════════════════════════
+   CÓMO COMPRAR
+═══════════════════════════════════════════ */
+.comprar-section{
+  padding:90px 0 80px;
+  background:var(--fondo);
+  position:relative;overflow:hidden;
+}
+.comprar-section::before{
+  content:'';position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse at 50% 0%,rgba(196,18,48,.05) 0%,transparent 60%);
+}
+.comprar-container{max-width:1300px;margin:0 auto;padding:0 40px}
+
+/* Pasos */
+.pasos-grid{
+  display:flex;align-items:flex-start;
+  gap:0;margin-bottom:48px;
+  overflow-x:auto;padding-bottom:8px;
+}
+.paso{
+  flex:1;min-width:180px;
+  text-align:center;padding:28px 16px;
+  background:var(--card);
+  border:1px solid var(--borde);
+  border-radius:16px;
+  position:relative;
+  transition:all var(--t);
+}
+.paso:hover{
+  border-color:var(--borde-rojo);
+  transform:translateY(-5px);
+  box-shadow:0 16px 40px rgba(0,0,0,.3);
+}
+.paso-num{
+  position:absolute;top:-14px;left:50%;transform:translateX(-50%);
+  font-family:var(--font-d);font-size:.75rem;letter-spacing:2px;
+  background:var(--rojo);color:#fff;
+  padding:3px 12px;border-radius:999px;
+}
+.paso-icon{font-size:2.2rem;margin-bottom:12px;margin-top:8px}
+.paso-title{
+  font-family:var(--font-d);font-size:.9rem;letter-spacing:2px;
+  color:var(--blanco);margin-bottom:8px;
+}
+.paso-desc{font-size:.78rem;color:var(--gris);line-height:1.6}
+.paso-desc strong{color:var(--blanco)}
+
+.paso-metodos{
+  display:flex;gap:6px;justify-content:center;flex-wrap:wrap;margin-top:10px;
+}
+.paso-metodo{
+  font-size:.68rem;font-weight:700;
+  padding:3px 10px;border-radius:999px;
+  background:rgba(255,255,255,.06);
+  border:1px solid var(--borde);color:var(--gris);
+}
+
+.paso-arrow{
+  display:flex;align-items:center;justify-content:center;
+  color:var(--rojo2);font-size:1.2rem;
+  padding:0 8px;flex-shrink:0;margin-top:60px;
+  opacity:.6;
+}
+
+/* Notas */
+.comprar-notas{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:16px;margin-bottom:40px;
+}
+.comprar-nota{
+  display:flex;align-items:flex-start;gap:12px;
+  padding:16px 18px;
+  background:var(--card);
+  border:1px solid var(--borde);border-radius:12px;
+}
+.comprar-nota span{font-size:1.4rem;flex-shrink:0}
+.comprar-nota strong{
+  display:block;font-size:.82rem;color:var(--blanco);margin-bottom:4px;
+}
+.comprar-nota p{font-size:.75rem;color:var(--gris);line-height:1.5}
+
+/* CTA */
+.comprar-cta{
+  display:flex;align-items:center;justify-content:center;
+  gap:16px;flex-wrap:wrap;
+}
+
+/* Responsive */
+@media(max-width:900px){
+  .pasos-grid{flex-direction:column;align-items:stretch}
+  .paso-arrow{transform:rotate(90deg);margin:4px auto}
+  .comprar-notas{grid-template-columns:repeat(2,1fr)}
+  .comprar-container{padding:0 24px}
+}
+@media(max-width:480px){
+  .comprar-section{padding:60px 0}
+  .comprar-notas{grid-template-columns:1fr}
+  .comprar-cta{flex-direction:column;align-items:stretch}
+  .comprar-cta .btn-primary,.comprar-cta .nav-wa{width:100%;text-align:center;justify-content:center}
+}
+
+/* ═══════════════════════════════════════════
+   REDES SOCIALES
+═══════════════════════════════════════════ */
+.redes-section{
+  padding:90px 0 80px;
+  background:var(--fondo);
+  position:relative;overflow:hidden;
+}
+.redes-container{max-width:1400px;margin:0 auto;padding:0 40px}
+
+.redes-grid{
+  display:grid;
+  grid-template-columns:repeat(3,1fr);
+  gap:22px;
+}
+
+.red-card{
+  background:var(--card);
+  border:1px solid var(--borde);
+  border-radius:16px;overflow:hidden;
+  display:flex;flex-direction:column;
+  transition:all var(--t);
+}
+.red-card:hover{transform:translateY(-5px);box-shadow:0 20px 50px rgba(0,0,0,.4)}
+
+/* Header de cada red */
+.red-header{
+  display:flex;align-items:center;gap:14px;
+  padding:16px 20px;
+  border-bottom:1px solid var(--borde);
+}
+.red-tiktok{background:rgba(0,0,0,.3);border-bottom-color:rgba(255,255,255,.08)}
+.red-youtube{background:rgba(255,0,0,.08);border-bottom-color:rgba(255,0,0,.15)}
+.red-instagram{background:linear-gradient(135deg,rgba(225,48,108,.08),rgba(131,58,180,.08));border-bottom-color:rgba(225,48,108,.15)}
+
+.red-icon{width:28px;height:28px;flex-shrink:0}
+.red-tiktok .red-icon{color:#fff}
+.red-youtube .red-icon{color:#FF0000}
+.red-instagram .red-icon{color:#E1306C;fill:none}
+
+.red-name{font-family:var(--font-d);font-size:1rem;letter-spacing:2px;color:var(--blanco)}
+.red-handle{font-size:.75rem;color:var(--gris);margin-top:2px}
+
+/* Preview iframe */
+.red-preview{
+  flex:1;
+  min-height:400px;
+  background:var(--fondo3);
+  overflow:hidden;
+}
+
+/* Botón */
+.red-btn{
+  display:flex;align-items:center;justify-content:center;
+  padding:13px;
+  font-family:var(--font-d);font-size:.82rem;letter-spacing:2px;
+  border:none;cursor:pointer;text-decoration:none;
+  transition:all var(--t);color:#fff;
+}
+.red-btn-tiktok{background:#000}
+.red-btn-tiktok:hover{background:#111;filter:brightness(1.3)}
+.red-btn-youtube{background:#FF0000}
+.red-btn-youtube:hover{background:#cc0000}
+.red-btn-instagram{background:linear-gradient(135deg,#E1306C,#833AB4)}
+.red-btn-instagram:hover{filter:brightness(1.15)}
+
+/* Responsive */
+@media(max-width:900px){
+  .redes-grid{grid-template-columns:1fr}
+  .redes-container{padding:0 24px}
+  .red-preview{min-height:300px}
+}
+@media(max-width:480px){
+  .redes-section{padding:60px 0}
+}
+
+/* ═══════════════════════════════════════════
+   FOOTER
+═══════════════════════════════════════════ */
+.footer{
+  background:rgba(5,6,14,1);
+  border-top:1px solid var(--borde-rojo);
+}
+.footer-container{
+  max-width:1200px;margin:0 auto;padding:0 40px;
+}
+
+/* Top */
+.footer-top{padding:60px 0 48px}
+.footer-top .footer-container{
+  display:grid;
+  grid-template-columns:1.6fr 1fr 1fr 1fr;
+  gap:40px;
+}
+
+/* Brand */
+.footer-brand{}
+.footer-logo{
+  width:180px;height:130px;border-radius:10px;
+  overflow:hidden;margin-bottom:16px;
+  background:transparent;
+}
+.footer-logo img{width:100%;height:100%}
+.footer-logos{display:flex;align-items:center;gap:16px;margin-bottom:16px}
+.footer-engine-logo{
+  width:80px;height:80px;border-radius:10px;
+  overflow:hidden;background:transparent;
+}
+.footer-engine-logo img{width:100%;height:100%;object-fit:contain}
+.footer-desc{
+  font-size:.82rem;color:var(--gris);line-height:1.7;
+  margin-bottom:20px;max-width:260px;
+}
+.footer-socials{display:flex;gap:10px}
+.footer-social{
+  width:38px;height:38px;border-radius:9px;
+  display:flex;align-items:center;justify-content:center;
+  background:rgba(255,255,255,.06);
+  border:1px solid var(--borde);
+  color:var(--gris);transition:all var(--t);
+}
+.footer-social svg{width:16px;height:16px}
+.footer-social:hover{
+  background:rgba(196,18,48,.15);
+  border-color:var(--borde-rojo);
+  color:var(--blanco);transform:translateY(-2px);
+}
+
+/* Nav columns */
+.footer-nav h4.footer-nav-title{
+  font-family:var(--font-d);font-size:.85rem;letter-spacing:3px;
+  color:var(--blanco);margin-bottom:16px;
+  padding-bottom:8px;border-bottom:1px solid var(--borde-rojo);
+  width:fit-content;
+}
+.footer-nav ul{display:flex;flex-direction:column;gap:8px}
+.footer-nav ul li a{
+  font-size:.82rem;color:var(--gris);cursor:pointer;
+  transition:color var(--t);
+}
+.footer-nav ul li a:hover{color:var(--rojo2)}
+
+.footer-horario{
+  display:flex;align-items:flex-start;gap:10px;
+  margin-top:20px;padding:12px 14px;
+  background:rgba(255,255,255,.03);
+  border:1px solid var(--borde);border-radius:10px;
+  font-size:.78rem;color:var(--gris);line-height:1.6;
+}
+.footer-horario strong{color:var(--blanco)}
+.footer-horario span:first-child{font-size:1.1rem;flex-shrink:0}
+
+/* Bottom */
+.footer-bottom{
+  border-top:1px solid var(--borde);
+  padding:18px 0;
+}
+.footer-bottom .footer-container{
+  display:flex;align-items:center;justify-content:space-between;
+  gap:16px;flex-wrap:wrap;
+}
+.footer-bottom p{font-size:.75rem;color:var(--gris2)}
+.footer-bottom strong{color:var(--gris)}
+
+/* Responsive footer */
+@media(max-width:900px){
+  .footer-top .footer-container{grid-template-columns:1fr 1fr;gap:32px}
+  .footer-container{padding:0 24px}
+}
+@media(max-width:480px){
+  .footer-top .footer-container{grid-template-columns:1fr}
+  .footer-top{padding:40px 0 32px}
+  .footer-bottom .footer-container{flex-direction:column;text-align:center}
+}
+
+/* ═══════════════════════════════════════════
+   MODAL JUEGO INDIVIDUAL
+═══════════════════════════════════════════ */
+.juego-modal{
+  position:fixed;inset:0;z-index:500;
+  background:rgba(0,0,0,.85);backdrop-filter:blur(10px);
+  display:flex;align-items:flex-start;justify-content:center;
+  padding:20px;overflow-y:auto;
+  opacity:0;pointer-events:none;transition:opacity .3s ease;
+}
+.juego-modal.active{opacity:1;pointer-events:all}
+.juego-modal-box{
+  background:var(--fondo2);border:1px solid var(--borde-rojo);
+  border-radius:20px;max-width:900px;width:100%;margin:auto;
+  overflow:hidden;transform:translateY(30px);
+  transition:transform .3s cubic-bezier(.4,0,.2,1);position:relative;
+}
+.juego-modal.active .juego-modal-box{transform:translateY(0)}
+.jm-close{
+  position:absolute;top:16px;right:16px;z-index:10;
+  width:36px;height:36px;border-radius:10px;
+  background:rgba(0,0,0,.5);border:1px solid var(--borde);
+  color:var(--gris);font-size:1rem;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;
+  transition:all var(--t);backdrop-filter:blur(8px);
+}
+.jm-close:hover{background:var(--rojo);border-color:var(--rojo);color:#fff}
+.jm-banner{width:100%;height:280px;position:relative;overflow:hidden;background:var(--fondo3)}
+.jm-banner img{width:100%;height:100%;object-fit:cover}
+.jm-banner-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(13,15,26,.95) 0%,transparent 60%)}
+.jm-banner-info{position:absolute;bottom:24px;left:28px;right:28px;z-index:2}
+.jm-title{font-family:var(--font-d);font-size:2rem;letter-spacing:3px;margin-bottom:6px}
+.jm-tags{display:flex;gap:6px;flex-wrap:wrap}
+.jm-body{padding:28px}
+.jm-grid{display:grid;grid-template-columns:1.4fr 1fr;gap:24px;margin-bottom:24px}
+.jm-video-wrap{aspect-ratio:16/9;border-radius:12px;overflow:hidden;background:var(--fondo3);border:1px solid var(--borde)}
+.jm-video-wrap iframe{width:100%;height:100%;border:none}
+.jm-video-ph{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px}
+.jm-video-ph-icon{font-size:2.5rem;opacity:.3}
+.jm-video-ph-text{font-size:.72rem;color:var(--gris);font-family:'Courier New',monospace;text-align:center;padding:0 16px}
+.jm-info{display:flex;flex-direction:column;gap:14px}
+.jm-desc{font-size:.87rem;color:var(--gris);line-height:1.75}
+.jm-desc strong{color:var(--blanco)}
+.jm-req-title{font-family:var(--font-d);font-size:.88rem;letter-spacing:2px;color:var(--azul2);margin-bottom:8px}
+.jm-req-grid{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.jm-req-item{background:rgba(255,255,255,.03);border:1px solid var(--borde);border-radius:8px;padding:8px 10px}
+.jm-req-label{font-size:.6rem;font-weight:800;letter-spacing:.1em;color:var(--gris);text-transform:uppercase;margin-bottom:2px}
+.jm-req-val{font-size:.78rem;color:var(--blanco);font-weight:700}
+.jm-gallery{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:22px}
+.jm-gallery-img{aspect-ratio:16/9;border-radius:8px;overflow:hidden;background:var(--fondo3);border:1px solid var(--borde);cursor:pointer;transition:all var(--t)}
+.jm-gallery-img:hover{border-color:var(--borde-rojo);transform:scale(1.04)}
+.jm-gallery-img img{width:100%;height:100%;object-fit:cover}
+.jm-gallery-ph{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px}
+.jm-gallery-ph span{font-family:'Courier New',monospace;font-size:8px;color:rgba(255,255,255,.25);text-align:center;padding:0 4px}
+.jm-footer{display:flex;align-items:center;justify-content:space-between;padding-top:18px;border-top:1px solid var(--borde);gap:16px;flex-wrap:wrap}
+.jm-price{font-family:var(--font-d);font-size:2rem;letter-spacing:2px;color:var(--blanco)}
+.jm-price span{font-size:.85rem;color:var(--gris)}
+.jm-cta{padding:13px 30px;background:var(--rojo);color:#fff;font-family:var(--font-d);font-size:1rem;letter-spacing:3px;border:none;border-radius:10px;cursor:pointer;box-shadow:0 4px 20px var(--rojo-glow);transition:all var(--t)}
+.jm-cta:hover{background:var(--rojo2);transform:translateY(-2px)}
+@media(max-width:700px){
+  .jm-grid{grid-template-columns:1fr}
+  .jm-gallery{grid-template-columns:repeat(2,1fr)}
+  .jm-banner{height:200px}
+  .jm-title{font-size:1.5rem}
+  .jm-body{padding:16px}
+}
+
+/* ═══════════════════════════════════════════
+   RESPONSIVE
+═══════════════════════════════════════════ */
+/* ═══════════════════════════════════════════
+   RESPONSIVE COMPLETO
+═══════════════════════════════════════════ */
+/* Pantallas grandes 1400px+ */
+@media(min-width:1400px){
+  .hero-inner{max-width:1300px}
+  .nos-container{max-width:1200px}
+}
+
+/* Tablets y laptops pequeñas 900-1200px */
+@media(max-width:1200px){
+  .nav{padding:0 20px}
+  .nav-link{padding:8px 10px;font-size:.72rem}
+  .hero-inner{padding:40px 32px;gap:32px}
+  .nos-container{padding:0 32px}
+}
+
+/* Tablets 900px */
+@media(max-width:900px){
+  .nav-links,.nav-cta,.nav-wa{display:none}
+  .hamburger{display:flex}
+  .mobile-menu{display:flex}
+  .hero-inner{grid-template-columns:1fr;padding:40px 24px 80px;gap:32px}
+  .hero-right{order:-1}
+  .hero-logo-wrap{width:min(260px,70%)}
+  .hero-stats{gap:18px;flex-wrap:wrap}
+  .hero-socials{flex-wrap:wrap;justify-content:center}
+  .scroll-indicator{display:none}
+  .nos-grid{grid-template-columns:1fr;gap:36px}
+  .nos-img-wrap{max-width:320px;margin:0 auto}
+  .nos-stats{grid-template-columns:repeat(2,1fr)}
+  .nos-container{padding:0 24px}
+  .carousel-btn.prev{left:8px}
+  .carousel-btn.next{right:8px}
+  .carousel-btn{width:38px;height:38px}
+  .modal-box{grid-template-columns:1fr;max-width:480px}
+  .modal-left{display:none}
+}
+
+/* Mobile grande 600px */
+@media(max-width:600px){
+  .carousel{aspect-ratio:16/7}
+  .noticias-section{padding:50px 0 40px}
+  .nosotros-section{padding:60px 0}
+  .hero-title{font-size:clamp(2.6rem,10vw,3.8rem)}
+  .nos-stats{grid-template-columns:repeat(2,1fr);gap:12px}
+  .modal-right{padding:24px 18px;gap:14px}
+}
+
+/* Mobile pequeño 480px */
+@media(max-width:480px){
+  .hero-btns{flex-direction:column}
+  .btn-primary,.btn-ghost{width:100%;text-align:center;justify-content:center}
+  .hero-stats{gap:12px}
+  .hero-stat{padding-left:12px}
+  .hero-stat-num{font-size:1.6rem}
+  .nos-img-wrap{max-width:260px}
+  .sec-title{font-size:1.8rem}
+  .nos-stat-num{font-size:1.8rem}
+  .modal-right{padding:20px 14px}
+  .modal-title{font-size:1.3rem}
+  .nav{padding:0 14px}
+  .nav-brand{font-size:1rem;letter-spacing:2px}
+}
+
+/* Mobile muy pequeño 360px */
+@media(max-width:360px){
+  .hero-title{font-size:2.2rem}
+  .nos-stats{grid-template-columns:1fr 1fr}
+  .hero-eyebrow{font-size:.6rem;padding:4px 10px}
+}
+#jmGallery{display:none!important}
+</style>
+</head>
+<body>
+
+<!-- ══ NAV ══ -->
+<nav class="nav" id="mainNav">
+  <div class="nav-logo" onclick="scrollTo({top:0,behavior:'smooth'})">
+    <span class="nav-brand">EL <span>R3DDY</span> INTERACTIVE GAMES</span>
+  </div>
+  <div class="nav-links">
+    <button class="nav-link active" onclick="navTo('inicio')">Inicio</button>
+    <button class="nav-link" onclick="navTo('noticias')">Noticias</button>
+    <button class="nav-link" onclick="navTo('nosotros')">Nosotros</button>
+    <button class="nav-link" onclick="navTo('juegos')">Juegos</button>
+    <button class="nav-link" onclick="navTo('servicios')">Servicios</button>
+    <button class="nav-link" onclick="navTo('engine')">R1 Engine</button>
+    <button class="nav-link" onclick="navTo('faq')">FAQ</button>
+  </div>
+  <a href="#" onclick="abrirContacto(event)" class="nav-wa">
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+    CONTÁCTANOS
+  </a>
+  <button class="nav-cta" onclick="navTo('juegos')">🎮 COMPRAR</button>
+  <button class="hamburger" id="hmb" aria-label="Menú"><span></span><span></span><span></span></button>
+</nav>
+
+<!-- ══ MOBILE MENU ══ -->
+<div class="mobile-menu" id="mobileMenu">
+  <button class="mobile-nav-link" onclick="navTo('inicio')"><div data-ph class="mobile-nav-icon"><div class="ph"><span class="ph-name">nav-inicio.png</span></div></div>Inicio</button>
+  <button class="mobile-nav-link" onclick="navTo('noticias')"><div data-ph class="mobile-nav-icon"><div class="ph"><span class="ph-name">nav-noticias.png</span></div></div>Noticias</button>
+  <button class="mobile-nav-link" onclick="navTo('nosotros')"><div data-ph class="mobile-nav-icon"><div class="ph"><span class="ph-name">nav-nosotros.png</span></div></div>Nosotros</button>
+  <button class="mobile-nav-link" onclick="navTo('juegos')"><div data-ph class="mobile-nav-icon"><div class="ph"><span class="ph-name">nav-juegos.png</span></div></div>Juegos</button>
+  <button class="mobile-nav-link" onclick="navTo('servicios')"><div data-ph class="mobile-nav-icon"><div class="ph"><span class="ph-name">nav-servicios.png</span></div></div>Servicios</button>
+  <button class="mobile-nav-link" onclick="navTo('engine')"><div data-ph class="mobile-nav-icon"><div class="ph"><span class="ph-name">nav-engine.png</span></div></div>R1 Engine</button>
+  <button class="mobile-nav-link" onclick="navTo('faq')"><div data-ph class="mobile-nav-icon"><div class="ph"><span class="ph-name">nav-faq.png</span></div></div>FAQ</button>
+  <a href="#" onclick="abrirContacto(event)" class="mobile-wa">
+    <svg viewBox="0 0 24 24" width="18" height="18" fill="#25D366" style="display:inline;vertical-align:middle;margin-right:8px"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+    CONTÁCTANOS
+  </a>
+  <button class="mobile-cta" onclick="navTo('juegos')">🎮 COMPRAR AHORA</button>
+</div>
+
+<!-- ══ HERO ══ -->
+<section class="hero" id="inicio">
+  <div class="hero-bg">
+    <video id="heroBgVideo" autoplay muted loop playsinline
+      style="width:100%;height:100%;object-fit:cover;position:absolute;inset:0;opacity:0;transition:opacity 1s ease">
+    </video>
+    <div class="hero-bg-ph" id="heroBgPh">
+      <span class="hero-bg-ph-icon">🎬</span>
+      <span class="hero-bg-ph-label">hero-bg.mp4</span>
+      <span class="hero-bg-ph-size">1920 × 1080 px · MP4</span>
+    </div>
+  </div>
+  <div class="hero-grid"></div>
+  <div class="hero-overlay"></div>
+  <div class="hero-particles" id="hParticles"></div>
+  <div class="scroll-indicator">
+    <div class="scroll-mouse"><div class="scroll-wheel"></div></div>
+    <span class="scroll-label">Scroll</span>
+  </div>
+  <div class="hero-inner">
+    <div class="hero-left">
+      <div class="hero-eyebrow"><span class="eyebrow-dot"></span>Juegos Interactivos para TikTok Live</div>
+      <h1 class="hero-title">EL <span class="red">R3DDY</span><br><span class="blue">INTERACTIVE</span><br>GAMES</h1>
+      <p class="hero-powered">Powered by R3DDY Engine 1</p>
+      <p class="hero-desc">Haz que tu audiencia sea parte del juego. <strong>6 juegos disponibles</strong> diseñados para streamers que quieren llevar sus lives al siguiente nivel. <strong>Tu chat juega contigo en tiempo real.</strong></p>
+      <div class="hero-btns">
+        <button class="btn-primary" onclick="navTo('juegos')">🎮 VER JUEGOS</button>
+        <button class="btn-ghost" onclick="navTo('nosotros')">CONOCE R3DDY</button>
+      </div>
+      <div class="hero-stats">
+        <div class="hero-stat"><div class="hero-stat-num">6+</div><div class="hero-stat-label">Juegos<br>disponibles</div></div>
+        <div class="hero-stat"><div class="hero-stat-num">6</div><div class="hero-stat-label">Niveles de<br>interacción</div></div>
+        <div class="hero-stat"><div class="hero-stat-num">R1</div><div class="hero-stat-label">R3DDY<br>Engine</div></div>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="hero-logo-wrap">
+        <div class="hero-logo-inner" data-ph>
+          <img src="assets/img/logo.png" alt="El R3DDY Interactive Games" style="object-fit:contain">
+          <div class="ph"><span class="ph-icon">🎮</span><span class="ph-name">logo.png</span><span class="ph-size">400 × 400 px · PNG</span></div>
+        </div>
+      </div>
+      <div class="hero-socials">
+        <a href="http://tiktok.com/@el_r3ddy" target="_blank" rel="noopener" class="hero-social-btn">
+          <svg viewBox="0 0 24 24"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.27 8.27 0 0 0 4.84 1.56V6.78a4.85 4.85 0 0 1-1.07-.09z"/></svg>TikTok
+        </a>
+        <a href="http://youtube.com/@el_r3ddy" target="_blank" rel="noopener" class="hero-social-btn">
+          <svg viewBox="0 0 24 24"><path d="M23.5 6.19a3.02 3.02 0 0 0-2.12-2.14C19.54 3.5 12 3.5 12 3.5s-7.54 0-9.38.55A3.02 3.02 0 0 0 .5 6.19 31.6 31.6 0 0 0 0 12a31.6 31.6 0 0 0 .5 5.81 3.02 3.02 0 0 0 2.12 2.14C4.46 20.5 12 20.5 12 20.5s7.54 0 9.38-.55a3.02 3.02 0 0 0 2.12-2.14A31.6 31.6 0 0 0 24 12a31.6 31.6 0 0 0-.5-5.81zM9.75 15.5v-7l6.25 3.5-6.25 3.5z"/></svg>YouTube
+        </a>
+        <a href="https://www.instagram.com/el_r3ddy/?hl=es-la" target="_blank" rel="noopener" class="hero-social-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.5" fill="currentColor" stroke="none"/></svg>Instagram
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="hero-line"></div>
+</section>
+
+<!-- ══ SECCIÓN 2 — NOTICIAS ══ -->
+<section class="noticias-section" id="noticias">
+  <div class="sec-header reveal">
+    <div class="sec-tag"><span class="sec-tag-dot"></span>Noticias y novedades</div>
+    <h2 class="sec-title">LO ÚLTIMO DE <span>R3DDY</span></h2>
+    <p class="sec-sub">Actualizaciones, nuevos juegos y noticias del mundo El R3DDY Interactive Games.</p>
+  </div>
+  <div class="carousel-wrap reveal d1">
+    <div class="carousel" id="carousel" onmouseenter="pauseCarousel()" onmouseleave="resumeCarousel()">
+      <div class="carousel-loading" id="carouselLoading">
+        <div class="loading-spinner"></div>
+        <span class="loading-text">Cargando noticias...</span>
+      </div>
+      <div class="carousel-counter"><span id="cCurrent">1</span> / <span id="cTotal">—</span></div>
+      <div class="carousel-track" id="carouselTrack"></div>
+      <div class="carousel-progress"><div class="carousel-progress-bar" id="progressBar"></div></div>
+    </div>
+    <button class="carousel-btn prev" onclick="moveCarousel(-1)" aria-label="Anterior">
+      <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <button class="carousel-btn next" onclick="moveCarousel(1)" aria-label="Siguiente">
+      <svg viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+    </button>
+    <div class="carousel-dots" id="carouselDots"></div>
+  </div>
+</section>
+
+<!-- ══ SECCIONES PRÓXIMAS ══ -->
+<!-- ══ SECCIÓN 3 — ACERCA DE NOSOTROS ══ -->
+<section class="nosotros-section" id="nosotros">
+  <div class="nos-bg-deco"></div>
+  <div class="nos-wrapper">
+
+    <!-- Imagen lateral izquierda -->
+    <div class="nos-img-lateral">
+      <img src="assets/img/about-photo.png" alt="El R3DDY">
+    </div>
+
+    <!-- Contenido derecho -->
+    <div class="nos-container">
+
+      <!-- Header -->
+      <div class="sec-header reveal">
+        <div class="sec-tag"><span class="sec-tag-dot"></span>Quiénes somos</div>
+        <h2 class="sec-title">ACERCA DE <span>NOSOTROS</span></h2>
+      </div>
+
+      <!-- Texto -->
+      <div class="nos-right">
+
+        <p class="nos-text reveal d1">
+          Soy <strong>Edgar</strong>, más conocido como <strong class="red">El R3DDY</strong> — un nombre que tiene su historia.
+          <strong>R3DDY</strong> nació de dos cosas: primero, es un diminutivo que yo mismo construí de mi nombre —
+          Edgar, Eddy, R3DDY. Segundo, tenía un control rojo que amaba tanto que siempre que lo configuraba
+          en emuladores o cualquier juego, lo guardaba como <strong>R3D</strong>. Junté las dos cosas, le agregué
+          personalidad, y cuando abrí mi canal de TikTok hace tres años para hacer lives, el nombre llegó solo: <strong class="red">El R3DDY</strong>.
+        </p>
+
+        <p class="nos-text reveal d2">
+          Con más de una década viviendo de las redes sociales, descubrí algo que nadie estaba resolviendo bien:
+          los juegos interactivos para streamers eran pocos, básicos, y ninguno se sentía especial.
+          Siempre he creído que <strong>en una fiebre de oro, el que realmente se vuelve rico no es el que busca oro
+          — es el que vende las palas.</strong> Decidí construir las palas de los streamers.
+        </p>
+
+        <p class="nos-text reveal d3">
+          El <strong class="red">15 de enero de 2026</strong> nació El R3DDY Interactive Games. No fue una fecha cualquiera.
+          Ese mismo día perdí a <strong>Nugget</strong>, mi compañero de vida, víctima de la enfermedad de Addison.
+          Nugget era parte de una familia de perritos que sigue viva y coleando —
+          <strong>Chilaquil, Huitla, Copito, Moccachino, Tequila y Mozzarella</strong> llenan la casa de ruido y amor
+          todos los días, y recuerdan junto a nosotros a <strong>Kiraya y Hércules</strong>, que también nos dejaron su huella.
+          Para que Nugget viviera para siempre, lo puse en el logo con su collar verde. Corre ahí en cada pantalla,
+          en cada juego, en cada live.
+        </p>
+
+        <p class="nos-text reveal d4">
+          Ese dolor lo convertí en disciplina. Porque ese mismo día también recibí la noticia más bonita de mi vida.
+          Nuestros juegos corren sobre el <strong class="blue">R3DDY Engine 1</strong>, nuestra tecnología propia construida desde cero.
+          Pero yo corro con otro motor — el que generan en mí <strong>mi compañera de vida, mi novia,
+          y nuestra primera bebé en camino.</strong>
+        </p>
+
+        <p class="nos-text nos-italic reveal d5">
+          Cada juego que hacemos lleva amor y atención al detalle. Como si lo fuéramos a jugar nosotros mismos.
+        </p>
+
+        <!-- Dedicatoria -->
+        <div class="nos-dedicatoria reveal d5">
+          <p>Dedicado a mi compañera de vida, mi pareja, y a nuestra primera bebé — mi motor de vida.</p>
+          <span class="nos-firma">El R3DDY 🎮🤍</span>
+        </div>
+
+      </div>
+
+      <!-- Stats de la empresa -->
+      <div class="nos-stats reveal d2" style="display:none">
+        <div class="nos-stat"><div class="nos-stat-num">2026</div><div class="nos-stat-label">Año de fundación</div></div>
+        <div class="nos-stat"><div class="nos-stat-num">5+</div><div class="nos-stat-label">Juegos desarrollados</div></div>
+        <div class="nos-stat"><div class="nos-stat-num">10+</div><div class="nos-stat-label">Años en redes sociales</div></div>
+        <div class="nos-stat"><div class="nos-stat-num">R1</div><div class="nos-stat-label">Motor propio</div></div>
+      </div>
+
+    </div><!-- fin nos-container -->
+  </div><!-- fin nos-wrapper -->
+</section>
+<!-- ══ SECCIÓN 5 — CATÁLOGO DE JUEGOS ══ -->
+<section class="juegos-section" id="juegos">
+  <div class="juegos-container">
+
+    <!-- Header -->
+    <div class="sec-header reveal">
+      <div class="sec-tag"><span class="sec-tag-dot"></span>Catálogo</div>
+      <h2 class="sec-title">NUESTROS <span>JUEGOS</span></h2>
+      <p class="sec-sub">Diseñados para streamers. Cada juego convierte a tu audiencia en parte de la acción.</p>
+    </div>
+
+    <!-- Grid de juegos -->
+    <div class="juegos-grid">
+
+      <!-- R3DDY SURVIVAL RUMBLE -->
+      <div class="juego-card reveal d1" onclick="abrirJuego('survival')">
+        <div class="juego-thumb" data-ph>
+          <img src="assets/img/juego-survival-card.jpg" alt="R3DDY Survival Rumble">
+          <div class="ph"><span class="ph-icon">🎮</span><span class="ph-name">juego-survival-card.jpg</span><span class="ph-size">600 × 400 px · JPG</span></div>
+        </div>
+        <div class="juego-body">
+          <h3 class="juego-title">R3DDY SURVIVAL RUMBLE</h3>
+          <p class="juego-desc">Sobrevive con la ayuda (o en contra) de tu chat. Cada donación cambia el juego.</p>
+          <div class="juego-status status-done">✅ Juego terminado</div>
+          <div class="juego-tags">
+            <span class="jtag">Supervivencia</span>
+            <span class="jtag">TikTok Live</span>
+            <span class="jtag">Multijugador</span>
+          </div>
+          <div class="juego-price-row">
+            <div class="juego-price">$26 <span>USD</span></div>
+            <button class="juego-btn" onclick="event.stopPropagation();window.open(STRIPE_LINKS.survival,'_blank')">COMPRAR</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- TACOMANIA -->
+      <div class="juego-card reveal d2" onclick="abrirJuego('tacomania')">
+        <div class="juego-thumb" data-ph>
+          <img src="assets/img/juego-tacomania-card.jpg" alt="TacoManía">
+          <div class="ph"><span class="ph-icon">🌮</span><span class="ph-name">juego-tacomania-card.jpg</span><span class="ph-size">600 × 400 px · JPG</span></div>
+        </div>
+        <div class="juego-body">
+          <h3 class="juego-title">TACOMANIA</h3>
+          <p class="juego-desc">El juego más mexicano de todos. Tu chat ordena, tú cocinas contra el tiempo.</p>
+          <div class="juego-status status-done">✅ Juego terminado</div>
+          <div class="juego-tags">
+            <span class="jtag">Acción</span>
+            <span class="jtag">TikTok Live</span>
+            <span class="jtag">México</span>
+          </div>
+          <div class="juego-price-row">
+            <div class="juego-price">$26 <span>USD</span></div>
+            <button class="juego-btn" onclick="event.stopPropagation();window.open(STRIPE_LINKS.tacomania,'_blank')">COMPRAR</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- SPINBATTLE ARENA -->
+      <div class="juego-card reveal d3" onclick="abrirJuego('spinbattle')">
+        <div class="juego-thumb" data-ph>
+          <img src="assets/img/juego-spinbattle-card.jpg" alt="SpinBattle Arena">
+          <div class="ph"><span class="ph-icon">⚡</span><span class="ph-name">juego-spinbattle-card.jpg</span><span class="ph-size">600 × 400 px · JPG</span></div>
+        </div>
+        <div class="juego-body">
+          <h3 class="juego-title">SPINBATTLE ARENA</h3>
+          <p class="juego-desc">¡Invoca tu blade y domina la arena! Tu chat lanza trompos al combate con cada donación.</p>
+          <div class="juego-status status-done">✅ Juego terminado</div>
+          <div class="juego-tags">
+            <span class="jtag">Arena</span>
+            <span class="jtag">TikTok Live</span>
+            <span class="jtag">Combate</span>
+          </div>
+          <div class="juego-price-row">
+            <div class="juego-price">$26 <span>USD</span></div>
+            <button class="juego-btn" onclick="event.stopPropagation();window.open(STRIPE_LINKS.spinbattle,'_blank')">COMPRAR</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ZURVIVAL RUN -->
+      <div class="juego-card reveal d4" onclick="abrirJuego('zurvivalrun')">
+        <div class="juego-thumb" data-ph>
+          <img src="assets/img/juego-zurvivalrun-card.jpg" alt="Zurvival Run">
+          <div class="ph"><span class="ph-icon">🧟</span><span class="ph-name">juego-zurvivalrun-card.jpg</span><span class="ph-size">600 × 400 px · JPG</span></div>
+        </div>
+        <div class="juego-body">
+          <h3 class="juego-title">ZURVIVAL RUN</h3>
+          <p class="juego-desc">Corre, esquiva y sobrevive la horda zombie mientras tu chat decide tu destino.</p>
+          <div class="juego-status status-done">✅ Juego terminado</div>
+          <div class="juego-tags">
+            <span class="jtag">Zombies</span>
+            <span class="jtag">TikTok Live</span>
+            <span class="jtag">Runner</span>
+          </div>
+          <div class="juego-price-row">
+            <div class="juego-price">$26 <span>USD</span></div>
+            <button class="juego-btn" onclick="event.stopPropagation();window.open(STRIPE_LINKS.zurvivalrun,'_blank')">COMPRAR</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- ZURVIVAL DÍA DE MUERTOS -->
+      <div class="juego-card reveal d5">
+        <div class="juego-thumb juego-thumb-soon">
+          <div class="soon-content">
+            <span class="soon-icon">💀</span>
+            <span class="soon-label">EN DESARROLLO</span>
+            <span class="soon-title">ZURVIVAL DÍA DE MUERTOS</span>
+          </div>
+        </div>
+        <div class="juego-body">
+          <h3 class="juego-title">ZURVIVAL DÍA DE MUERTOS</h3>
+          <p class="juego-desc">La edición especial del Día de Muertos con modo aventura y más acción.</p>
+          <div class="juego-status status-soon">⚙️ En desarrollo</div>
+          <div class="dev-progress-wrap">
+            <div class="dev-progress-label"><span>Progreso</span><span>50%</span></div>
+            <div class="dev-progress-bar"><div class="dev-progress-fill" style="width:50%"></div></div>
+          </div>
+          <div class="juego-tags">
+            <span class="jtag">Zombies</span>
+            <span class="jtag">TikTok Live</span>
+            <span class="jtag">En desarrollo</span>
+          </div>
+          <div class="juego-price-row">
+            <div class="soon-price">PRÓXIMAMENTE</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- COMBI SIMULATOR — PRÓXIMAMENTE -->
+      <div class="juego-card juego-soon reveal d5">
+        <div class="juego-thumb juego-thumb-soon">
+          <div class="soon-content">
+            <span class="soon-icon">🚌</span>
+            <span class="soon-label">PRÓXIMAMENTE</span>
+            <span class="soon-title">COMBI SIMULATOR</span>
+          </div>
+        </div>
+        <div class="juego-body">
+          <h3 class="juego-title">COMBI SIMULATOR</h3>
+          <p class="juego-desc">Maneja la combi más caótica de la ciudad. Tu chat sube, baja y crea el caos.</p>
+          <div class="juego-status status-soon">⚙️ En desarrollo</div>
+          <div class="dev-progress-wrap">
+            <div class="dev-progress-label"><span>Progreso</span><span>20%</span></div>
+            <div class="dev-progress-bar"><div class="dev-progress-fill" style="width:20%"></div></div>
+          </div>
+          <div class="juego-tags">
+            <span class="jtag">Simulador</span>
+            <span class="jtag">TikTok Live</span>
+            <span class="jtag">México</span>
+          </div>
+          <div class="juego-price-row">
+            <div class="soon-price">PRÓXIMAMENTE</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- JUEGO DEL ALACRÁN — PRÓXIMAMENTE -->
+      <div class="juego-card juego-soon reveal d5">
+        <div class="juego-thumb juego-thumb-soon">
+          <div class="soon-content">
+            <span class="soon-icon">🦂</span>
+            <span class="soon-label">PRÓXIMAMENTE</span>
+            <span class="soon-title">JUEGO DEL ALACRÁN</span>
+          </div>
+        </div>
+        <div class="juego-body">
+          <h3 class="juego-title">JUEGO DEL ALACRÁN</h3>
+          <p class="juego-desc">Nuevo minijuego en camino. Un nuevo nivel de interacción para tu live.</p>
+          <div class="juego-status status-soon">⚙️ En desarrollo</div>
+          <div class="dev-progress-wrap">
+            <div class="dev-progress-label"><span>Progreso</span><span>30%</span></div>
+            <div class="dev-progress-bar"><div class="dev-progress-fill" style="width:30%"></div></div>
+          </div>
+          <div class="juego-tags">
+            <span class="jtag">TikTok Live</span>
+            <span class="jtag">En desarrollo</span>
+          </div>
+          <div class="juego-price-row">
+            <div class="soon-price">PRÓXIMAMENTE</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- OTZO SIMULATOR — PRÓXIMAMENTE -->
+      <div class="juego-card juego-soon reveal d5">
+        <div class="juego-thumb juego-thumb-soon">
+          <div class="soon-content">
+            <span class="soon-icon">🎮</span>
+            <span class="soon-label">PRÓXIMAMENTE</span>
+            <span class="soon-title">OTZO SIMULATOR</span>
+          </div>
+        </div>
+        <div class="juego-body">
+          <h3 class="juego-title">OTZO SIMULATOR</h3>
+          <p class="juego-desc">Simula el caos total. Tu audiencia controla el destino de cada partida.</p>
+          <div class="juego-status status-soon">⚙️ En desarrollo</div>
+          <div class="dev-progress-wrap">
+            <div class="dev-progress-label"><span>Progreso</span><span>20%</span></div>
+            <div class="dev-progress-bar"><div class="dev-progress-fill" style="width:20%"></div></div>
+          </div>
+          <div class="juego-tags">
+            <span class="jtag">Simulador</span>
+            <span class="jtag">TikTok Live</span>
+          </div>
+          <div class="juego-price-row">
+            <div class="soon-price">PRÓXIMAMENTE</div>
+          </div>
+        </div>
+      </div>
+
+    </div><!-- fin juegos-grid -->
+
+    </div>
+
+    <!-- Promo pack 3 juegos -->
+    <div class="juegos-promo reveal d2">
+      <div class="juegos-promo-left">
+        <div class="juegos-promo-tag">🔥 OFERTA ESPECIAL</div>
+        <h3 class="juegos-promo-title">PACK 3 JUEGOS</h3>
+        <p class="juegos-promo-sub">Elige cualquier 3 juegos de nuestro catálogo y ahorra.</p>
+      </div>
+      <div class="juegos-promo-right">
+        <div class="juegos-promo-price">$69 <span>USD</span></div>
+        <button class="juego-btn" onclick="window.open(STRIPE_LINKS.pack3,'_blank')">OBTENER PACK</button>
+      </div>
+    </div>
+
+  </div>
+</section>
+<!-- ══ SECCIÓN 6 — SERVICIOS ══ -->
+<section class="servicios-section" id="servicios">
+  <div class="servicios-container">
+
+    <!-- Header -->
+    <div class="sec-header reveal">
+      <div class="sec-tag"><span class="sec-tag-dot"></span>Lo que ofrecemos</div>
+      <h2 class="sec-title">NUESTROS <span>SERVICIOS</span></h2>
+      <p class="sec-sub">Más allá de los juegos. Desarrollamos experiencias digitales a la medida de tu proyecto.</p>
+    </div>
+
+    <!-- Cards de servicios -->
+    <div class="servicios-grid">
+
+      <!-- Juego personalizado -->
+      <div class="servicio-card reveal d1">
+        <div class="servicio-icon-wrap">
+          <div data-ph class="servicio-icon-img">
+            <img src="assets/img/srv-juego.png" alt="Juego personalizado">
+            <div class="ph"><span class="ph-icon">🎮</span><span class="ph-name">srv-juego.png</span><span class="ph-size">600 × 400 px · JPG</span></div>
+          </div>
+        </div>
+        <div class="servicio-body">
+          <h3 class="servicio-title">JUEGO PERSONALIZADO</h3>
+          <p class="servicio-desc">Desarrollamos un juego interactivo para TikTok Live completamente adaptado a tu nicho, personaje y estilo. Una junta creativa para aterrizar ideas y constante comunicación durante el desarrollo.</p>
+          <div class="servicio-info">
+            <div class="servicio-info-item">
+              <span class="servicio-info-label">Precio base</span>
+              <span class="servicio-info-val">$90 USD</span>
+            </div>
+            <div class="servicio-info-item">
+              <span class="servicio-info-label">Entrega</span>
+              <span class="servicio-info-val">1–7 días hábiles</span>
+            </div>
+          </div>
+          <div class="servicio-nota">⚠️ El precio puede variar según la complejidad del proyecto.</div>
+          <button class="servicio-btn" onclick="solicitarServicio('juego')">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+            SOLICITAR — $90 USD
+          </button>
+        </div>
+      </div>
+
+      <!-- VTuber -->
+      <div class="servicio-card reveal d2">
+        <div class="servicio-icon-wrap">
+          <div data-ph class="servicio-icon-img">
+            <img src="assets/img/srv-vtuber.png" alt="VTuber">
+            <div class="ph"><span class="ph-icon">👾</span><span class="ph-name">srv-vtuber.png</span><span class="ph-size">600 × 400 px · JPG</span></div>
+          </div>
+        </div>
+        <div class="servicio-body">
+          <h3 class="servicio-title">VTUBER</h3>
+          <p class="servicio-desc">Creamos tu avatar virtual personalizado para streams. Tu identidad digital con el nivel de detalle y personalidad que tu audiencia merece.</p>
+          <div class="servicio-info">
+            <div class="servicio-info-item">
+              <span class="servicio-info-label">Precio base</span>
+              <span class="servicio-info-val">$50 USD</span>
+            </div>
+            <div class="servicio-info-item">
+              <span class="servicio-info-label">Entrega</span>
+              <span class="servicio-info-val">1–7 días hábiles</span>
+            </div>
+          </div>
+          <div class="servicio-nota">⚠️ El precio puede variar según la complejidad del proyecto.</div>
+          <button class="servicio-btn" onclick="solicitarServicio('vtuber')">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+            SOLICITAR — $50 USD
+          </button>
+        </div>
+      </div>
+
+      <!-- Desarrollo web / apps -->
+      <div class="servicio-card reveal d3">
+        <div class="servicio-icon-wrap">
+          <div data-ph class="servicio-icon-img">
+            <img src="assets/img/srv-web.png" alt="Desarrollo web">
+            <div class="ph"><span class="ph-icon">💻</span><span class="ph-name">srv-web.png</span><span class="ph-size">600 × 400 px · JPG</span></div>
+          </div>
+        </div>
+        <div class="servicio-body">
+          <h3 class="servicio-title">DESARROLLO WEB / APPS</h3>
+          <p class="servicio-desc">Desarrollamos páginas web y aplicaciones a medida. Cada proyecto es único, por lo que el precio y tiempo de entrega se definen en consulta.</p>
+          <div class="servicio-info">
+            <div class="servicio-info-item">
+              <span class="servicio-info-label">Precio</span>
+              <span class="servicio-info-val">A consultar</span>
+            </div>
+            <div class="servicio-info-item">
+              <span class="servicio-info-label">Entrega</span>
+              <span class="servicio-info-val">Según proyecto</span>
+            </div>
+          </div>
+          <div class="servicio-nota">💬 Contáctanos para obtener una cotización personalizada.</div>
+          <button class="servicio-btn" onclick="solicitarServicio('web')">
+            <svg viewBox="0 0 24 24" width="15" height="15" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+            SOLICITAR COTIZACIÓN
+          </button>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Nota de atención -->
+    <div class="servicios-nota reveal d2">
+      <span>🕐</span>
+      <p>Todos los servicios personalizados se coordinan vía <strong>WhatsApp</strong>. Horario de atención: <strong>Lunes a Sábado · 11am – 7pm hora México.</strong> Solo mensajes, no llamadas.</p>
+    </div>
+
+    </div><!-- fin faq-container -->
+  </div><!-- fin faq-wrapper -->
+</section>
+<section class="engine-section" id="engine">
+
+  <!-- Fondo full width igual que el hero -->
+  <div class="engine-bg">
+    <img src="assets/img/engine-banner.jpg" alt="R3DDY Engine">
+    <div class="engine-bg-ph">
+      <span class="engine-bg-ph-icon">⚙️</span>
+      <span class="engine-bg-ph-label">engine-banner.jpg</span>
+      <span class="engine-bg-ph-size">1920 × 1080 px · JPG</span>
+    </div>
+  </div>
+
+  <!-- Overlay igual al hero -->
+  <div class="engine-overlay"></div>
+
+  <!-- Contenido encima — alineado a la derecha -->
+  <div class="engine-container">
+    <div class="engine-inner">
+      <div class="engine-content">
+        <div class="reveal">
+          <div class="sec-tag"><span class="sec-tag-dot"></span>Nuestro motor de juegos</div>
+          <h2 class="sec-title" style="text-align:left;margin-bottom:4px"><span>R1</span> ENGINE</h2>
+          <p style="font-family:var(--font-d);font-size:.85rem;letter-spacing:3px;color:var(--gris);margin-bottom:10px">R3DDY Engine 1</p>
+          <p class="sec-sub" style="text-align:left;margin:0 0 28px">El motor que impulsa cada juego de <strong style="color:var(--blanco)">El R3DDY Interactive Games</strong>. Construido desde cero, diseñado exclusivamente para streamers.</p>
+        </div>
+        <div class="engine-features-grid">
+          <div class="engine-feat reveal d1"><div class="engine-feat-icon">⚡</div><div><div class="engine-feat-title">Alto rendimiento</div><div class="engine-feat-desc">Optimizado para correr en paralelo con TikTok Live Studio sin afectar tu stream.</div></div></div>
+          <div class="engine-feat reveal d2"><div class="engine-feat-icon">🎮</div><div><div class="engine-feat-title">Interacción en tiempo real</div><div class="engine-feat-desc">6 niveles de eventos conectados a las donaciones, likes y regalos de tu audiencia.</div></div></div>
+          <div class="engine-feat reveal d3"><div class="engine-feat-icon">🔒</div><div><div class="engine-feat-title">Protección de activos</div><div class="engine-feat-desc">Cifrado AES-256 y sistema de licencias por dispositivo para proteger tu inversión.</div></div></div>
+          <div class="engine-feat reveal d4"><div class="engine-feat-icon">🖥️</div><div><div class="engine-feat-title">Windows nativo</div><div class="engine-feat-desc">Instalador profesional optimizado para Windows 10 y 11 de 64 bits.</div></div></div>
+          <div class="engine-feat reveal d5"><div class="engine-feat-icon">🎨</div><div><div class="engine-feat-title">100% personalizable</div><div class="engine-feat-desc">Cada juego se adapta al nicho y estilo del streamer. Tu marca, tu juego.</div></div></div>
+          <div class="engine-feat reveal d5"><div class="engine-feat-icon">📡</div><div><div class="engine-feat-title">Sin dependencias externas</div><div class="engine-feat-desc">Servidor local con Node.js nativo. Sin librerías externas, sin fallos en producción.</div></div></div>
+        </div>
+        <div class="engine-stats reveal d2">
+          <div class="engine-stat"><div class="engine-stat-num">6</div><div class="engine-stat-label">Niveles de<br>interacción</div></div>
+          <div class="engine-stat"><div class="engine-stat-num">AES</div><div class="engine-stat-label">Cifrado<br>256-bit</div></div>
+          <div class="engine-stat"><div class="engine-stat-num">SSE</div><div class="engine-stat-label">Eventos en<br>tiempo real</div></div>
+          <div class="engine-stat"><div class="engine-stat-num">0</div><div class="engine-stat-label">Dependencias<br>externas</div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ SECCIÓN 7 — FAQ ══ -->
+<section class="faq-section" id="faq">
+  <div class="faq-wrapper">
+
+    <!-- Imagen lateral izquierda -->
+    <div class="faq-img-lateral" data-ph>
+      <img src="assets/img/faq-lateral.png" alt="FAQ R3DDY">
+      <div class="ph">
+        <span class="ph-icon">🎮</span>
+        <span class="ph-name">faq-lateral.png</span>
+        <span class="ph-size">600 × 100% · PNG</span>
+      </div>
+    </div>
+
+    <!-- Contenido derecho -->
+    <div class="faq-container">
+
+    <!-- Header -->
+    <div class="sec-header reveal">
+      <div class="sec-tag"><span class="sec-tag-dot"></span>Preguntas frecuentes</div>
+      <h2 class="sec-title">¿TIENES <span>DUDAS</span>?</h2>
+      <p class="sec-sub">Aquí resolvemos las preguntas más comunes antes de que las hagas.</p>
+    </div>
+
+    <div class="faq-grid">
+
+      <!-- Columna izquierda -->
+      <div class="faq-col">
+
+        <div class="faq-item reveal d1">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            ¿En qué sistema operativo funcionan los juegos?
+            <span class="faq-arrow">▼</span>
+          </button>
+          <div class="faq-a">Por el momento nuestros juegos están disponibles exclusivamente para <strong>Windows 10 y Windows 11 de 64 bits.</strong> No son compatibles con Mac, Linux, celular ni tableta.</div>
+        </div>
+
+        <div class="faq-item reveal d2">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            ¿Funciona en celular o tableta?
+            <span class="faq-arrow">▼</span>
+          </button>
+          <div class="faq-a">No. Nuestros juegos están diseñados exclusivamente para <strong>PC con Windows.</strong> No son compatibles con ningún dispositivo móvil ni tableta.</div>
+        </div>
+
+        <div class="faq-item reveal d3">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            ¿Cuáles son los requisitos de mi PC?
+            <span class="faq-arrow">▼</span>
+          </button>
+          <div class="faq-a">Los requisitos varían por juego y los encuentras en la página individual de cada uno. Como referencia general necesitas Windows 10/11 de 64 bits, 8GB de RAM, tarjeta gráfica dedicada y conexión a internet de al menos 10 Mbps. Trabajamos para que nuestros juegos sean lo más optimizados posible y no le exijan demasiado a tu PC durante el live.</div>
+        </div>
+
+        <div class="faq-item reveal d4">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            ¿Para qué plataforma de streaming están diseñados?
+            <span class="faq-arrow">▼</span>
+          </button>
+          <div class="faq-a">Principalmente para <strong>TikTok Live.</strong> También son compatibles con <strong>Kick</strong> aunque con algunas limitaciones según la plataforma.</div>
+        </div>
+
+        <div class="faq-item reveal d5">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            ¿Cómo interactúa mi audiencia con el juego?
+            <span class="faq-arrow">▼</span>
+          </button>
+          <div class="faq-a">Nuestros juegos funcionan con una aplicación de terceros llamada <strong>Stream to Earn</strong>, que escucha los eventos de tu live — donaciones, likes, follows, regalos — y los envía a nuestro servidor de juego. Cada acción de tu audiencia dispara efectos en tiempo real. La configuración viene incluida con tu compra.</div>
+        </div>
+
+        <div class="faq-item reveal d5">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            ¿Puedo personalizar el juego?
+            <span class="faq-arrow">▼</span>
+          </button>
+          <div class="faq-a">Sí. Todos nuestros juegos pueden adaptarse a tu nicho y estilo. Una vez que solicitas el servicio, agendamos una <strong>junta creativa</strong> para aterrizar tus ideas. Durante el desarrollo nos mantenemos en contacto vía WhatsApp.</div>
+        </div>
+
+      </div>
+
+      <!-- Columna derecha -->
+      <div class="faq-col">
+
+        <div class="faq-item reveal d1">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            ¿Cómo recibo mi juego después de comprar?
+            <span class="faq-arrow">▼</span>
+          </button>
+          <div class="faq-a">Al confirmar tu pago recibes automáticamente un <strong>correo con tu key de activación</strong> y el enlace de descarga. Solo instalas el launcher, ingresas tu key y listo.</div>
+        </div>
+
+        <div class="faq-item reveal d2">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            ¿Puedo instalar el juego en más de una computadora?
+            <span class="faq-arrow">▼</span>
+          </button>
+          <div class="faq-a">No. Cada licencia es exclusiva para <strong>un solo dispositivo.</strong> La key queda vinculada al equipo donde se activa por primera vez.</div>
+        </div>
+
+        <div class="faq-item reveal d3">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            ¿Aceptan pagos en pesos mexicanos?
+            <span class="faq-arrow">▼</span>
+          </button>
+          <div class="faq-a">Sí. Aceptamos pagos en pesos mexicanos a través de <strong>Mercado Pago</strong> y en dólares a través de <strong>Stripe</strong> para clientes internacionales.</div>
+        </div>
+
+        <div class="faq-item reveal d4">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            ¿Tienen política de reembolsos?
+            <span class="faq-arrow">▼</span>
+          </button>
+          <div class="faq-a">No contamos con reembolsos. Te recomendamos revisar cuidadosamente los <strong>requisitos técnicos y especificaciones</strong> de cada juego antes de realizar tu compra.</div>
+        </div>
+
+        <div class="faq-item reveal d4">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            ¿De quién son los derechos de los juegos?
+            <span class="faq-arrow">▼</span>
+          </button>
+          <div class="faq-a">Todos los derechos de nuestros juegos, incluyendo diseño, código, imágenes, audio y contenido, pertenecen a <strong>El R3DDY Interactive Games</strong> — tanto los juegos del catálogo como cualquier desarrollo personalizado. Al adquirir un juego obtienes una licencia de uso personal, no exclusiva e intransferible.</div>
+        </div>
+
+        <div class="faq-item reveal d5">
+          <button class="faq-q" onclick="toggleFaq(this)">
+            ¿Cuál es el horario de atención?
+            <span class="faq-arrow">▼</span>
+          </button>
+          <div class="faq-a">Lunes a sábado de <strong>11:00 am a 7:00 pm hora México.</strong> Solo mensajes, no llamadas. Puedes contactarnos a través del botón de WhatsApp en nuestra página.</div>
+        </div>
+
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ SECCIÓN REDES SOCIALES ══ -->
+<section class="redes-section" id="redes">
+  <div class="redes-container">
+
+    <div class="sec-header reveal">
+      <div class="sec-tag"><span class="sec-tag-dot"></span>Síguenos</div>
+      <h2 class="sec-title">NUESTRAS <span>REDES</span></h2>
+      <p class="sec-sub">Únete a la comunidad. Contenido, novedades y lives todos los días.</p>
+    </div>
+
+    <div class="redes-grid">
+
+      <!-- TikTok -->
+      <div class="red-card reveal d1">
+        <div class="red-header red-tiktok">
+          <svg class="red-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.27 8.27 0 0 0 4.84 1.56V6.78a4.85 4.85 0 0 1-1.07-.09z"/></svg>
+          <div>
+            <div class="red-name">TikTok</div>
+            <div class="red-handle">@el_r3ddy</div>
+          </div>
+        </div>
+        <!-- Preview embed TikTok -->
+        <div class="red-preview">
+          <iframe src="https://www.tiktok.com/embed/@el_r3ddy"
+            frameborder="0" allowfullscreen
+            style="width:100%;height:100%;border:none">
+          </iframe>
+        </div>
+        <a href="http://tiktok.com/@el_r3ddy" target="_blank" rel="noopener" class="red-btn red-btn-tiktok">
+          VER PERFIL EN TIKTOK
+        </a>
+      </div>
+
+      <!-- YouTube -->
+      <div class="red-card reveal d2">
+        <div class="red-header red-youtube">
+          <svg class="red-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.19a3.02 3.02 0 0 0-2.12-2.14C19.54 3.5 12 3.5 12 3.5s-7.54 0-9.38.55A3.02 3.02 0 0 0 .5 6.19 31.6 31.6 0 0 0 0 12a31.6 31.6 0 0 0 .5 5.81 3.02 3.02 0 0 0 2.12 2.14C4.46 20.5 12 20.5 12 20.5s7.54 0 9.38-.55a3.02 3.02 0 0 0 2.12-2.14A31.6 31.6 0 0 0 24 12a31.6 31.6 0 0 0-.5-5.81zM9.75 15.5v-7l6.25 3.5-6.25 3.5z"/></svg>
+          <div>
+            <div class="red-name">YouTube</div>
+            <div class="red-handle">@el_r3ddy</div>
+          </div>
+        </div>
+        <!-- Preview captura YouTube -->
+        <div class="red-preview" data-ph>
+          <img src="assets/img/preview-youtube.jpg" alt="YouTube El R3DDY">
+          <div class="ph">
+            <span class="ph-icon">▶️</span>
+            <span class="ph-name">preview-youtube.jpg</span>
+            <span class="ph-size">1280 × 720 px · JPG</span>
+          </div>
+        </div>
+        <a href="http://youtube.com/@el_r3ddy" target="_blank" rel="noopener" class="red-btn red-btn-youtube">
+          VER CANAL EN YOUTUBE
+        </a>
+      </div>
+
+      <!-- Instagram -->
+      <div class="red-card reveal d3">
+        <div class="red-header red-instagram">
+          <svg class="red-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.5" fill="currentColor" stroke="none"/></svg>
+          <div>
+            <div class="red-name">Instagram</div>
+            <div class="red-handle">@el_r3ddy</div>
+          </div>
+        </div>
+        <!-- Preview embed Instagram -->
+        <div class="red-preview">
+          <iframe src="https://www.instagram.com/el_r3ddy/embed"
+            frameborder="0" allowfullscreen
+            style="width:100%;height:100%;border:none">
+          </iframe>
+        </div>
+        <a href="https://www.instagram.com/el_r3ddy/?hl=es-la" target="_blank" rel="noopener" class="red-btn red-btn-instagram">
+          VER PERFIL EN INSTAGRAM
+        </a>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- ══ FOOTER ══ -->
+<footer class="footer" id="contacto">
+
+  <!-- Top del footer -->
+  <div class="footer-top">
+    <div class="footer-container">
+
+      <!-- Logo y descripción -->
+      <div class="footer-brand">
+        <div class="footer-logos">
+          <div class="footer-logo" data-ph>
+            <img src="assets/img/logo.png" alt="El R3DDY Interactive Games" style="object-fit:contain">
+            <div class="ph"><span class="ph-icon">🎮</span><span class="ph-name">logo.png</span></div>
+          </div>
+          <div class="footer-engine-logo">
+            <img src="assets/img/engine-logo.png" alt="R1 Engine" style="width:100%;height:100%;object-fit:contain">
+          </div>
+        </div>
+        <p class="footer-desc">Juegos interactivos para streamers. Hacemos que tu audiencia sea parte del juego.</p>
+        <div class="footer-socials">
+          <a href="http://tiktok.com/@el_r3ddy" target="_blank" rel="noopener" class="footer-social">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M19.59 6.69a4.83 4.83 0 0 1-3.77-4.25V2h-3.45v13.67a2.89 2.89 0 0 1-2.88 2.5 2.89 2.89 0 0 1-2.89-2.89 2.89 2.89 0 0 1 2.89-2.89c.28 0 .54.04.79.1V9.01a6.33 6.33 0 0 0-.79-.05 6.34 6.34 0 0 0-6.34 6.34 6.34 6.34 0 0 0 6.34 6.34 6.34 6.34 0 0 0 6.33-6.34V8.69a8.27 8.27 0 0 0 4.84 1.56V6.78a4.85 4.85 0 0 1-1.07-.09z"/></svg>
+          </a>
+          <a href="http://youtube.com/@el_r3ddy" target="_blank" rel="noopener" class="footer-social">
+            <svg viewBox="0 0 24 24" fill="currentColor"><path d="M23.5 6.19a3.02 3.02 0 0 0-2.12-2.14C19.54 3.5 12 3.5 12 3.5s-7.54 0-9.38.55A3.02 3.02 0 0 0 .5 6.19 31.6 31.6 0 0 0 0 12a31.6 31.6 0 0 0 .5 5.81 3.02 3.02 0 0 0 2.12 2.14C4.46 20.5 12 20.5 12 20.5s7.54 0 9.38-.55a3.02 3.02 0 0 0 2.12-2.14A31.6 31.6 0 0 0 24 12a31.6 31.6 0 0 0-.5-5.81zM9.75 15.5v-7l6.25 3.5-6.25 3.5z"/></svg>
+          </a>
+          <a href="https://www.instagram.com/el_r3ddy/?hl=es-la" target="_blank" rel="noopener" class="footer-social">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="2" width="20" height="20" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1.5" fill="currentColor" stroke="none"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- Navegación -->
+      <div class="footer-nav">
+        <h4 class="footer-nav-title">Navegación</h4>
+        <ul>
+          <li><a onclick="navTo('inicio')">Inicio</a></li>
+          <li><a onclick="navTo('noticias')">Noticias</a></li>
+          <li><a onclick="navTo('nosotros')">Nosotros</a></li>
+          <li><a onclick="navTo('juegos')">Juegos</a></li>
+          <li><a onclick="navTo('servicios')">Servicios</a></li>
+          <li><a onclick="navTo('engine')">R1 Engine</a></li>
+          <li><a onclick="navTo('faq')">FAQ</a></li>
+        </ul>
+      </div>
+
+      <!-- Juegos -->
+      <div class="footer-nav">
+        <h4 class="footer-nav-title">Juegos</h4>
+        <ul>
+          <li><a onclick="abrirJuego('survival')">R3DDY Survival Rumble</a></li>
+          <li><a onclick="abrirJuego('tacomania')">TacoManía</a></li>
+          <li><a onclick="abrirJuego('zurvivalrun')">Zurvival Run</a></li>
+          <li><a onclick="abrirJuego('spinbattle')">SpinBattle Arena</a></li>
+          <li><a style="color:var(--gris2)">Zurvival: Tierra de Muertos 🔜</a></li>
+          <li><a style="color:var(--gris2)">Los Juegos del Alacrán 🔜</a></li>
+          <li><a style="color:var(--gris2)">UBI Simulator 🔜</a></li>
+        </ul>
+      </div>
+
+      <!-- Contacto -->
+      <div class="footer-nav">
+        <h4 class="footer-nav-title">Contacto</h4>
+        <ul>
+          <li><a href="https://wa.me/524442057812" target="_blank">WhatsApp</a></li>
+          <li><a href="http://tiktok.com/@el_r3ddy" target="_blank">TikTok</a></li>
+          <li><a href="http://youtube.com/@el_r3ddy" target="_blank">YouTube</a></li>
+          <li><a href="https://www.instagram.com/el_r3ddy/?hl=es-la" target="_blank">Instagram</a></li>
+        </ul>
+        <div class="footer-horario">
+          <span>🕐</span>
+          <div>
+            <strong>Lun – Sáb</strong><br>
+            11:00 am – 7:00 pm<br>
+            <span style="font-size:.72rem;color:var(--gris2)">Solo mensajes · Hora México</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Bottom del footer -->
+  <div class="footer-bottom">
+    <div class="footer-container">
+      <p>© 2026 <strong>El R3DDY Interactive Games.</strong> Todos los derechos reservados.</p>
+    </div>
+  </div>
+
+</footer>
+
+<!-- ══ MODAL CONTACTO ══ -->
+<div class="modal-overlay" id="modalContacto" onclick="cerrarContacto(event)">
+  <div class="modal-box">
+
+    <!-- Botón cerrar -->
+    <button class="modal-close" onclick="cerrarContacto(null)" aria-label="Cerrar">✕</button>
+
+    <!-- Izquierda — imagen R3DDY -->
+    <div class="modal-left">
+      <div data-ph class="modal-char">
+        <img src="assets/img/contacto-char.png" alt="El R3DDY">
+        <div class="ph">
+          <span class="ph-icon">🎮</span>
+          <span class="ph-name">contacto-char.png</span>
+          <span class="ph-size">600 × 800 px · PNG</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Derecha — info -->
+    <div class="modal-right">
+
+      <div class="modal-tag">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="#25D366"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+        Atención a clientes
+      </div>
+
+      <h2 class="modal-title">¡Hola! Estamos<br><span>aquí para ayudarte</span></h2>
+
+      <!-- Horarios -->
+      <div class="modal-horario">
+        <div class="modal-horario-icon">🕐</div>
+        <div>
+          <div class="modal-horario-title">Horario de atención</div>
+          <div class="modal-horario-info">Lunes a Sábado · 11:00 am – 7:00 pm</div>
+          <div class="modal-horario-sub">Hora México 🇲🇽 · Solo mensajes, no llamadas</div>
+        </div>
+      </div>
+
+      <!-- Aviso TikTok — solo visible si viene de TikTok -->
+      <div class="modal-aviso" id="modalAvisoTiktok" style="display:none">
+        <div class="modal-aviso-icon">⚠️</div>
+        <div>
+          <div class="modal-aviso-title">Vienes desde TikTok</div>
+          <div class="modal-aviso-text">TikTok bloquea los enlaces externos. Si el botón no funciona, copia este enlace y pégalo en tu navegador:</div>
+          <div class="modal-numero" onclick="copiarEnlace(this)">https://wa.me/524442057812 <span style="font-size:.7rem;color:var(--gris)">· Toca para copiar</span></div>
+        </div>
+      </div>
+
+      <!-- Botón WhatsApp -->
+      <a href="https://wa.me/524442057812" target="_blank" rel="noopener" class="modal-wa-btn">
+        <svg viewBox="0 0 24 24" width="20" height="20" fill="#fff"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 0 1-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 0 1-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 0 1 2.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0 0 12.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 0 0 5.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 0 0-3.48-8.413z"/></svg>
+        ABRIR WHATSAPP
+      </a>
+
+      <p class="modal-footer-note">Al hacer clic serás redirigido a WhatsApp</p>
+
+    </div>
+  </div>
+</div>
+
+<!-- ══ MODAL JUEGO INDIVIDUAL ══ -->
+<div class="juego-modal" id="juegoModal" onclick="cerrarJuego(event)">
+  <div class="juego-modal-box">
+    <button class="jm-close" onclick="cerrarJuego(null)">✕</button>
+    <div class="jm-banner">
+      <img id="jmBannerImg" src="" alt="" style="width:100%;height:100%;object-fit:cover">
+      <div class="jm-banner-overlay"></div>
+      <div class="jm-banner-info">
+        <h2 class="jm-title" id="jmTitle"></h2>
+        <div class="jm-tags" id="jmTags"></div>
+      </div>
+    </div>
+    <div class="jm-body">
+      <div class="jm-grid">
+        <div class="jm-video-wrap" id="jmVideoWrap">
+          <div class="jm-video-ph">
+            <span class="jm-video-ph-icon">▶️</span>
+            <span class="jm-video-ph-text" id="jmVideoText"></span>
+          </div>
+        </div>
+        <div class="jm-info">
+          <p class="jm-desc" id="jmDesc"></p>
+          <div>
+            <div class="jm-req-title">⚙️ REQUISITOS</div>
+            <div class="jm-req-grid" id="jmReqs"></div>
+          </div>
+        </div>
+      </div>
+      <div class="jm-gallery" id="jmGallery"></div>
+      <div class="jm-footer">
+        <div class="jm-price">$26 <span>USD</span></div>
+        <button class="jm-cta" onclick="window.open(STRIPE_LINKS[juegoActual],'_blank')">🎮 COMPRAR AHORA</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ── Placeholders ── */
+document.querySelectorAll('[data-ph] img').forEach(img=>{
+  const wrap=img.closest('[data-ph]');
+  if(img.complete&&img.naturalWidth>0){wrap.classList.add('img-loaded');}
+  else{
+    img.addEventListener('load',()=>wrap.classList.add('img-loaded'));
+    img.addEventListener('error',()=>{});
+  }
+});
+
+/* ── Partículas ── */
+(function(){
+  const c=document.getElementById('hParticles');
+  const cols=['rgba(196,18,48,.5)','rgba(45,108,176,.5)','rgba(255,215,0,.35)','rgba(240,242,248,.25)'];
+  for(let i=0;i<24;i++){
+    const p=document.createElement('div');p.className='hp';
+    const s=Math.random()*4+1.5;
+    p.style.cssText=`width:${s}px;height:${s}px;left:${Math.random()*100}%;background:${cols[Math.floor(Math.random()*cols.length)]};animation-duration:${Math.random()*14+8}s;animation-delay:${Math.random()*10}s;`;
+    c.appendChild(p);
+  }
+})();
+
+/* ── Nav scroll ── */
+const nav=document.getElementById('mainNav');
+window.addEventListener('scroll',()=>{ nav.classList.toggle('scrolled',window.scrollY>40); },{passive:true});
+
+/* ── Navegación ── */
+function navTo(id){
+  const el=document.getElementById(id);
+  if(!el)return;
+  el.scrollIntoView({behavior:'smooth',block:'start'});
+  closeMobile();
+}
+
+/* ── Mobile ── */
+const hmb=document.getElementById('hmb');
+const mm=document.getElementById('mobileMenu');
+function closeMobile(){hmb.classList.remove('open');mm.classList.remove('open');document.body.style.overflow='';}
+hmb.addEventListener('click',()=>{
+  const open=mm.classList.toggle('open');
+  hmb.classList.toggle('open',open);
+  document.body.style.overflow=open?'hidden':'';
+});
+
+/* ── Nav activo por scroll ── */
+const navLinks=document.querySelectorAll('.nav-link');
+const secObs=new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{
+    if(!e.isIntersecting)return;
+    const id=e.target.id;
+    navLinks.forEach(l=>{ l.classList.toggle('active',l.getAttribute('onclick')?.includes(id)); });
+  });
+},{threshold:0.35});
+['inicio','noticias','nosotros','engine','juegos','servicios','faq','contacto'].forEach(id=>{
+  const el=document.getElementById(id);if(el)secObs.observe(el);
+});
+
+/* ── IntersectionObserver reveal ── */
+const revObs=new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{ if(e.isIntersecting){e.target.classList.add('visible');revObs.unobserve(e.target);} });
+},{threshold:0.1,rootMargin:'0px 0px -40px 0px'});
+document.querySelectorAll('.reveal').forEach(el=>revObs.observe(el));
+
+/* ── Folio automático ── */
+function generarFolio(){
+  const año = new Date().getFullYear();
+  const num = String(Math.floor(Math.random()*90000)+10000);
+  return `R3DDY-${año}-${num}`;
+}
+
+function solicitarServicio(tipo){
+  const folio = generarFolio();
+  const nombres = {
+    juego:  'Juego Interactivo Personalizado',
+    vtuber: 'VTuber Personalizado',
+    web:    'Desarrollo Web / App'
+  };
+  const links = {
+    juego:  STRIPE_LINKS.juego,
+    vtuber: STRIPE_LINKS.vtuber,
+    web:    null
+  };
+
+  if(links[tipo]){
+    // Guarda el folio y servicio para el mensaje post-pago
+    localStorage.setItem('r3ddy_folio', folio);
+    localStorage.setItem('r3ddy_servicio', nombres[tipo]);
+    window.open(links[tipo], '_blank');
+    // Abre WhatsApp después de 3 segundos (cuando ya pagó)
+    setTimeout(()=>{
+      const msg = `¡Hola! Acabo de realizar mi pago por el servicio de *${nombres[tipo]}*.\n\nFolio: *${folio}*\n\nMe gustaría agendar mi junta creativa y definir la fecha de entrega. ¡Gracias!`;
+      window.open(`https://wa.me/524442057812?text=${encodeURIComponent(msg)}`, '_blank');
+    }, 3000);
+  } else {
+    // Desarrollo web — directo a WhatsApp
+    const msg = `¡Hola! Estoy interesado en el servicio de *${nombres[tipo]}*.\n\nFolio: *${folio}*\n\nMe gustaría obtener una cotización y agendar una junta para platicar del proyecto.`;
+    window.open(`https://wa.me/524442057812?text=${encodeURIComponent(msg)}`, '_blank');
+  }
+}
+
+/* ── Links de pago Stripe ── */
+const STRIPE_LINKS = {
+  survival:   'https://buy.stripe.com/aFa28j4bZeGv3qAevJ2VG0c',
+  tacomania:  'https://buy.stripe.com/cNi9AL8sf8i7e5egDR2VG0d',
+  zurvivalrun:'https://buy.stripe.com/bJefZ923R2XN0eobjx2VG0f',
+  spinbattle: 'https://buy.stripe.com/aFaaEP0ZN0PFaT2bjx2VG0b',
+  pack3:      'https://buy.stripe.com/5kQ3cn23R9mb4uEevJ2VG0g',
+  juego:      'https://buy.stripe.com/aFaaEP8sfcyn6CM0ET2VG08',
+  vtuber:     'https://buy.stripe.com/6oU28jaAn0PF0eo9bp2VG09',
+};
+function toggleFaq(btn){
+  const item = btn.parentElement;
+  const isOpen = item.classList.contains('open');
+  document.querySelectorAll('.faq-item').forEach(i=>i.classList.remove('open'));
+  if(!isOpen) item.classList.add('open');
+}
+
+/* ── Datos de juegos — actualiza con tu contenido ── */
+const JUEGOS = {
+  survival: {
+    titulo: 'R3DDY SURVIVAL RUMBLE',
+    banner: 'assets/img/juego-survival-banner.jpg',
+    video: 'https://www.youtube.com/embed/jnz798shiak',
+    desc: 'Juego de eliminación por equipos para TikTok Live. Rojo vs Azul compiten en 3 minijuegos: <strong>Carrera de relevos</strong> donde los jugadores corren y se lanzan objetos, <strong>Trivia</strong> con 490 preguntas en español, y <strong>Tower Defense</strong> estilo Clash Royale donde las donaciones invocan soldados, tanques y helicópteros que atacan la torre enemiga. El equipo que gane más minijuegos se lleva la victoria.',
+    tags: ['Supervivencia','TikTok Live','Multijugador'],
+    galeria: [
+      'assets/img/juego-survival-gallery-1.jpg',
+      'assets/img/juego-survival-gallery-2.jpg',
+      'assets/img/juego-survival-gallery-3.jpg',
+      'assets/img/juego-survival-gallery-4.jpg',
+    ],
+    requisitos: {
+      'OS': 'Windows 10/11 64-bit',
+      'CPU': 'Intel i5 8va / Ryzen 5',
+      'RAM': '8 GB mínimo',
+      'GPU': 'GTX 1050 / RX 570',
+      'Internet': '10 Mbps',
+      'Almacenamiento': '4 GB libres',
+    }
+  },
+  tacomania: {
+    titulo: 'TACOMANIA',
+    banner: 'assets/img/juego-tacomania-banner.jpg',
+    video: 'https://www.youtube.com/embed/EUelobEaaAY',
+    desc: '¡El juego de tacos más loco de TikTok Live! Prepara órdenes, sirve a los clientes y sobrevive al caos de tu audiencia. Cada donación de tu chat dispara eventos dentro de la taquería — congelan el tiempo, spawnan personajes locos o mandan ingredientes especiales. ¿Podrás con todos los pedidos?',
+    tags: ['Cocina','TikTok Live','México'],
+    galeria: [
+      'assets/img/juego-tacomania-gallery-1.jpg',
+      'assets/img/juego-tacomania-gallery-2.jpg',
+      'assets/img/juego-tacomania-gallery-3.jpg',
+      'assets/img/juego-tacomania-gallery-4.jpg',
+    ],
+    requisitos: {
+      'OS': 'Windows 10/11 64-bit',
+      'CPU': 'Intel i5 8va / Ryzen 5',
+      'RAM': '8 GB mínimo',
+      'GPU': 'GTX 1050 / RX 570',
+      'Internet': '10 Mbps',
+      'Almacenamiento': '4 GB libres',
+    }
+  },
+  otzo: {
+    titulo: 'OTZO SIMULATOR',
+    banner: 'assets/img/juego-otzo-banner.jpg',
+    video: '',
+    desc: 'Descripción del juego — próximamente.',
+    tags: ['Simulador','TikTok Live'],
+    galeria: [
+      'assets/img/juego-otzo-gallery-1.jpg',
+      'assets/img/juego-otzo-gallery-2.jpg',
+      'assets/img/juego-otzo-gallery-3.jpg',
+      'assets/img/juego-otzo-gallery-4.jpg',
+    ],
+    requisitos: {
+      'OS': 'Windows 10/11 64-bit',
+      'CPU': 'Intel i5 8va / Ryzen 5',
+      'RAM': '8 GB mínimo',
+      'GPU': 'GTX 1050 / RX 570',
+      'Internet': '10 Mbps',
+      'Almacenamiento': '4 GB libres',
+    }
+  },
+  zombieslug: {
+    titulo: 'ZOMBIE SLUG',
+    banner: 'assets/img/juego-zombieslug-banner.jpg',
+    video: '',
+    desc: 'Descripción del juego — próximamente.',
+    tags: ['Terror','TikTok Live','Zombies'],
+    galeria: [
+      'assets/img/juego-zombieslug-gallery-1.jpg',
+      'assets/img/juego-zombieslug-gallery-2.jpg',
+      'assets/img/juego-zombieslug-gallery-3.jpg',
+      'assets/img/juego-zombieslug-gallery-4.jpg',
+    ],
+    requisitos: {
+      'OS': 'Windows 10/11 64-bit',
+      'CPU': 'Intel i5 8va / Ryzen 5',
+      'RAM': '8 GB mínimo',
+      'GPU': 'GTX 1050 / RX 570',
+      'Internet': '10 Mbps',
+      'Almacenamiento': '4 GB libres',
+    }
+  },
+  combi: {
+    titulo: 'COMBI SIMULATOR',
+    banner: 'assets/img/juego-combi-banner.jpg',
+    video: '',
+    desc: 'Descripción del juego — próximamente.',
+    tags: ['Simulador','TikTok Live','México'],
+    galeria: [
+      'assets/img/juego-combi-gallery-1.jpg',
+      'assets/img/juego-combi-gallery-2.jpg',
+      'assets/img/juego-combi-gallery-3.jpg',
+      'assets/img/juego-combi-gallery-4.jpg',
+    ],
+    requisitos: {
+      'OS': 'Windows 10/11 64-bit',
+      'CPU': 'Intel i5 8va / Ryzen 5',
+      'RAM': '8 GB mínimo',
+      'GPU': 'GTX 1050 / RX 570',
+      'Internet': '10 Mbps',
+      'Almacenamiento': '4 GB libres',
+    }
+  },
+  zurvivalrun: {
+    titulo: 'ZURVIVAL RUN',
+    banner: 'assets/img/juego-zurvivalrun-banner.jpg',
+    video: 'https://www.youtube.com/embed/2ajalPlWDG8',
+    desc: 'Corre, esquiva y sobrevive la horda zombie mientras tu chat decide tu destino. Cada donación activa poderes, obstáculos o zombies especiales en tiempo real. ¿Cuánto tiempo puedes sobrevivir con tu audiencia en tu contra?',
+    tags: ['Zombies','TikTok Live','Runner'],
+    galeria: [
+      'assets/img/juego-zurvivalrun-gallery-1.jpg',
+      'assets/img/juego-zurvivalrun-gallery-2.jpg',
+      'assets/img/juego-zurvivalrun-gallery-3.jpg',
+      'assets/img/juego-zurvivalrun-gallery-4.jpg',
+    ],
+    requisitos: {
+      'OS': 'Windows 10/11 64-bit',
+      'CPU': 'Intel i5 8va / Ryzen 5',
+      'RAM': '8 GB mínimo',
+      'GPU': 'GTX 1050 / RX 570',
+      'Internet': '10 Mbps',
+      'Almacenamiento': '4 GB libres',
+    }
+  },
+  spinbattle: {
+    titulo: 'SPINBATTLE ARENA',
+    banner: 'assets/img/juego-spinbattle-banner.jpg',
+    video: 'https://www.youtube.com/embed/TnvzxMlSn-s',
+    desc: '¡Invoca tu blade y domina la arena! Tu chat lanza trompos al combate con cada donación. D1 invoca un blade, D2 activa boost de velocidad, D3 genera un escudo, D4 desata el Spinforce y D5 lanza espinas. ¿Cuál equipo dominará la arena?',
+    tags: ['Arena','TikTok Live','Combate'],
+    galeria: [
+      'assets/img/juego-spinbattle-gallery-1.jpg',
+      'assets/img/juego-spinbattle-gallery-2.jpg',
+      'assets/img/juego-spinbattle-gallery-3.jpg',
+      'assets/img/juego-spinbattle-gallery-4.jpg',
+    ],
+    requisitos: {
+      'OS': 'Windows 10/11 64-bit',
+      'CPU': 'Intel i5 8va / Ryzen 5',
+      'RAM': '8 GB mínimo',
+      'GPU': 'GTX 1050 / RX 570',
+      'Internet': '10 Mbps',
+      'Almacenamiento': '4 GB libres',
+    }
+  }
+};
+
+let juegoActual = 'survival';
+
+function abrirJuego(id){
+  juegoActual = id;
+  const g = JUEGOS[id];
+  if(!g) return;
+
+  // Banner
+  const bannerImg = document.getElementById('jmBannerImg');
+  bannerImg.src = g.banner;
+  bannerImg.alt = g.titulo;
+
+  // Título y tags
+  document.getElementById('jmTitle').textContent = g.titulo;
+  document.getElementById('jmTags').innerHTML = g.tags.map(t=>`<span class="jtag">${t}</span>`).join('');
+
+  // Video
+  const videoWrap = document.getElementById('jmVideoWrap');
+  if(g.video){
+    // Autoplay al abrir, controles mínimos, sin sugerencias al final
+    const src = g.video + '?autoplay=1&rel=0&modestbranding=1&showinfo=0&iv_load_policy=3&controls=1&color=white';
+    videoWrap.innerHTML = `<iframe src="${src}" allowfullscreen allow="autoplay;encrypted-media"></iframe>`;
+  } else {
+    videoWrap.innerHTML = `<div class="jm-video-ph"><span class="jm-video-ph-icon">▶️</span><span class="jm-video-ph-text">juego-${id}-trailer.mp4 · 1280×720px</span></div>`;
+  }
+
+  // Descripción
+  document.getElementById('jmDesc').innerHTML = g.desc;
+
+  // Requisitos
+  document.getElementById('jmReqs').innerHTML = Object.entries(g.requisitos)
+    .map(([k,v])=>`<div class="jm-req-item"><div class="jm-req-label">${k}</div><div class="jm-req-val">${v}</div></div>`)
+    .join('');
+
+  // Galería oculta
+  document.getElementById('jmGallery').innerHTML = '';
+
+  document.getElementById('juegoModal').classList.add('active');
+  document.body.style.overflow='hidden';
+}
+
+function cerrarJuego(e){
+  if(e && e.target !== document.getElementById('juegoModal')) return;
+  document.getElementById('juegoModal').classList.remove('active');
+  document.body.style.overflow='';
+}
+
+/* ── Modal Contacto ── */
+function abrirContacto(e){
+  if(e) e.preventDefault();
+  const ref=document.referrer||'';
+  const ua=navigator.userAgent||'';
+  const deTikTok=ref.includes('tiktok')||ua.includes('musical_ly')||ua.includes('TikTok');
+  document.getElementById('modalAvisoTiktok').style.display=deTikTok?'flex':'none';
+  document.getElementById('modalContacto').classList.add('active');
+  document.body.style.overflow='hidden';
+  closeMobile();
+}
+function cerrarContacto(e){
+  if(e&&e.target!==document.getElementById('modalContacto'))return;
+  document.getElementById('modalContacto').classList.remove('active');
+  document.body.style.overflow='';
+}
+function copiarEnlace(el){
+  navigator.clipboard.writeText('https://wa.me/524442057812').then(()=>{
+    const orig=el.innerHTML;
+    el.innerHTML='✅ ¡Enlace copiado!';
+    setTimeout(()=>{el.innerHTML=orig;},2000);
+  });
+}
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){cerrarContacto(null);cerrarJuego(null);}
+  if(e.key==='ArrowLeft') moveCarousel(-1);
+  if(e.key==='ArrowRight') moveCarousel(1);
+});
+
+/* ── Carrusel ── */
+const IMG_PATH='assets/img/';
+const JSON_PATH='noticias.json';
+const AUTOPLAY_MS=5000;
+let current=0,total=0,autoTimer=null,paused=false;
+
+function initCarousel(){
+  const track=document.getElementById('carouselTrack');
+  const dots=document.getElementById('carouselDots');
+  const loading=document.getElementById('carouselLoading');
+  const cTotal=document.getElementById('cTotal');
+  let slides=[];
+  // Imágenes hardcodeadas — sin fetch, funciona local y en GitHub
+  slides=['noticia-1.jpg','noticia-2.jpg','noticia-3.jpg'];
+  if(slides.length===0)slides=['noticia-1.jpg'];
+  total=slides.length;
+  cTotal.textContent=total;
+  slides.forEach((name,i)=>{
+    const slide=document.createElement('div');
+    slide.className='carousel-slide';
+    const img=document.createElement('img');
+    img.alt=`Noticia ${i+1}`;
+    img.loading='eager';
+    img.style.cssText='width:100%;height:100%;object-fit:cover;display:block;';
+    img.src=IMG_PATH+name;
+    slide.appendChild(img);
+    track.appendChild(slide);
+    const dot=document.createElement('button');
+    dot.className='cdot'+(i===0?' active':'');
+    dot.setAttribute('aria-label',`Slide ${i+1}`);
+    dot.onclick=()=>goTo(i);
+    dots.appendChild(dot);
+  });
+  loading.classList.add('hidden');
+  startAutoplay();
+}
+
+function goTo(idx){
+  current=(idx+total)%total;
+  document.getElementById('carouselTrack').style.transform=`translateX(-${current*100}%)`;
+  document.querySelectorAll('.cdot').forEach((d,i)=>d.classList.toggle('active',i===current));
+  document.getElementById('cCurrent').textContent=current+1;
+  resetProgress();
+}
+function moveCarousel(dir){goTo(current+dir);if(!paused){stopAutoplay();startAutoplay();}}
+function pauseCarousel(){paused=true;}
+function resumeCarousel(){paused=false;}
+function startAutoplay(){stopAutoplay();resetProgress();autoTimer=setInterval(()=>{if(!paused)goTo(current+1);},AUTOPLAY_MS);}
+function stopAutoplay(){clearInterval(autoTimer);}
+function resetProgress(){
+  const bar=document.getElementById('progressBar');
+  bar.style.transition='none';bar.style.width='0%';
+  setTimeout(()=>{bar.style.transition=`width ${AUTOPLAY_MS}ms linear`;bar.style.width='100%';},50);
+}
+let touchStartX=0;
+document.getElementById('carousel').addEventListener('touchstart',e=>{touchStartX=e.touches[0].clientX;},{passive:true});
+document.getElementById('carousel').addEventListener('touchend',e=>{
+  const diff=touchStartX-e.changedTouches[0].clientX;
+  if(Math.abs(diff)>50)moveCarousel(diff>0?1:-1);
+},{passive:true});
+
+initCarousel();
+
+// ── Hero BG — iframes de YouTube rotativos ───────────────────
+(function(){
+  const IDS = [
+    'jnz798shiak', // Survival Rumble
+    'EUelobEaaAY', // TacoManía
+    '2ajalPlWDG8', // Zurvival Run
+    'TnvzxMlSn-s', // SpinBattle
+  ];
+
+  function shuffle(arr) {
+    for(let i = arr.length - 1; i > 0; i--){
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  }
+
+  const lista = shuffle([...IDS]);
+  let idx = 0;
+  const bg  = document.getElementById('heroBgVideo');
+  const ph  = document.getElementById('heroBgPh');
+  if (!bg) return;
+
+  // Reemplazar video por iframe
+  bg.style.display = 'none';
+  const iframeWrap = document.createElement('div');
+  iframeWrap.style.cssText = 'position:absolute;inset:0;width:100%;height:100%;overflow:hidden;pointer-events:none;';
+  bg.parentNode.insertBefore(iframeWrap, bg);
+
+  function cargarSiguiente() {
+    const id = lista[idx % lista.length];
+    idx++;
+    // autoplay=1, mute=1, controls=0, modestbranding=1, loop=1, playlist=ID para loop
+    iframeWrap.innerHTML = `<iframe
+      src="https://www.youtube.com/embed/${id}?autoplay=1&mute=1&controls=0&modestbranding=1&showinfo=0&rel=0&loop=1&playlist=${id}&iv_load_policy=3&disablekb=1"
+      style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%) scale(1.15);width:100%;height:100%;border:none;opacity:.55;"
+      allow="autoplay;encrypted-media" allowfullscreen>
+    </iframe>`;
+    if(ph) ph.style.display = 'none';
+    // Cambiar al siguiente video cada 3 minutos
+    setTimeout(cargarSiguiente, 180000);
+  }
+
+  cargarSiguiente();
+})();
+
+</script>
+</body>
+</html>
