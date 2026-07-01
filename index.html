@@ -124,6 +124,10 @@ button{font-family:var(--font-b);cursor:pointer;border:none;background:none}
 .reveal.d3{transition-delay:.24s}
 .reveal.d4{transition-delay:.32s}
 .reveal.d5{transition-delay:.40s}
+.reveal.d6{transition-delay:.48s}
+.reveal.d7{transition-delay:.56s}
+.reveal.d8{transition-delay:.64s}
+.reveal.d9{transition-delay:.72s}
 
 /* ═══════════════════════════════════════════
    NAV HORIZONTAL
@@ -1582,7 +1586,6 @@ button{font-family:var(--font-b);cursor:pointer;border:none;background:none}
   .nos-stats{grid-template-columns:1fr 1fr}
   .hero-eyebrow{font-size:.6rem;padding:4px 10px}
 }
-#jmGallery{display:none!important}
 </style>
 </head>
 <body>
@@ -1655,7 +1658,7 @@ button{font-family:var(--font-b);cursor:pointer;border:none;background:none}
         <button class="btn-ghost" onclick="navTo('nosotros')">CONOCE R3DDY</button>
       </div>
       <div class="hero-stats">
-        <div class="hero-stat"><div class="hero-stat-num">6+</div><div class="hero-stat-label">Juegos<br>disponibles</div></div>
+        <div class="hero-stat"><div class="hero-stat-num">7+</div><div class="hero-stat-label">Juegos<br>disponibles</div></div>
         <div class="hero-stat"><div class="hero-stat-num">6</div><div class="hero-stat-label">Niveles de<br>interacción</div></div>
         <div class="hero-stat"><div class="hero-stat-num">R1</div><div class="hero-stat-label">R3DDY<br>Engine</div></div>
       </div>
@@ -1891,8 +1894,30 @@ button{font-family:var(--font-b);cursor:pointer;border:none;background:none}
         </div>
       </div>
 
+      <!-- ZONA CERO MX -->
+      <div class="juego-card reveal d5" onclick="abrirJuego('zonaceromx')">
+        <div class="juego-thumb" data-ph>
+          <img src="assets/img/juego-zonaceromx-card.jpg" alt="Zona Cero MX">
+          <div class="ph"><span class="ph-icon">🧟</span><span class="ph-name">juego-zonaceromx-card.jpg</span><span class="ph-size">600 × 400 px · JPG</span></div>
+        </div>
+        <div class="juego-body">
+          <h3 class="juego-title">ZONA CERO MX</h3>
+          <p class="juego-desc">Tú y tu comunidad tendrán que sobrevivir al brote de un virus zombie. Cada decisión afectará tu historia — ¿lograrás sobrevivir o te convertirás en uno más?</p>
+          <div class="juego-status status-done">✅ Juego terminado</div>
+          <div class="juego-tags">
+            <span class="jtag">Zombies</span>
+            <span class="jtag">TikTok Live</span>
+            <span class="jtag">Survival</span>
+          </div>
+          <div class="juego-price-row">
+            <div class="juego-price">$10 <span>USD</span></div>
+            <button class="juego-btn" onclick="event.stopPropagation();window.open(STRIPE_LINKS.zonaceromx,'_blank')">COMPRAR</button>
+          </div>
+        </div>
+      </div>
+
       <!-- ZURVIVAL DÍA DE MUERTOS -->
-      <div class="juego-card reveal d5">
+      <div class="juego-card reveal d6">
         <div class="juego-thumb juego-thumb-soon">
           <div class="soon-content">
             <span class="soon-icon">💀</span>
@@ -2574,7 +2599,7 @@ button{font-family:var(--font-b);cursor:pointer;border:none;background:none}
       </div>
       <div class="jm-gallery" id="jmGallery"></div>
       <div class="jm-footer">
-        <div class="jm-price">$26 <span>USD</span></div>
+        <div class="jm-price" id="jmPrice">$26 <span>USD</span></div>
         <button class="jm-cta" onclick="window.open(STRIPE_LINKS[juegoActual],'_blank')">🎮 COMPRAR AHORA</button>
       </div>
     </div>
@@ -2688,6 +2713,7 @@ const STRIPE_LINKS = {
   tacomania:  'https://buy.stripe.com/cNi9AL8sf8i7e5egDR2VG0d',
   zurvivalrun:'https://buy.stripe.com/bJefZ923R2XN0eobjx2VG0f',
   spinbattle: 'https://buy.stripe.com/aFaaEP0ZN0PFaT2bjx2VG0b',
+  zonaceromx: 'https://buy.stripe.com/9B63cn8sffKz5yIbjx2VG0h',
   pack3:      'https://buy.stripe.com/5kQ3cn23R9mb4uEevJ2VG0g',
   juego:      'https://buy.stripe.com/aFaaEP8sfcyn6CM0ET2VG08',
   vtuber:     'https://buy.stripe.com/6oU28jaAn0PF0eo9bp2VG09',
@@ -2827,6 +2853,23 @@ const JUEGOS = {
       'Almacenamiento': '4 GB libres',
     }
   },
+  zonaceromx: {
+    titulo: 'ZONA CERO MX',
+    precio: '$10 USD',
+    banner: 'assets/img/juego-zonaceromx-banner.jpg',
+    video: 'https://www.youtube.com/embed/N6i_RsThvmQ',
+    desc: 'Tú y tu comunidad tendrán que sobrevivir al brote de un virus zombie que acecha la ciudad. Cada decisión que tomes afectará el desarrollo de tu historia y definirá si logras sobrevivir al apocalipsis zombie o si terminarás convirtiéndote en un zombie más del montón.',
+    tags: ['Zombies','TikTok Live','Survival'],
+    galeria: [],
+    requisitos: {
+      'OS': 'Windows 10/11 64-bit',
+      'CPU': 'Intel i5 8va / Ryzen 5',
+      'RAM': '8 GB mínimo',
+      'GPU': 'GTX 1050 / RX 570',
+      'Internet': '10 Mbps',
+      'Almacenamiento': '2 GB libres',
+    }
+  },
   spinbattle: {
     titulo: 'SPINBATTLE ARENA',
     banner: 'assets/img/juego-spinbattle-banner.jpg',
@@ -2866,6 +2909,14 @@ function abrirJuego(id){
   document.getElementById('jmTitle').textContent = g.titulo;
   document.getElementById('jmTags').innerHTML = g.tags.map(t=>`<span class="jtag">${t}</span>`).join('');
 
+  // Precio dinámico
+  const precioEl = document.getElementById('jmPrice');
+  if(precioEl){
+    const precio = g.precio || '$26 USD';
+    const partes = precio.split(' ');
+    precioEl.innerHTML = partes[0] + ' <span>' + (partes[1]||'USD') + '</span>';
+  }
+
   // Video
   const videoWrap = document.getElementById('jmVideoWrap');
   if(g.video){
@@ -2884,8 +2935,13 @@ function abrirJuego(id){
     .map(([k,v])=>`<div class="jm-req-item"><div class="jm-req-label">${k}</div><div class="jm-req-val">${v}</div></div>`)
     .join('');
 
-  // Galería oculta
-  document.getElementById('jmGallery').innerHTML = '';
+  // Galería
+  document.getElementById('jmGallery').innerHTML = g.galeria.map((src,i)=>`
+    <div class="jm-gallery-img" data-ph>
+      <img src="${src}" alt="Screenshot ${i+1}" onerror="this.style.display='none'">
+      <div class="jm-gallery-ph"><span>${src.split('/').pop()}</span><span style="background:var(--rojo);color:#fff;padding:2px 6px;border-radius:4px;font-size:8px">1280×720 JPG</span></div>
+    </div>
+  `).join('');
 
   document.getElementById('juegoModal').classList.add('active');
   document.body.style.overflow='hidden';
@@ -2932,26 +2988,30 @@ const JSON_PATH='noticias.json';
 const AUTOPLAY_MS=5000;
 let current=0,total=0,autoTimer=null,paused=false;
 
-function initCarousel(){
+async function initCarousel(){
   const track=document.getElementById('carouselTrack');
   const dots=document.getElementById('carouselDots');
   const loading=document.getElementById('carouselLoading');
   const cTotal=document.getElementById('cTotal');
   let slides=[];
-  // Imágenes hardcodeadas — sin fetch, funciona local y en GitHub
-  slides=['noticia-1.jpg','noticia-2.jpg','noticia-3.jpg'];
+  try{
+    const res=await fetch(JSON_PATH);
+    const data=await res.json();
+    slides=data.slides||[];
+  }catch(e){
+    slides=['noticia-1.jpg','noticia-2.jpg','noticia-3.jpg'];
+  }
   if(slides.length===0)slides=['noticia-1.jpg'];
   total=slides.length;
   cTotal.textContent=total;
   slides.forEach((name,i)=>{
     const slide=document.createElement('div');
     slide.className='carousel-slide';
+    slide.innerHTML=`<div class="slide-ph"><span class="slide-ph-icon">🖼️</span><span class="slide-ph-name">assets/img/${name}</span><span class="slide-ph-size">1200 × 450 px · JPG</span></div>`;
     const img=document.createElement('img');
-    img.alt=`Noticia ${i+1}`;
-    img.loading='eager';
-    img.style.cssText='width:100%;height:100%;object-fit:cover;display:block;';
+    img.alt=`Noticia ${i+1}`;img.loading=i===0?'eager':'lazy';
+    img.onload=()=>{slide.innerHTML='';slide.appendChild(img);};
     img.src=IMG_PATH+name;
-    slide.appendChild(img);
     track.appendChild(slide);
     const dot=document.createElement('button');
     dot.className='cdot'+(i===0?' active':'');
