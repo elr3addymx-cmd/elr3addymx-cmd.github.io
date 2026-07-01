@@ -1,0 +1,67 @@
+{
+  "juegos": {
+    "SURV": {
+      "nombre": "R3DDY Survival Rumble",
+      "carpeta": "survival-rumble",
+      "version": "1.0.0",
+      "drive_id": "1JsnSTr5-Pbw7bV03QVmya9LcD5xL06b2",
+      "disponible": true
+    },
+    "TACO": {
+      "nombre": "TacoManía",
+      "carpeta": "tacomania",
+      "version": "1.0.0",
+      "drive_id": "1JThEzYZjtLUp2utUbzn08hF_2j-al5cd",
+      "disponible": true
+    },
+    "ZRUN": {
+      "nombre": "Zurvival Run",
+      "carpeta": "zurvival-run",
+      "version": "1.0.0",
+      "drive_id": "1qXnHknWZzKKD4Hr5hC-7JpIU0WskLC_C",
+      "disponible": true
+    },
+    "SPIN": {
+      "nombre": "SpinBattle Arena",
+      "carpeta": "spin-battle",
+      "version": "1.0.0",
+      "drive_id": "1SCTr3dcPEhkjmavrzQF0eMu_a5_pxbzf",
+      "disponible": true
+    },
+    "ZCER": {
+      "nombre": "Zona Cero MX",
+      "carpeta": "zona-cero-mx",
+      "version": "1.0.0",
+      "drive_id": "1KP0FY5N1-9pen92n4edoU79jcxu4ZvPN",
+      "disponible": true
+    },
+    "ZURV": {
+      "nombre": "Zurvival: Tierra de Muertos",
+      "carpeta": "zurvival-tierra-muertos",
+      "version": "1.0.0",
+      "drive_id": "",
+      "disponible": false
+    },
+    "CMBI": {
+      "nombre": "Combi Simulator",
+      "carpeta": "combi-simulator",
+      "version": "1.0.0",
+      "drive_id": "",
+      "disponible": false
+    },
+    "ALCR": {
+      "nombre": "Los Juegos del Alacrán",
+      "carpeta": "juegos-del-alacran",
+      "version": "1.0.0",
+      "drive_id": "",
+      "disponible": false
+    },
+    "OTZO": {
+      "nombre": "Otzo Simulator",
+      "carpeta": "otzo-simulator",
+      "version": "1.0.0",
+      "drive_id": "",
+      "disponible": false
+    }
+  }
+}
