@@ -1586,6 +1586,24 @@ button{font-family:var(--font-b);cursor:pointer;border:none;background:none}
   .nos-stats{grid-template-columns:1fr 1fr}
   .hero-eyebrow{font-size:.6rem;padding:4px 10px}
 }
+
+/* Modal disclaimer */
+.disclaimer-modal{display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.85);align-items:center;justify-content:center;padding:20px}
+.disclaimer-modal.active{display:flex}
+.disclaimer-box{background:#0d0d1a;border:1px solid #e63946;border-radius:16px;padding:32px;max-width:480px;width:100%;position:relative}
+.disclaimer-title{font-size:1.1rem;letter-spacing:3px;color:#fff;margin-bottom:6px;font-weight:bold}
+.disclaimer-sub{font-size:.78rem;color:#888;margin-bottom:24px}
+.disclaimer-steps{list-style:none;padding:0;margin:0 0 24px;display:flex;flex-direction:column;gap:14px}
+.disclaimer-steps li{display:flex;align-items:flex-start;gap:12px;font-size:.82rem;color:#888}
+.disclaimer-step-num{width:28px;height:28px;border-radius:50%;background:#e63946;color:#fff;font-size:.8rem;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-weight:bold}
+.disclaimer-steps strong{color:#fff;display:block;margin-bottom:2px}
+.disclaimer-btns{display:flex;flex-direction:column;gap:10px}
+.disclaimer-btn-buy{padding:14px;background:#e63946;border:none;border-radius:8px;color:#fff;font-size:.85rem;letter-spacing:2px;cursor:pointer;text-align:center;text-decoration:none;display:block;font-weight:bold}
+.disclaimer-btn-buy:hover{background:#c1121f}
+.disclaimer-btn-dl{padding:12px;background:transparent;border:1px solid #333;border-radius:8px;color:#888;font-size:.78rem;letter-spacing:2px;cursor:pointer;text-align:center;text-decoration:none;display:block}
+.disclaimer-btn-dl:hover{border-color:#e63946;color:#fff}
+.disclaimer-x{position:absolute;top:14px;right:16px;background:none;border:none;color:#888;font-size:1.3rem;cursor:pointer;line-height:1}
+
 </style>
 </head>
 <body>
@@ -1655,7 +1673,7 @@ button{font-family:var(--font-b);cursor:pointer;border:none;background:none}
       <p class="hero-desc">Haz que tu audiencia sea parte del juego. <strong>6 juegos disponibles</strong> diseñados para streamers que quieren llevar sus lives al siguiente nivel. <strong>Tu chat juega contigo en tiempo real.</strong></p>
       <div class="hero-btns">
         <button class="btn-primary" onclick="navTo('juegos')">🎮 VER JUEGOS</button>
-        <button class="btn-ghost" onclick="navTo('nosotros')">CONOCE R3DDY</button>
+        <a class="btn-ghost" href="https://github.com/elr3addymx-cmd/r3ddy-launcher-releases/releases/download/v1.0.1/R3DDY_Launcher_Setup_1.0.1.exe" download style="text-decoration:none;display:inline-flex;align-items:center;gap:8px">⬇ DESCARGAR LAUNCHER</a>
       </div>
       <div class="hero-stats">
         <div class="hero-stat"><div class="hero-stat-num">7+</div><div class="hero-stat-label">Juegos<br>disponibles</div></div>
@@ -1823,7 +1841,7 @@ button{font-family:var(--font-b);cursor:pointer;border:none;background:none}
           </div>
           <div class="juego-price-row">
             <div class="juego-price">$26 <span>USD</span></div>
-            <button class="juego-btn" onclick="event.stopPropagation();window.open(STRIPE_LINKS.survival,'_blank')">COMPRAR</button>
+            <button class="juego-btn" onclick="event.stopPropagation();abrirDisclaimer(STRIPE_LINKS.survival,event)">COMPRAR</button>
           </div>
         </div>
       </div>
@@ -1845,7 +1863,7 @@ button{font-family:var(--font-b);cursor:pointer;border:none;background:none}
           </div>
           <div class="juego-price-row">
             <div class="juego-price">$26 <span>USD</span></div>
-            <button class="juego-btn" onclick="event.stopPropagation();window.open(STRIPE_LINKS.tacomania,'_blank')">COMPRAR</button>
+            <button class="juego-btn" onclick="event.stopPropagation();abrirDisclaimer(STRIPE_LINKS.tacomania,event)">COMPRAR</button>
           </div>
         </div>
       </div>
@@ -1867,7 +1885,7 @@ button{font-family:var(--font-b);cursor:pointer;border:none;background:none}
           </div>
           <div class="juego-price-row">
             <div class="juego-price">$26 <span>USD</span></div>
-            <button class="juego-btn" onclick="event.stopPropagation();window.open(STRIPE_LINKS.spinbattle,'_blank')">COMPRAR</button>
+            <button class="juego-btn" onclick="event.stopPropagation();abrirDisclaimer(STRIPE_LINKS.spinbattle,event)">COMPRAR</button>
           </div>
         </div>
       </div>
@@ -1889,7 +1907,7 @@ button{font-family:var(--font-b);cursor:pointer;border:none;background:none}
           </div>
           <div class="juego-price-row">
             <div class="juego-price">$26 <span>USD</span></div>
-            <button class="juego-btn" onclick="event.stopPropagation();window.open(STRIPE_LINKS.zurvivalrun,'_blank')">COMPRAR</button>
+            <button class="juego-btn" onclick="event.stopPropagation();abrirDisclaimer(STRIPE_LINKS.zurvivalrun,event)">COMPRAR</button>
           </div>
         </div>
       </div>
@@ -1911,7 +1929,7 @@ button{font-family:var(--font-b);cursor:pointer;border:none;background:none}
           </div>
           <div class="juego-price-row">
             <div class="juego-price">$10 <span>USD</span></div>
-            <button class="juego-btn" onclick="event.stopPropagation();window.open(STRIPE_LINKS.zonaceromx,'_blank')">COMPRAR</button>
+            <button class="juego-btn" onclick="event.stopPropagation();abrirDisclaimer(STRIPE_LINKS.zonaceromx,event)">COMPRAR</button>
           </div>
         </div>
       </div>
@@ -2039,7 +2057,7 @@ button{font-family:var(--font-b);cursor:pointer;border:none;background:none}
       </div>
       <div class="juegos-promo-right">
         <div class="juegos-promo-price">$69 <span>USD</span></div>
-        <button class="juego-btn" onclick="window.open(STRIPE_LINKS.pack3,'_blank')">OBTENER PACK</button>
+        <button class="juego-btn" onclick="window.open('https://wa.me/524442057812?text=Hola%20R3DDY!%20Quiero%20el%20Pack%203%20Juegos%20por%20%2469%20USD.%20%C2%BFc%C3%B3mo%20procedo%3F','_blank')">OBTENER PACK</button>
       </div>
     </div>
 
@@ -2600,7 +2618,7 @@ button{font-family:var(--font-b);cursor:pointer;border:none;background:none}
       <div class="jm-gallery" id="jmGallery"></div>
       <div class="jm-footer">
         <div class="jm-price" id="jmPrice">$26 <span>USD</span></div>
-        <button class="jm-cta" onclick="window.open(STRIPE_LINKS[juegoActual],'_blank')">🎮 COMPRAR AHORA</button>
+        <button class="jm-cta" onclick="abrirDisclaimer(STRIPE_LINKS[juegoActual],event)">🎮 IR A COMPRAR</button>
       </div>
     </div>
   </div>
@@ -2993,25 +3011,19 @@ async function initCarousel(){
   const dots=document.getElementById('carouselDots');
   const loading=document.getElementById('carouselLoading');
   const cTotal=document.getElementById('cTotal');
-  let slides=[];
-  try{
-    const res=await fetch(JSON_PATH);
-    const data=await res.json();
-    slides=data.slides||[];
-  }catch(e){
-    slides=['noticia-1.jpg','noticia-2.jpg','noticia-3.jpg'];
-  }
-  if(slides.length===0)slides=['noticia-1.jpg'];
+  // Hardcodeado — sin fetch para funcionar local y en GitHub
+  const slides=['noticia-1.jpg','noticia-2.jpg','noticia-3.jpg'];
   total=slides.length;
   cTotal.textContent=total;
   slides.forEach((name,i)=>{
     const slide=document.createElement('div');
     slide.className='carousel-slide';
-    slide.innerHTML=`<div class="slide-ph"><span class="slide-ph-icon">🖼️</span><span class="slide-ph-name">assets/img/${name}</span><span class="slide-ph-size">1200 × 450 px · JPG</span></div>`;
     const img=document.createElement('img');
-    img.alt=`Noticia ${i+1}`;img.loading=i===0?'eager':'lazy';
-    img.onload=()=>{slide.innerHTML='';slide.appendChild(img);};
+    img.alt=`Noticia ${i+1}`;
+    img.loading='eager';
+    img.style.cssText='width:100%;height:100%;object-fit:cover;display:block;';
     img.src=IMG_PATH+name;
+    slide.appendChild(img);
     track.appendChild(slide);
     const dot=document.createElement('button');
     dot.className='cdot'+(i===0?' active':'');
@@ -3095,6 +3107,35 @@ initCarousel();
   cargarSiguiente();
 })();
 
+
+function abrirDisclaimer(url, e) {
+  if(e) e.stopPropagation();
+  document.getElementById('disclaimerComprarBtn').href = url || '#';
+  document.getElementById('disclaimerModal').classList.add('active');
+}
+function cerrarDisclaimer() {
+  document.getElementById('disclaimerModal').classList.remove('active');
+}
+
 </script>
+
+<!-- Disclaimer modal -->
+<div class="disclaimer-modal" id="disclaimerModal" onclick="if(event.target===this)cerrarDisclaimer()">
+  <div class="disclaimer-box">
+    <button class="disclaimer-x" onclick="cerrarDisclaimer()">✕</button>
+    <div class="disclaimer-title">⚡ ANTES DE COMPRAR</div>
+    <div class="disclaimer-sub">Sigue estos pasos para disfrutar tu juego:</div>
+    <ul class="disclaimer-steps">
+      <li><div class="disclaimer-step-num">1</div><div><strong>Descarga e instala el R3DDY Launcher</strong>El launcher es necesario para activar y jugar.</div></li>
+      <li><div class="disclaimer-step-num">2</div><div><strong>Compra tu juego</strong>Recibirás tu key de activación por correo electrónico.</div></li>
+      <li><div class="disclaimer-step-num">3</div><div><strong>Ingresa tu key en el launcher</strong>El juego se descarga e instala automáticamente.</div></li>
+    </ul>
+    <div class="disclaimer-btns">
+      <a href="https://github.com/elr3addymx-cmd/r3ddy-launcher-releases/releases/download/v1.0.1/R3DDY_Launcher_Setup_1.0.1.exe" class="disclaimer-btn-dl" download>⬇ DESCARGAR LAUNCHER PRIMERO</a>
+      <a href="#" class="disclaimer-btn-buy" id="disclaimerComprarBtn" target="_blank">🎮 IR A COMPRAR</a>
+    </div>
+  </div>
+</div>
+
 </body>
 </html>
