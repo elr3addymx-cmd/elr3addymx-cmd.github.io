@@ -2892,8 +2892,9 @@ function abrirJuego(id){
 
   // Banner
   const bannerImg = document.getElementById('jmBannerImg');
-  bannerImg.src = g.banner;
-  bannerImg.alt = g.titulo;
+  bannerImg.src = '';
+  bannerImg.loading = 'eager';
+  setTimeout(() => { bannerImg.src = g.banner; bannerImg.alt = g.titulo; }, 0);
 
   // Título y tags
   document.getElementById('jmTitle').textContent = g.titulo;
