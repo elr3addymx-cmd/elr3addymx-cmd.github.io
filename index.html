@@ -2696,33 +2696,12 @@ function generarFolio(){
 }
 
 function solicitarServicio(tipo){
-  const folio = generarFolio();
-  const nombres = {
-    juego:  'Juego Interactivo Personalizado',
-    vtuber: 'VTuber Personalizado',
-    web:    'Desarrollo Web / App'
+  const mensajes = {
+    juego:  'Hola%20R3DDY!%20Me%20interesa%20un%20Juego%20Interactivo%20Personalizado.%20%C2%BFPodrías%20darme%20más%20información?',
+    vtuber: 'Hola%20R3DDY!%20Me%20interesa%20un%20VTuber%20Personalizado.%20%C2%BFPodrías%20darme%20más%20información?',
+    web:    'Hola%20R3DDY!%20Me%20interesa%20el%20servicio%20de%20Desarrollo%20Web%2FApp.%20%C2%BFPodrías%20darme%20más%20información?'
   };
-  const links = {
-    juego:  STRIPE_LINKS.juego,
-    vtuber: STRIPE_LINKS.vtuber,
-    web:    null
-  };
-
-  if(links[tipo]){
-    // Guarda el folio y servicio para el mensaje post-pago
-    localStorage.setItem('r3ddy_folio', folio);
-    localStorage.setItem('r3ddy_servicio', nombres[tipo]);
-    window.open(links[tipo], '_blank');
-    // Abre WhatsApp después de 3 segundos (cuando ya pagó)
-    setTimeout(()=>{
-      const msg = `¡Hola! Acabo de realizar mi pago por el servicio de *${nombres[tipo]}*.\n\nFolio: *${folio}*\n\nMe gustaría agendar mi junta creativa y definir la fecha de entrega. ¡Gracias!`;
-      window.open(`https://wa.me/524442057812?text=${encodeURIComponent(msg)}`, '_blank');
-    }, 3000);
-  } else {
-    // Desarrollo web — directo a WhatsApp
-    const msg = `¡Hola! Estoy interesado en el servicio de *${nombres[tipo]}*.\n\nFolio: *${folio}*\n\nMe gustaría obtener una cotización y agendar una junta para platicar del proyecto.`;
-    window.open(`https://wa.me/524442057812?text=${encodeURIComponent(msg)}`, '_blank');
-  }
+  window.open('https://wa.me/524442057812?text=' + (mensajes[tipo]||''), '_blank');
 }
 
 /* ── Links de pago Stripe ── */
