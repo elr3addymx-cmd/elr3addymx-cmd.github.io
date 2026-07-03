@@ -236,10 +236,6 @@ button{font-family:var(--font-b);cursor:pointer;border:none;background:none}
   transition:all var(--t);text-decoration:none;display:block;
 }
 .mobile-wa:hover{background:rgba(37,211,102,.2)}
-  margin-top:16px;padding:16px;background:var(--rojo);color:#fff;
-  font-family:var(--font-d);font-size:1.1rem;letter-spacing:3px;
-  border-radius:10px;text-align:center;box-shadow:0 4px 20px var(--rojo-glow);transition:all var(--t);
-}
 .mobile-cta:hover{background:var(--rojo2)}
 
 /* ═══════════════════════════════════════════
@@ -491,9 +487,6 @@ button{font-family:var(--font-b);cursor:pointer;border:none;background:none}
 }
 .nos-container{padding:60px 48px 60px 40px;max-width:100%}
 .nos-right{display:flex;flex-direction:column;gap:0}
-  font-family:var(--font-d);font-size:1rem;
-  letter-spacing:2px;color:var(--azul2);
-}
 .nos-engine-sub{font-size:.75rem;color:var(--gris);margin-top:2px}
 
 /* Texto derecha */
@@ -2999,7 +2992,7 @@ async function initCarousel(){
     slide.className='carousel-slide';
     const img=document.createElement('img');
     img.alt=`Noticia ${i+1}`;
-    img.loading='eager';
+    img.loading=(i===0?'eager':'lazy');
     img.style.cssText='width:100%;height:100%;object-fit:cover;display:block;';
     img.src=IMG_PATH+name;
     slide.appendChild(img);
